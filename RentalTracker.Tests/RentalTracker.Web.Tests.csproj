@@ -92,9 +92,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RentalTracker\RentalTracker.csproj">
+    <ProjectReference Include="..\RentalTracker\RentalTracker.Web.csproj">
       <Project>{4BF29C9A-A0E3-42CA-A30A-8969C678D535}</Project>
-      <Name>RentalTracker</Name>
+      <Name>RentalTracker.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -246,6 +246,16 @@
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RentalTracker.DAL\RentalTracker.DAL.csproj">
+      <Project>{faf5e952-fb44-4ffc-818e-2c37b46556b6}</Project>
+      <Name>RentalTracker.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RentalTracker.Domain\RentalTracker.Domain.csproj">
+      <Project>{2da54d48-8481-44c9-851b-b415a7827707}</Project>
+      <Name>RentalTracker.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

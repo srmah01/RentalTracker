@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentalTrackerDomain
+namespace RentalTracker.Domain
 {
     public class Category
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
-        public String Name { get; set; }
+        public string Name { get; set; }
 
-        public String Type { get; set; }
+        public CategoryType Type { get; set; }
     }
 }
