@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,5 +22,16 @@ namespace RentalTracker.DAL
         public DbSet<Category> Catgories { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
+            modelBuilder.Configurations.Add(new AccountConfiguration());
+            //modelBuilder.Configurations.Add(new CategoryConfiguration());
+            //modelBuilder.Configurations.Add(new PayeeConfiguration());
+            modelBuilder.Configurations.Add(new TransactionConfiguration());
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

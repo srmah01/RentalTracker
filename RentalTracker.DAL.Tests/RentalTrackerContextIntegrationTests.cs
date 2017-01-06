@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RentalTracker.Domain;
 using System.Data.Entity;
 using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace RentalTracker.DAL.Tests
 {
@@ -22,6 +24,78 @@ namespace RentalTracker.DAL.Tests
             SetupLogging();
         }
 
+        [TestMethod, TestCategory("Integration")]
+        public void CanInsertNewAccount()
+        {
+            var accountToAdd = new Account()
+            {
+                Name = "BankAccount1",
+                OpeningBalance = 100.99m
+            };
+
+            _context.Accounts.Add(accountToAdd);
+            _context.SaveChanges();
+            WriteLog();
+            Assert.AreEqual(1, _context.Accounts.Local.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindAccountByID()
+        {
+            PrepareData();
+
+            var actual = _context.Accounts.Find(1);
+            WriteLog();
+            Assert.AreEqual(1, actual.Id);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanUpdateAccount()
+        {
+            PrepareData();
+
+            var account = _context.Accounts.Find(1);
+            string expected = "ChangedBankName";
+            account.Name = expected;
+
+            _context.Accounts.Attach(account);
+            _context.SaveChanges();
+            WriteLog();
+
+            var actual = _context.Accounts.Find(1);
+            Assert.AreEqual(expected, actual.Name);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanInsertNewPayeeWithNoDefaultCategory()
+        {
+            var payeeToAdd = new Payee()
+            {
+                Name = "Payee Name",
+            };
+
+            _context.Payees.Add(payeeToAdd);
+            _context.SaveChanges();
+            WriteLog();
+            Assert.AreEqual(1, _context.Payees.Local.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanInsertNewPayeeWithDefaultCategory()
+        {
+            var payeeToAdd = new Payee()
+            {
+                Name = "Payee Name",
+                DefaultCategory = new Category() { Name = "Category Name", Type = CategoryType.Income }
+            };
+
+            _context.Payees.Add(payeeToAdd);
+            _context.SaveChanges();
+            WriteLog();
+            Assert.AreEqual(1, _context.Payees.Local.Count);
+            Assert.AreEqual(1, _context.Catgories.Local.Count);
+        }
+
         private void SetupLogging()
         {
             _context.Database.Log = BuildLogString;
@@ -33,19 +107,64 @@ namespace RentalTracker.DAL.Tests
             _log = _logBuilder.ToString();
         }
 
-        [TestMethod, TestCategory("Integration")]
-        public void CanAddNewAccount()
+        private void WriteLog()
         {
-            var accountToAdd = new Account()
+            Debug.WriteLine(_log);
+        }
+
+        private void PrepareData()
+        {
+            var accountsToAdd = new List<Account>()
             {
-                Name = "BankAccount1",
-                OpeningBalance = 100.99m
+                new Account() { Name = "BankAccount1", OpeningBalance = 100.99m },
+                new Account() { Name = "BankAccount2" },
+                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m }
             };
 
-            _context.Accounts.Add(accountToAdd);
+            var rentalIncome = new Category() { Name = "Rental Income", Type = CategoryType.Income };
+            var bankInterest = new Category() { Name = "Bank Interest", Type = CategoryType.Income };
+            var utilities = new Category() { Name = "Utilities", Type = CategoryType.Expenditure };
+            var bankCharges = new Category() { Name = "Bank Charges", Type = CategoryType.Expenditure };
+            var categoriesToAdd = new List<Category>()
+            {
+                rentalIncome,
+                bankInterest,
+                utilities,
+                bankCharges
+            };
+
+            var renterA = new Payee() { Name = "Renter A" };
+            var renterB = new Payee() { Name = "Renter B", DefaultCategory = rentalIncome };
+            var myBankInterest = new Payee() { Name = "MyBank Interest" };
+            var myBankCharges = new Payee() { Name = "MyBank Charges", DefaultCategory = bankCharges };
+            var gasSupplier = new Payee() { Name = "Gas Supplier" };
+            var electricitySupplier = new Payee() { Name = "Electricity Supplier", DefaultCategory = utilities };
+            var payeesToAdd = new List<Payee>()
+            {
+                renterA,
+                renterB,
+                myBankInterest,
+                myBankCharges,
+                gasSupplier,
+                electricitySupplier
+            };
+
+            var transactionsToAdd = new List<Transaction>()
+            {
+                new Transaction() { AccountId = 1, Payee = renterA, Amount = 10.00m, Date = DateTime.Today},
+                new Transaction() { AccountId = 1, Payee = renterB, Amount = 100.00m, Date = DateTime.Today},
+                new Transaction() { AccountId = 2, Payee = renterA, Category = rentalIncome, Amount = 200.00m, Date = DateTime.Today},
+                new Transaction() { AccountId = 2, Payee = renterB, Category = bankInterest, Amount = 20.00m, Date = DateTime.Today},
+                new Transaction() { AccountId = 3, Payee = myBankCharges, Category = bankCharges, Amount = 30.00m, Date = DateTime.Today},
+            };
+
+            _context.Accounts.AddRange(accountsToAdd);
+            _context.Catgories.AddRange(categoriesToAdd);
+            _context.Payees.AddRange(payeesToAdd);
+            _context.Transactions.AddRange(transactionsToAdd);
             _context.SaveChanges();
 
-            Assert.AreEqual(1, _context.Accounts.Local.Count);
         }
+
     }
 }
