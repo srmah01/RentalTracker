@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RentalTracker.DAL.Tests
 {
@@ -64,6 +65,32 @@ namespace RentalTracker.DAL.Tests
 
             var actual = _context.Accounts.Find(1);
             Assert.AreEqual(expected, actual.Name);
+        }
+
+        [TestMethod, TestCategory("Integration"), ExpectedException(typeof(InvalidOperationException))]
+        public void CannotDeleteAccountWithAssociatedTransactions()
+        {
+            PrepareData();
+
+            var account = _context.Accounts.Find(3);
+            _context.Accounts.Remove(account);
+            _context.SaveChanges();
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanDeleteAccountWithNoAssociatedTransactions()
+        {
+            PrepareData();
+
+            var transaction = _context.Transactions.Find(5);
+            _context.Transactions.Remove(transaction);
+
+            var account = _context.Accounts.Find(3);
+            _context.Accounts.Remove(account);
+            _context.SaveChanges();
+            WriteLog();
+
+            Assert.AreEqual(2, _context.Accounts.Local.Count);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -162,6 +189,15 @@ namespace RentalTracker.DAL.Tests
             _context.Catgories.AddRange(categoriesToAdd);
             _context.Payees.AddRange(payeesToAdd);
             _context.Transactions.AddRange(transactionsToAdd);
+
+            // Add transactions to bank accounts
+            foreach (var transaction in transactionsToAdd)
+            {
+                var account = accountsToAdd.ElementAt(transaction.AccountId - 1);
+
+                account.Transactions.Add(transaction);
+            }
+
             _context.SaveChanges();
 
         }
