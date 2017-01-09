@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="AccountConfiguration.cs" />
     <Compile Include="IRentalTracker.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="Migrations\201701041908286_init.cs" />
     <Compile Include="Migrations\201701041908286_init.Designer.cs">
       <DependentUpon>201701041908286_init.cs</DependentUpon>
@@ -63,6 +64,7 @@
     <Compile Include="CategoryConfiguration.cs" />
     <Compile Include="RentalTrackerContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RentalTrackerRepository.cs" />
     <Compile Include="RentalTrackerService.cs" />
     <Compile Include="PayeeConfiguration.cs" />
     <Compile Include="TransactionConfiguration.cs" />
