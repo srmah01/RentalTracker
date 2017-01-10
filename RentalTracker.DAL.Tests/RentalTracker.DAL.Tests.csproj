@@ -66,10 +66,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataHelper.cs" />
-    <Compile Include="RentalTrackerRepositoryIntegrationTests.cs" />
     <Compile Include="RentalTrackerContextIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RentalTrackerServiceTests.cs" />
+    <Compile Include="RentalTrackerServiceIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

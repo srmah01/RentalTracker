@@ -6,7 +6,7 @@ using RentalTracker.Domain;
 namespace RentalTracker.DAL.Tests
 {
     [TestClass]
-    public class RentalTrackerServiceTests
+    public class RentalTrackerServiceIntegrationTests
     {
         [TestMethod, TestCategory("Integration")]
         public void CanGetAnEmptyListOfAccounts()
