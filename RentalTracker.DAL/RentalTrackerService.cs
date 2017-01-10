@@ -19,7 +19,7 @@ namespace RentalTracker.DAL
 
         public ICollection<Account> GetAllAccounts()
         {
-            return new List<Account>();
+            return repository.GetAllAccounts();
         }
 
         public void AddAccount(Account account)

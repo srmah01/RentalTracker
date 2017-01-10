@@ -34,7 +34,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService(mockedRepo.Object);
 
-            Assert.AreEqual(3, (service.GetAllAccounts()).Count);
+            Assert.AreEqual(3, service.GetAllAccounts().Count);
         }
 
     }
