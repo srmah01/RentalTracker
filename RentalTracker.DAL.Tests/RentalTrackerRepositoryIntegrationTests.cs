@@ -17,7 +17,7 @@ namespace RentalTracker.DAL.Tests
         public RentalTrackerRepositoryIntegrationTests()
         {
             //app.config points to a special testing database:RentalTrackerTest
-            DataHelper.NewDbWithSeed();
+            DataHelper.NewDb();
             _repo = new RentalTrackerRepository();
          }
 

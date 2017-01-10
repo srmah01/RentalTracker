@@ -10,13 +10,16 @@ namespace RentalTracker.DAL
 {
     public class DataHelper
     {
-        public static void NewDbWithSeed()
+        public static void NewDb(bool withSeed = true)
         {
             Database.SetInitializer(new DropCreateDatabaseAlways<RentalTrackerContext>());
             using (var context = new RentalTrackerContext())
             {
                 context.Database.Initialize(true);
-                PrepareData(context);
+                if (withSeed)
+                {
+                    PrepareData(context);
+                }
             }
         }
 

@@ -10,16 +10,12 @@ namespace RentalTracker.DAL
 {
     public class RentalTrackerService : IRentalTrackerService
     {
-        private IRentalTrackerRepository repository;
-
-        public RentalTrackerService(IRentalTrackerRepository repository)
-        {
-            this.repository = repository;
-        }
-
         public ICollection<Account> GetAllAccounts()
         {
-            return repository.GetAllAccounts();
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Accounts.ToList();
+            }
         }
 
         public void AddAccount(Account account)
