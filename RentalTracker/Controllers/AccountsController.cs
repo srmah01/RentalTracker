@@ -15,9 +15,9 @@ namespace RentalTracker.Controllers
     {
         //private RentalTrackerContext db = new RentalTrackerContext();
 
-        private IRentalTracker rentalTrackerService;
+        private IRentalTrackerService rentalTrackerService;
 
-        public AccountsController(IRentalTracker rentalTrackerService)
+        public AccountsController(IRentalTrackerService rentalTrackerService)
         {
             this.rentalTrackerService = rentalTrackerService;
         }

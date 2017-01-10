@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RentalTracker.DAL
 {
-    public interface IRentalTracker
+    public interface IRentalTrackerService
     {
         ICollection<Account> getAllAccounts();
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RentalTracker.DAL
 {
-    public interface IRepository
+    public interface IRentalTrackerRepository
     {
         ICollection<Account> GetAllAccounts();
     }

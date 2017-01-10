@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 namespace RentalTracker.DAL
 {
-    public class RentalTrackerService : IRentalTracker
+    public class RentalTrackerService : IRentalTrackerService
     {
         public ICollection<Account> getAllAccounts()
         {

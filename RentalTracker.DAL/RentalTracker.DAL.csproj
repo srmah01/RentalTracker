@@ -50,8 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountConfiguration.cs" />
-    <Compile Include="IRentalTracker.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="IRentalTrackerService.cs" />
+    <Compile Include="IRentalTrackerRepository.cs" />
     <Compile Include="Migrations\201701041908286_init.cs" />
     <Compile Include="Migrations\201701041908286_init.Designer.cs">
       <DependentUpon>201701041908286_init.cs</DependentUpon>
