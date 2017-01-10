@@ -9,7 +9,7 @@ namespace RentalTracker.DAL
 {
     public interface IRentalTrackerService
     {
-        ICollection<Account> getAllAccounts();
+        ICollection<Account> GetAllAccounts();
 
         Account FindAccount(int? id);
 

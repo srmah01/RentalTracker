@@ -25,7 +25,7 @@ namespace RentalTracker.Controllers
         // GET: Accounts
         public ActionResult Index()
         {
-            return View(rentalTrackerService.getAllAccounts());
+            return View(rentalTrackerService.GetAllAccounts());
         }
 
         // GET: Accounts/Details/5

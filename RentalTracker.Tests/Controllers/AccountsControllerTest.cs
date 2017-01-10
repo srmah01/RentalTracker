@@ -16,11 +16,11 @@ namespace RentalTracker.Tests.Controllers
     public class AccountsControllerTest
     {
         [TestMethod]
-        public void Index()
+        public void CanGetIndexView()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.getAllAccounts()).Returns(new List<Account>());
+            mockService.Setup(s => s.GetAllAccounts()).Returns(new List<Account>());
 
             AccountsController controller = new AccountsController(mockService.Object);
 
@@ -29,32 +29,58 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
+            var model = result.Model as ICollection<Account>;
+            Assert.AreEqual(0, model.Count);
         }
 
-    //    [TestMethod]
-    //    public void About()
-    //    {
-    //        // Arrange
-    //        HomeController controller = new HomeController();
+        [TestMethod]
+        public void CanGetIndexViewWithListOfAccounts()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.GetAllAccounts()).Returns(new List<Account>()
+                {
+                    new Account() { Id = 1, Name = "BankAccout1", OpeningBalance = 0.00m },
+                    new Account() { Id = 2, Name = "BankAccout2", OpeningBalance = 1.99m },
+                    new Account() { Id = 3, Name = "BankAccout3", OpeningBalance = 1000.00m },
+                }
+            );
 
-    //        // Act
-    //        ViewResult result = controller.About() as ViewResult;
+            AccountsController controller = new AccountsController(mockService.Object);
 
-    //        // Assert
-    //        Assert.AreEqual("Your application description page.", result.ViewBag.Message);
-    //    }
+            // Act
+            ViewResult result = controller.Index() as ViewResult;
 
-    //    [TestMethod]
-    //    public void Contact()
-    //    {
-    //        // Arrange
-    //        HomeController controller = new HomeController();
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as ICollection<Account>;
+            Assert.AreEqual(3, model.Count);
+        }
 
-    //        // Act
-    //        ViewResult result = controller.Contact() as ViewResult;
+        //    [TestMethod]
+        //    public void About()
+        //    {
+        //        // Arrange
+        //        HomeController controller = new HomeController();
 
-    //        // Assert
-    //        Assert.IsNotNull(result);
-    //    }
+        //        // Act
+        //        ViewResult result = controller.About() as ViewResult;
+
+        //        // Assert
+        //        Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+        //    }
+
+        //    [TestMethod]
+        //    public void Contact()
+        //    {
+        //        // Arrange
+        //        HomeController controller = new HomeController();
+
+        //        // Act
+        //        ViewResult result = controller.Contact() as ViewResult;
+
+        //        // Assert
+        //        Assert.IsNotNull(result);
+        //    }
     }
 }
