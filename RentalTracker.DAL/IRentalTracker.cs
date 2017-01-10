@@ -9,8 +9,10 @@ namespace RentalTracker.DAL
 {
     public interface IRentalTracker
     {
-        Account SaveNewAccount(Account account);
+        ICollection<Account> getAllAccounts();
 
-        Account UpdateAccount(Account account);
+        Account FindAccount(int? id);
+
+        void AddAccount(Account account);
     }
 }

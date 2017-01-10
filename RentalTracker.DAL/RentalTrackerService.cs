@@ -10,13 +10,17 @@ namespace RentalTracker.DAL
 {
     public class RentalTrackerService : IRentalTracker
     {
-        
-        public Account SaveNewAccount(Account account)
+        public ICollection<Account> getAllAccounts()
+        {
+            return new List<Account>();
+        }
+
+        public void AddAccount(Account account)
         {
             throw new NotImplementedException();
         }
 
-        public Account UpdateAccount(Account account)
+        public Account FindAccount(int? id)
         {
             throw new NotImplementedException();
         }

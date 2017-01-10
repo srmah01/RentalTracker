@@ -82,16 +82,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AccountsControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config" />
+    <Content Include="App.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RentalTracker.DAL\RentalTracker.DAL.csproj">
+      <Project>{FAF5E952-FB44-4FFC-818E-2C37B46556B6}</Project>
+      <Name>RentalTracker.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RentalTracker\RentalTracker.Web.csproj">
       <Project>{4BF29C9A-A0E3-42CA-A30A-8969C678D535}</Project>
       <Name>RentalTracker.Web</Name>
