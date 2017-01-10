@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RentalTracker;
 using RentalTracker.Controllers;
 using RentalTracker.DAL;
+using Moq;
+using RentalTracker.Domain;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -17,7 +19,10 @@ namespace RentalTracker.Tests.Controllers
         public void Index()
         {
             // Arrange
-            AccountsController controller = new AccountsController(new RentalTrackerService());
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.getAllAccounts()).Returns(new List<Account>());
+
+            AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
             ViewResult result = controller.Index() as ViewResult;
