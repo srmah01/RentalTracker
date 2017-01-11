@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountConfiguration.cs" />
+    <Compile Include="DataHelper.cs" />
     <Compile Include="IRentalTrackerService.cs" />
     <Compile Include="Migrations\201701041908286_init.cs" />
     <Compile Include="Migrations\201701041908286_init.Designer.cs">

@@ -13,6 +13,10 @@ namespace RentalTracker.DAL
 
         Account FindAccount(int? id);
 
-        void AddAccount(Account account);
+        Account FindAccountWithTransactions(int? id);
+
+        void SaveNewAccount(Account account);
+
+        void SaveUpdatedAccount(Account account);
     }
 }
