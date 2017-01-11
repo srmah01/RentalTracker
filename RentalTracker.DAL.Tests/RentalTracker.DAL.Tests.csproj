@@ -47,10 +47,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.5.30.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
@@ -69,11 +65,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="DataHelper.cs" />
-    <Compile Include="RentalTrackerRepositoryIntegrationTests.cs" />
-    <Compile Include="RentalTrackerContextIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RentalTrackerServiceTests.cs" />
+    <Compile Include="RentalTrackerServiceIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

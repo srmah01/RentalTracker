@@ -10,13 +10,16 @@ namespace RentalTracker.DAL
 {
     public class DataHelper
     {
-        public static void NewDbWithSeed()
+        public static void NewDb(bool withSeed = true)
         {
             Database.SetInitializer(new DropCreateDatabaseAlways<RentalTrackerContext>());
             using (var context = new RentalTrackerContext())
             {
                 context.Database.Initialize(true);
-                PrepareData(context);
+                if (withSeed)
+                {
+                    PrepareData(context);
+                }
             }
         }
 
@@ -57,13 +60,14 @@ namespace RentalTracker.DAL
                 electricitySupplier
             };
 
+            var defaultTransactionDate = new DateTime(2016, 1, 1);
             var transactionsToAdd = new List<Transaction>()
             {
-                new Transaction() { AccountId = 1, Payee = renterA, Amount = 10.00m, Date = DateTime.Today},
-                new Transaction() { AccountId = 1, Payee = renterB, Amount = 100.00m, Date = DateTime.Today},
-                new Transaction() { AccountId = 2, Payee = renterA, Category = rentalIncome, Amount = 200.00m, Date = DateTime.Today},
-                new Transaction() { AccountId = 2, Payee = renterB, Category = bankInterest, Amount = 20.00m, Date = DateTime.Today},
-                new Transaction() { AccountId = 3, Payee = myBankCharges, Category = bankCharges, Amount = 30.00m, Date = DateTime.Today},
+                new Transaction() { AccountId = 1, Payee = renterA, Amount = 10.00m, Date = defaultTransactionDate},
+                new Transaction() { AccountId = 1, Payee = renterB, Amount = 100.00m, Date = defaultTransactionDate},
+                new Transaction() { AccountId = 2, Payee = renterA, Category = rentalIncome, Amount = 200.00m, Date = defaultTransactionDate.AddDays(1)},
+                new Transaction() { AccountId = 2, Payee = renterB, Category = bankInterest, Amount = 200.00m, Date = defaultTransactionDate.AddDays(2)},
+                new Transaction() { AccountId = 3, Payee = myBankCharges, Category = bankCharges, Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
 
             context.Accounts.AddRange(accountsToAdd);
@@ -71,16 +75,7 @@ namespace RentalTracker.DAL
             context.Payees.AddRange(payeesToAdd);
             context.Transactions.AddRange(transactionsToAdd);
 
-            // Add transactions to bank accounts
-            foreach (var transaction in transactionsToAdd)
-            {
-                var account = accountsToAdd.ElementAt(transaction.AccountId - 1);
-
-                account.Transactions.Add(transaction);
-            }
-
             context.SaveChanges();
-
         }
 
     }

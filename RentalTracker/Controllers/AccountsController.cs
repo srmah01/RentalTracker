@@ -13,8 +13,6 @@ namespace RentalTracker.Controllers
 {
     public class AccountsController : Controller
     {
-        //private RentalTrackerContext db = new RentalTrackerContext();
-
         private IRentalTrackerService rentalTrackerService;
 
         public AccountsController(IRentalTrackerService rentalTrackerService)
@@ -35,7 +33,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Account account = rentalTrackerService.FindAccount(id);
+            Account account = rentalTrackerService.FindAccountWithTransactions(id);
             if (account == null)
             {
                 return HttpNotFound();
@@ -58,7 +56,7 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.AddAccount(account);
+                rentalTrackerService.SaveNewAccount(account);
                 return RedirectToAction("Index");
             }
 
@@ -83,52 +81,32 @@ namespace RentalTracker.Controllers
         // POST: Accounts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,Name,OpeningBalance")] Account account)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(account).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(account);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Name,OpeningBalance")] Account account)
+        {
+            if (ModelState.IsValid)
+            {
+                rentalTrackerService.SaveUpdatedAccount(account);
+                return RedirectToAction("Index");
+            }
+            return View(account);
+        }
 
         // GET: Accounts/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Account account = db.Accounts.Find(id);
-        //    if (account == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(account);
-        //}
-
-        // POST: Accounts/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Account account = db.Accounts.Find(id);
-        //    db.Accounts.Remove(account);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
-
-        protected override void Dispose(bool disposing)
+        public ActionResult Delete(int? id)
         {
-            if (disposing)
+            if (id == null)
             {
-                //db.Dispose();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            base.Dispose(disposing);
+            Account account = rentalTrackerService.FindAccount(id);
+            if (account == null)
+            {
+                return HttpNotFound();
+            }
+            return View(account);
         }
+
     }
 }
