@@ -13,12 +13,17 @@ namespace RentalTracker.Controllers
 {
     public class PayeesController : Controller
     {
-        private RentalTrackerContext db = new RentalTrackerContext();
+        private IRentalTrackerService rentalTrackerService;
+
+        public PayeesController(IRentalTrackerService rentalTrackerService)
+        {
+            this.rentalTrackerService = rentalTrackerService;
+        }
 
         // GET: Payees
         public ActionResult Index()
         {
-            return View(db.Payees.ToList());
+            return View(rentalTrackerService.GetAllPayees());
         }
 
         // GET: Payees/Details/5
@@ -28,7 +33,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payee payee = db.Payees.Find(id);
+            Payee payee = rentalTrackerService.FindPayeeWithTransactions(id);
             if (payee == null)
             {
                 return HttpNotFound();
@@ -51,8 +56,7 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Payees.Add(payee);
-                db.SaveChanges();
+                rentalTrackerService.SaveNewPayee(payee);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +70,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payee payee = db.Payees.Find(id);
+            Payee payee = rentalTrackerService.FindPayee(id);
             if (payee == null)
             {
                 return HttpNotFound();
@@ -83,8 +87,7 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(payee).State = EntityState.Modified;
-                db.SaveChanges();
+                rentalTrackerService.SaveUpdatedPayee(payee);
                 return RedirectToAction("Index");
             }
             return View(payee);
@@ -97,7 +100,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payee payee = db.Payees.Find(id);
+            Payee payee = rentalTrackerService.FindPayee(id);
             if (payee == null)
             {
                 return HttpNotFound();
@@ -106,23 +109,15 @@ namespace RentalTracker.Controllers
         }
 
         // POST: Payees/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Payee payee = db.Payees.Find(id);
-            db.Payees.Remove(payee);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Payee payee = db.Payees.Find(id);
+        //    db.Payees.Remove(payee);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

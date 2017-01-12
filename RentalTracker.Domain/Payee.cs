@@ -21,6 +21,7 @@ namespace RentalTracker.Domain
         [MaxLength(100)]
         public string Name { get; set; }
 
+        public int? DefaultCategoryId { get; set; }
         public Category DefaultCategory { get; set; }
 
         [MaxLength(200)]

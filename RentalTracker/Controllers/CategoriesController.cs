@@ -13,12 +13,17 @@ namespace RentalTracker.Controllers
 {
     public class CategoriesController : Controller
     {
-        private RentalTrackerContext db = new RentalTrackerContext();
+        private IRentalTrackerService rentalTrackerService;
+
+        public CategoriesController(IRentalTrackerService rentalTrackerService)
+        {
+            this.rentalTrackerService = rentalTrackerService;
+        }
 
         // GET: Categories
         public ActionResult Index()
         {
-            return View(db.Catgories.ToList());
+            return View(rentalTrackerService.GetAllCategories());
         }
 
         // GET: Categories/Details/5
@@ -28,7 +33,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Catgories.Find(id);
+            Category category = rentalTrackerService.FindCategoryWithTransactions(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -51,8 +56,7 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Catgories.Add(category);
-                db.SaveChanges();
+                rentalTrackerService.SaveNewCategory(category);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +70,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Catgories.Find(id);
+            Category category = rentalTrackerService.FindCategory(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -83,8 +87,7 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
+                rentalTrackerService.SaveUpdatedCategory(category);
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -97,7 +100,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Catgories.Find(id);
+            Category category = rentalTrackerService.FindCategory(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -106,23 +109,14 @@ namespace RentalTracker.Controllers
         }
 
         // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Category category = db.Catgories.Find(id);
-            db.Catgories.Remove(category);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Category category = db.Catgories.Find(id);
+        //    db.Catgories.Remove(category);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
     }
 }

@@ -13,13 +13,17 @@ namespace RentalTracker.Controllers
 {
     public class TransactionsController : Controller
     {
-        private RentalTrackerContext db = new RentalTrackerContext();
+        private IRentalTrackerService rentalTrackerService;
+
+        public TransactionsController(IRentalTrackerService rentalTrackerService)
+        {
+            this.rentalTrackerService = rentalTrackerService;
+        }
 
         // GET: Transactions
         public ActionResult Index()
         {
-            var transactions = db.Transactions.Include(t => t.Account);
-            return View(transactions.ToList());
+            return View(rentalTrackerService.GetAllTransactionsWithAccounts());
         }
 
         // GET: Transactions/Details/5
@@ -29,7 +33,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Transaction transaction = db.Transactions.Find(id);
+            Transaction transaction = rentalTrackerService.FindTransaction(id);
             if (transaction == null)
             {
                 return HttpNotFound();
@@ -40,7 +44,8 @@ namespace RentalTracker.Controllers
         // GET: Transactions/Create
         public ActionResult Create()
         {
-            ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name");
+            //ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name");
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             return View();
         }
 
@@ -53,12 +58,11 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Transactions.Add(transaction);
-                db.SaveChanges();
+                rentalTrackerService.SaveNewTransaction(transaction);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             return View(transaction);
         }
 
@@ -69,12 +73,12 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Transaction transaction = db.Transactions.Find(id);
+            Transaction transaction = rentalTrackerService.FindTransaction(id);
             if (transaction == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             return View(transaction);
         }
 
@@ -87,11 +91,10 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(transaction).State = EntityState.Modified;
-                db.SaveChanges();
+                rentalTrackerService.SaveUpdatedTransaction(transaction);
                 return RedirectToAction("Index");
             }
-            ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             return View(transaction);
         }
 
@@ -102,7 +105,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Transaction transaction = db.Transactions.Find(id);
+            Transaction transaction = rentalTrackerService.FindTransaction(id);
             if (transaction == null)
             {
                 return HttpNotFound();
@@ -115,19 +118,8 @@ namespace RentalTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Transaction transaction = db.Transactions.Find(id);
-            db.Transactions.Remove(transaction);
-            db.SaveChanges();
+            rentalTrackerService.RemoveTransaction(id);
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

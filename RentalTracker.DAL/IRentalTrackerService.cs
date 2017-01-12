@@ -9,6 +9,9 @@ namespace RentalTracker.DAL
 {
     public interface IRentalTrackerService
     {
+
+        #region Accounts
+
         ICollection<Account> GetAllAccounts();
 
         Account FindAccount(int? id);
@@ -18,5 +21,49 @@ namespace RentalTracker.DAL
         void SaveNewAccount(Account account);
 
         void SaveUpdatedAccount(Account account);
+
+        #endregion
+
+        #region Categories
+
+        ICollection<Category> GetAllCategories();
+
+        Category FindCategory(int? id);
+
+        Category FindCategoryWithTransactions(int? id);
+
+        void SaveNewCategory(Category category);
+
+        void SaveUpdatedCategory(Category category);
+
+        #endregion
+
+        #region Payees
+
+        ICollection<Payee> GetAllPayees();
+
+        Payee FindPayee(int? id);
+
+        Payee FindPayeeWithTransactions(int? id);
+
+        void SaveNewPayee(Payee payee);
+
+        void SaveUpdatedPayee(Payee payee);
+
+        #endregion
+
+        #region Transactions
+
+        ICollection<Transaction> GetAllTransactionsWithAccounts();
+
+        Transaction FindTransaction(int? id);
+
+        void SaveNewTransaction(Transaction transaction);
+
+        void SaveUpdatedTransaction(Transaction transaction);
+
+        void RemoveTransaction(int id);
+
+        #endregion
     }
 }

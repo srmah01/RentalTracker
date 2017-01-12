@@ -29,11 +29,13 @@
 
     </dl>
 
+    <h4>Deletes are not permitted.</h4>
+
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-default hidden" />
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

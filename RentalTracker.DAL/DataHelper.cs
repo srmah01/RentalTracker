@@ -31,51 +31,68 @@ namespace RentalTracker.DAL
                 new Account() { Name = "BankAccount2" },
                 new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m }
             };
+            context.Accounts.AddRange(accountsToAdd);
+            context.SaveChanges();
+            var accountsAdded = context.Accounts.ToList();
 
-            var rentalIncome = new Category() { Name = "Rental Income", Type = CategoryType.Income };
-            var bankInterest = new Category() { Name = "Bank Interest", Type = CategoryType.Income };
-            var utilities = new Category() { Name = "Utilities", Type = CategoryType.Expenditure };
-            var bankCharges = new Category() { Name = "Bank Charges", Type = CategoryType.Expenditure };
             var categoriesToAdd = new List<Category>()
             {
-                rentalIncome,
-                bankInterest,
-                utilities,
-                bankCharges
+                new Category() { Name = "Rental Income", Type = CategoryType.Income },
+                new Category() { Name = "Bank Interest", Type = CategoryType.Income },
+                new Category() { Name = "Utilities", Type = CategoryType.Expenditure },
+                new Category() { Name = "Bank Charges", Type = CategoryType.Expenditure }
             };
+            context.Categories.AddRange(categoriesToAdd);
+            context.SaveChanges();
+            var categoriesAdded = context.Categories.ToList();
 
-            var renterA = new Payee() { Name = "Renter A" };
-            var renterB = new Payee() { Name = "Renter B", DefaultCategory = rentalIncome };
-            var myBankInterest = new Payee() { Name = "MyBank Interest" };
-            var myBankCharges = new Payee() { Name = "MyBank Charges", DefaultCategory = bankCharges };
-            var gasSupplier = new Payee() { Name = "Gas Supplier" };
-            var electricitySupplier = new Payee() { Name = "Electricity Supplier", DefaultCategory = utilities };
             var payeesToAdd = new List<Payee>()
             {
-                renterA,
-                renterB,
-                myBankInterest,
-                myBankCharges,
-                gasSupplier,
-                electricitySupplier
+                new Payee() { Name = "Renter A" },
+                new Payee() { Name = "Renter B", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Rental Income").Single().Id },
+                new Payee() { Name = "MyBank Interest", Memo = "Paid Monthly" },
+                new Payee() { Name = "MyBank Charges", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Utilities").Single().Id },
+                new Payee() { Name = "Gas Supplier", DefaultCategoryId = null },
+                new Payee() { Name = "Electricity Supplier", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Bank Charges").Single().Id, Memo = "For Quarter Feb - May" }
             };
+            context.Payees.AddRange(payeesToAdd);
+            context.SaveChanges();
+            var payeesAdded = context.Payees.Include(p => p.DefaultCategory).ToList();
 
             var defaultTransactionDate = new DateTime(2016, 1, 1);
+            var a1 = accountsAdded.Where(a => a.Name == "BankAccount1").Single();
+            var p1 = payeesAdded.Where(p => p.Name == "Renter A").Single();
             var transactionsToAdd = new List<Transaction>()
             {
-                new Transaction() { AccountId = 1, Payee = renterA, Amount = 10.00m, Date = defaultTransactionDate},
-                new Transaction() { AccountId = 1, Payee = renterB, Amount = 100.00m, Date = defaultTransactionDate},
-                new Transaction() { AccountId = 2, Payee = renterA, Category = rentalIncome, Amount = 200.00m, Date = defaultTransactionDate.AddDays(1)},
-                new Transaction() { AccountId = 2, Payee = renterB, Category = bankInterest, Amount = 200.00m, Date = defaultTransactionDate.AddDays(2)},
-                new Transaction() { AccountId = 3, Payee = myBankCharges, Category = bankCharges, Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    Amount = 10.00m, Date = defaultTransactionDate},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter B").Single().Id,
+                    Amount = 100.00m, Date = defaultTransactionDate},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = payeesAdded.Where(p => p.Name == "Renter A").Single().DefaultCategoryId,
+                    Amount = 200.00m, Date = defaultTransactionDate.AddDays(1)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Gas Supplier").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Utilities").Single().Id,
+                    Amount = 200.00m, Date = defaultTransactionDate.AddDays(2),  Memo = "For Quarter May - Aug"},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount3").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "MyBank Charges").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Bank Charges").Single().Id,
+                    Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
-
-            context.Accounts.AddRange(accountsToAdd);
-            context.Catgories.AddRange(categoriesToAdd);
-            context.Payees.AddRange(payeesToAdd);
             context.Transactions.AddRange(transactionsToAdd);
 
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
     }

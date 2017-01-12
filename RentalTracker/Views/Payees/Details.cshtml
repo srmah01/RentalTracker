@@ -27,6 +27,25 @@
         </dd>
 
     </dl>
+    <hr />
+    <table width="300" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.Transactions)
+        {
+            <tr>
+                <td width="100"> @item.Account.Name</td>
+                <td width="100">@item.Amount </td>
+                <td width="100">@item.Date </td>
+            </tr>
+
+        }
+    </table>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
