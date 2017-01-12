@@ -84,16 +84,7 @@ namespace RentalTracker.DAL
                     Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
             context.Transactions.AddRange(transactionsToAdd);
-
-            try
-            {
-                context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            context.SaveChanges();
         }
-
     }
 }
