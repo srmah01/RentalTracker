@@ -141,14 +141,12 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                //var payee = context.Payees.AsNoTracking()
-                //                     .Include(a => a.Transactions)
-                //                     .SingleOrDefault(p => p.Id == id);
-                var payee = context.Payees.Where(p => p.Id == id).Single();
-                
+                var payee = context.Payees.AsNoTracking()
+                                     .Include(a => a.Transactions)
+                                     .SingleOrDefault(p => p.Id == id);
+
                 if (payee != null)
                 {
-                    context.Entry(payee).Collection(p => p.Transactions).Load();
                     foreach (var transaction in payee.Transactions)
                     {
                         // Explicitly load the Account reference
