@@ -4,36 +4,270 @@
     ViewBag.Title = "Accounts";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="jumbotron">
+    <div>
+        <a href="~/Home/Index">
+            <p class="h1 col-sm-1"><i class="glyphicon glyphicon-circle-arrow-left"></i></p>
+        </a>
+        <p class="h1">@ViewBag.Title</p>
+    </div>
+</div>
+
+<div class="container details-panel">
+
+    <div class="row details-panel-header">
+
+        <div class="col-md-4">
+            <div class="card-items-panel-header">
+                <div class="btn-group-lg text-center" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" name="AccountsOptions" id="AllAccounts" autocomplete="off" checked> All Accounts
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" name="AccountsOptions" id="ActiveAccounts" autocomplete="off"> Active Accounts
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 transaction-panel">
+            <table class="transaction-panel-table transaction-panel-table-head">
+                <tr>
+                    <td width="12%">
+                        <button class="btn">
+                            <span class="">Date</span>&nbsp;
+                            <span class="caret" style="background-color: white"></span>
+                        </button>
+                    </td>
+                    <td width="25%">
+                        <p>Payee</p>
+                        <p>Category</p>
+                    </td>
+                    <td width="10%">
+                        <p>Income</p>
+                    </td>
+                    <td width="10%">
+                        <p>Expense</p>
+                    </td>
+                    <td width="3%">
+                        <p>
+                            <i class="glyphicon glyphicon-check h5"></i>
+                        </p>
+                    </td>
+                    <td width="40%">
+                        <p>Reference</p>
+                        <p>Memo</p>
+                    </td>
+                </tr>
+            </table>
+            <table class="transaction-panel-table transaction-panel-table-body">
+                <tr>
+                    <td width="37%">
+                        <select class="" style="padding: 0px 2px;">
+                            <option>All Dates</option>
+                            <option>Last 120 Days: 15th September - 12 January 2017</option>
+                        </select>
+                    </td>
+                    <td width="10%">
+                        <p>12345.00</p>
+                    </td>
+                    <td width="10%">
+                        <p>12345.00</p>
+                    </td>
+                    <td width="3%">
+                        <p></p>
+                    </td>
+                    <td width="40%">
+                        <p></p>
+                    </td>
+                </tr>
+            </table>
+            @*<table class="" >
+                    <thead>
+                        <tr>
+                            <th>
+                                <button class="btn btn-primary">
+                                    <span class="h3">Date</span>&nbsp;
+                                    <span class="lg-caret"></span>
+                                </button>
+                            </th>
+                            <th>
+                                <p>Payee</p>
+                                <p>Category</p>
+                            </th>
+                            <th>
+                                <p>Income</p>
+                            </th>
+                            <th>
+                                <p>Expense</p>
+                            </th>
+                            <th>
+                                <p>
+                                    <i class="glyphicon glyphicon-check h5"></i>
+                                </p>
+                            </th>
+                            <th>
+                                <p>Reference</p>
+                                <p>Memo</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2">
+                                <select class="">
+                                    <option>All Dates</option>
+                                    <option>Last 120 Days: 15th September - 12 January 2017</option>
+                                </select>
+                            </td>
+                            <td rowspan="1">
+                                <p></p>
+                            </td>
+                            <td rowspan="1">
+                                <p>12345.00</p>
+                            </td>
+                            <td rowspan="1">
+                                <p>12345.00</p>
+                            </td>
+                            <td rowspan="4">
+                                <p></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>*@
+        </div>
+
+    </div>
+
+    <div class="row details-panel-body">
+        <div class="col-sm-4">
+            <table class="table table-hover">
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="card-item card-item-account">
+                                    <div class="card-item-body">
+                                        <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
+                                        <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row details-panel-footer">
+        <div class="col-sm-4">
+            <div class="btn-group-lg text-center">
+                <button class="btn btn-primary" type="submit">Add Account</button>
+                <button class="btn btn-primary" type="submit">Edit Account</button>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="col-sm-4 card-items-panel">
+            <div class="btn-group-lg text-center" data-toggle="buttons">
+                <label class="btn btn-primary active" >
+                    <input type="radio" name="AccountsOptions" id="AllAccounts" autocomplete="off" checked> All Accounts
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="AccountsOptions" id="ActiveAccounts" autocomplete="off"> Active Accounts
+                </label>
+            </div>
+            <br />
+            <table class="table table-hover">
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="card-item card-item-account">
+                                    <div class="card-item-body">
+                                        <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
+                                        <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="">
+                <div class="btn-group-lg text-center">
+                    <button class="btn btn-primary" type="submit">Add Account</button>
+                    <button class="btn btn-primary" type="submit">Edit Account</button>
+                </div>
+            </div>
+        </div>*@
+
+    @*<div class="col-sm-8 transaction-panel">
+            <div class="row panel-heading">
+                y
+            </div>
+            <div class="panel-body">
+                y1
+            </div>
+            <div class="panel-footer">
+                y2
+            </div>
+        </div>*@
+</div>
+
+@*<br /><br /><br />
+
+    <p>
+        @Html.ActionLink("Create New", "Create", new { area = "" }, new { @class = "btn btn-default" })
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OpeningBalance)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OpeningBalance)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>*@<br /><br /><br />
 
 <p>
-    @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.OpeningBalance)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
     <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OpeningBalance)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
-}
 
 </table>
