@@ -33,11 +33,12 @@ textarea {
 }
 
 .details-panel-header {
-    height: 20%;
+    height: 12%;
+    background-color: blue;
 }
 
 .details-panel-body {
-    height: 70%;
+    height: 78%;
     background-color: red;
 }
 
