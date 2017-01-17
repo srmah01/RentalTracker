@@ -34,105 +34,6 @@ textarea {
 }
 
 
-.details-panel {
-    border: solid;
-    height: 70vh;
-}
-
-.details-panel-header {
-    height: 12%;
-    background-color: blue;
-}
-
-.details-panel-body {
-    height: 78%;
-    background-color: red;
-}
-
-.details-panel-footer {
-    height: 10%;
-    background-color: pink;
-}
-
-.card-items-panel-header {
-    padding: 10px;
-}
-
-.card-items-panel-body {
-    border-right: solid;
-    padding: 10px 0px 10px 0px;
-    overflow-y: scroll;
-    height: inherit;
-}
-
-.card-items-panel-footer {
-    border-right: solid;
-    padding: 10px 0px 10px 0px;
-    overflow-y: scroll;
-    height: inherit;
-}
-
-.transaction-panel {
-    margin-left: 0px;
-    padding: 10px 10px;
-    height: inherit;
-}
-
-.t-h-l-height {
-    height: 50%;
-}
-
-.transaction-panel-header {
-}
-
-.transaction-panel-table {
-    border-collapse: collapse;
-    width: 100%;
-    background-color: white;
-}
-
-.transaction-panel-table-head {
-    border: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-    .transaction-panel-table-head td {
-        border: none;
-    }
-
-.transaction-panel-table-body {
-    border: none;
-    border-top: 0;
-    margin-top: 0;
-    padding-top: 0;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-    .transaction-panel-table-body td {
-        border-top: 0;
-    }
-
-.transaction-panel-table-footer {
-    border: none;
-    border-top: 0;
-    margin-top: 0;
-    padding-top: 0;
-}
-
-    .transaction-panel-table-footer td {
-        border: 1px solid black;
-        border-top: 0;
-    }
-
-
-.transaction-panel-body {
-}
-
-.transaction-panel-footer {
-}
-
 .card-item {
     border: solid;
 }
@@ -153,5 +54,5 @@ textarea {
     }
 
     .card-item-body.selected {
-        background-color: #ebebeb;
+        background-color: #e4d2d2;
     }

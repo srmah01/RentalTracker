@@ -35,22 +35,12 @@
                                 </div>
                             </div>
                         </td>
-                        @*<td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default center-block" })
-                            </td>
-                            <td class="center-cell">
-                                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default center-block" })
-                            </td>*@
-                        @*<td>
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default center-block" })
-                            </td>*@
                     </tr>
                 }
             </tbody>
         </table>
 
         <div class="center-block">
-            @*@Html.ActionLink("Create New", "Create", new { area = "" }, new { @class = "btn btn-default" })*@
             <a class="btn btn-default" href="@Url.Action(  "Create" )"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Add</a>
             <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit" )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
             <a id="details" class="btn btn-default disabled" href="@Url.Action( "Details" )"><i class="glyphicon glyphicon-list"></i>&nbsp;Details</a>
