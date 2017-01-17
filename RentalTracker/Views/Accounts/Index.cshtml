@@ -13,468 +13,53 @@
     </div>
 </div>
 
-<div class="container details-panel">
+<div class="container">
 
-    <div class="row details-panel-header">
-
-        <div class="col-md-3" style="background-color:aqua">
-            <div class="card-items-panel-header">
-                <div class="btn-group text-center" data-toggle="buttons">
-                    <label class="btn btn-primary active">
-                        <input type="radio" name="AccountsOptions" id="AllAccounts" autocomplete="off" checked> All Accounts
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" name="AccountsOptions" id="ActiveAccounts" autocomplete="off"> Active Accounts
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-9" style="background-color:aquamarine">
-            <div class="row" style="">
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:blanchedalmond">
-                            <button type="button" class="btn" style="background-color: white;">
-                                <span class="">Date</span>&nbsp;
-                                <span class="caret"></span>
-                            </button>
-                        </div>
-                        <div class="col-xs-2 col-md-8" style="height:100px;background-color:blue">
-                            <p>Payee</p>
-                            <p>Category</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:blueviolet"><span>Income</span></div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:brown"><span>Expense</span></div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:burlywood"><span>Balance</span></div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-1" style="height:100px;background-color:cadetblue">
-                            <span>
-                                <i class="glyphicon glyphicon-check h5"></i>
-                            </span>
-                        </div>
-                        <div class="" style="height:100px;background-color:rebeccapurple">
-                            <p>Reference</p>
-                            <p>Memo</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" style="">
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="" style="height:100px;background-color:blanchedalmond">
-                            <select class="" style="padding: 0px 2px;">
-                                <option>All Dates</option>
-                                <option>Last 120 Days: 15th September - 12 January 2017</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:blueviolet"><span>12345.00</span></div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:brown"><span>12345.00</span></div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;background-color:burlywood"></div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="" style="height:100px;background-color:rebeccapurple">
-                            <div class="btn-group text-center" data-toggle="buttons">
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="RenconciledOptions" id="ShowReconciled" autocomplete="off" checked> Show Reconciled
-                                </label>
-                                <label class="btn btn-primary">
-                                    <input type="radio" name="RenconciledOptions" id="HideReconciled" autocomplete="off"> Hide Reconciled
-                                </label>
+    <div class="col-md-4">
+        <table id="accounts" class="table table-responsive">
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row">
+                        <td class="hidden">
+                            @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id ="urle", @class = "hidden" })
+                        </td>
+                        <td class="hidden">
+                            @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
+                        </td>
+                        <td>
+                            <div class="card-item card-item-account">
+                                <div class="card-item-body">
+                                    <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
+                                    <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </td>
+                        @*<td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default center-block" })
+                            </td>
+                            <td class="center-cell">
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default center-block" })
+                            </td>*@
+                        @*<td>
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default center-block" })
+                            </td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
 
+        <div class="center-block">
+            @*@Html.ActionLink("Create New", "Create", new { area = "" }, new { @class = "btn btn-default" })*@
+            <a class="btn btn-default" href="@Url.Action(  "Create" )"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Add</a>
+            <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit" )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+            <a id="details" class="btn btn-default disabled" href="@Url.Action( "Details" )"><i class="glyphicon glyphicon-list"></i>&nbsp;Details</a>
         </div>
     </div>
-
-    <div class="row details-panel-body" style="background-color:azure">
-        <div class="col-md-3" style="height:100px;background-color:saddlebrown">
-            <table class="table table-hover">
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="card-item card-item-account">
-                                    <div class="card-item-body">
-                                        <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
-                                        <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-md-9" style="background-color:salmon">
-            <div class="row">
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkblue"><span> 12 January 2017</span></div>
-                        <div class="col-xs-2 col-md-8" style="height:100px;border: 1px solid grey;background-color:darkcyan">Some longish text</div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkgoldenrod">12345.00</div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkgray">12345.00</div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkseagreen">12345.00</div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-1" style="height:100px;border: 1px solid grey;background-color:darkgreen"><span><i class="glyphicon glyphicon-ok h5"></i></span></div>
-                        <div class="" style="height:100px;border: 1px solid grey;background-color:darkkhaki">Some very long text xccxcx xnnxnnx xksjjahah sjhh ghsdgh dgghasdjh gdg ha khahhsa dkad</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkblue"> 12 January 2017</div>
-                        <div class="col-xs-2 col-md-8" style="height:100px;border: 1px solid grey;background-color:darkcyan">Some longish text</div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkgoldenrod">12345.00</div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkgray">12345.00</div>
-                        <div class="col-xs-2 col-md-4" style="height:100px;border: 1px solid grey;background-color:darkseagreen">12345.00</div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-md-4">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-1" style="height:100px;border: 1px solid grey;background-color:darkgreen"><span><i class="glyphicon glyphicon-ok h5"></i></span></div>
-                        <div class="" style="height:100px;border: 1px solid grey;background-color:darkkhaki">Some very long text xccxcx xnnxnnx xksjjahah sjhh ghsdgh dgghasdjh gdg ha khahhsa dkad</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row details-panel-footer" style="background-color:beige;">
-        <div class="col-md-3" style="height:100%;background-color:purple;">
-            <div class="row" style="text-align:center">
-                <div class="btn">
-                    <button class="btn btn-primary" type="submit">Add Account</button>
-                    <button class="btn btn-primary" type="submit">Edit Account</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-9" style="height:100%;background-color:rosybrown">
-            <div class="row">B</div>
-        </div>
-
-    </div>
-
-    @*<div class="col-xs-4 col-md-3">
-                <div class="card-items-panel-header">
-                    <div class="btn-group-lg text-center" data-toggle="buttons">
-                        <label class="btn btn-primary active">
-                            <input type="radio" name="AccountsOptions" id="AllAccounts" autocomplete="off" checked> All Accounts
-                        </label>
-                        <label class="btn btn-primary">
-                            <input type="radio" name="AccountsOptions" id="ActiveAccounts" autocomplete="off"> Active Accounts
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xs-8 col-md-9 transaction-panel">
-                <div style="display:inline;">
-                    <span width="12%">
-                        <button type="button" class="btn" style="background-color: white;">
-                            <span class="">Date</span>&nbsp;
-                            <span class="caret"></span>
-                        </button>
-                    </span>
-                    <span width="25%">
-                        <span>Payee</span>
-                        <span>Category</span>
-                    </span>
-                    <span width="10%">
-                        <span>Income</span>
-                    </span>
-                    <span width="10%">
-                        <span>Expense</span>
-                    </span>
-                    <span width="10%">
-                        <span>Balance</span>
-                    </span>
-                    <span width="3%">
-                        <span>
-                            <i class="glyphicon glyphicon-check h5"></i>
-                        </span>
-                    </span>
-                    <span width="30%">
-                        <span>Reference</span>
-                        <span>Memo</span>
-                    </span>
-                </div>
-                <div>
-                    <span width="37%">
-                        <select class="" style="padding: 0px 2px;">
-                            <option>All Dates</option>
-                            <option>Last 120 Days: 15th September - 12 January 2017</option>
-                        </select>
-                    </span>
-                    <span width="10%">
-                        <span>12345.00</span>
-                    </span>
-                    <span width="10%">
-                        <span>12345.00</span>
-                    </span>
-                    <span width="10%">
-                        <span></span>
-                    </span>
-                    <span width="3%">
-                        <span></span>
-                    </span>
-                    <span width="30%">
-                        <span></span>
-                    </span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="row details-panel-body">
-            <div class="col-sm-4">
-                <table class="table table-hover">
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="card-item card-item-account">
-                                        <div class="card-item-body">
-                                            <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
-                                            <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-md-8 transaction-panel-body">
-                <table class="table table-hover">
-                    <tbody>
-                        <tr>
-                            <td width="12%">
-                                <span> 12 January 2017</span>
-                            </td>
-                            <td>
-                                <span width="25%">Some longish text</span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="3%">
-                                    <span><i class="glyphicon glyphicon-ok h5"></i></span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="30%">
-                                    <span>Some very long text xccxcx xnnxnnx xksjjahah sjhh ghsdgh dgghasdjh gdg ha khahhsa dkad</span>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="12%">
-                                <span> 12 January 2017</span>
-                            </td>
-                            <td>
-                                <span width="25%">Some longish text</span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="3%">
-                                    <span></span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="30%">
-                                    <span>Some very long text xccxcx xnnxnnx xksjjahah sjhh ghsdgh dgghasdjh gdg ha khahhsa dkad</span>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="12%">
-                                <span> 12 January 2017</span>
-                            </td>
-                            <td>
-                                <span width="25%">Some longish text</span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="10%">
-                                    <span>12345.00</span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="3%">
-                                    <span></span>
-                                </span>
-                            </td>
-                            <td>
-                                <span width="30%">
-                                    <span>Some very long text xccxcx xnnxnnx xksjjahah sjhh ghsdgh dgghasdjh gdg ha khahhsa dkad</span>
-                                </span>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="row details-panel-footer" style="display:inline">
-            <div class="col-sm-4" style="text-align:center">
-                <div class="btn-group-lg" >
-                    <button class="btn btn-primary" type="submit">Add Account</button>
-                    <button class="btn btn-primary" type="submit">Edit Account</button>
-                </div>
-            </div>
-        </div>*@
-    @*<div class="col-sm-4 card-items-panel">
-            <div class="btn-group-lg text-center" data-toggle="buttons">
-                <label class="btn btn-primary active" >
-                    <input type="radio" name="AccountsOptions" id="AllAccounts" autocomplete="off" checked> All Accounts
-                </label>
-                <label class="btn btn-primary">
-                    <input type="radio" name="AccountsOptions" id="ActiveAccounts" autocomplete="off"> Active Accounts
-                </label>
-            </div>
-            <br />
-            <table class="table table-hover">
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="card-item card-item-account">
-                                    <div class="card-item-body">
-                                        <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
-                                        <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="">
-                <div class="btn-group-lg text-center">
-                    <button class="btn btn-primary" type="submit">Add Account</button>
-                    <button class="btn btn-primary" type="submit">Edit Account</button>
-                </div>
-            </div>
-        </div>*@
-    @*<div class="col-sm-8 transaction-panel">
-            <div class="row panel-heading">
-                y
-            </div>
-            <div class="panel-body">
-                y1
-            </div>
-            <div class="panel-footer">
-                y2
-            </div>
-        </div>*@
 </div>
 
-@*<br /><br /><br />
+@section Scripts {
+    <script src="~/Scripts/accounts-index.js"></script>
+}
 
-    <p>
-        @Html.ActionLink("Create New", "Create", new { area = "" }, new { @class = "btn btn-default" })
-    </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OpeningBalance)
-            </th>
-            <th></th>
-        </tr>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OpeningBalance)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
-            </tr>
-        }
-
-    </table>*@
