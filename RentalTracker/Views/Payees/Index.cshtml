@@ -1,7 +1,7 @@
-﻿@model IEnumerable<RentalTracker.Domain.Account>
+﻿@model IEnumerable<RentalTracker.Domain.Payee>
 
 @{
-    ViewBag.Title = "Accounts";
+    ViewBag.Title = "Payees";
 }
 
 <div class="jumbotron">
@@ -22,16 +22,16 @@
                 {
                     <tr class="clickable-row">
                         <td class="hidden">
-                            @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id ="urle", @class = "hidden" })
+                            @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id = "urle", @class = "hidden" })
                         </td>
                         <td class="hidden">
                             @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
                         </td>
                         <td>
-                            <div class="card-item card-item-account">
+                            <div class="card-item @(@item.DefaultCategory != null && item.DefaultCategory.Type == RentalTracker.Domain.CategoryType.Income ? "card-item-income" : "card-item-expenditure")">
                                 <div class="card-item-body">
                                     <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
-                                    <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
+                                    <p class="text-right">@Html.DisplayFor(modelItem => item.DefaultCategory.Name)</p>
                                 </div>
                             </div>
                         </td>

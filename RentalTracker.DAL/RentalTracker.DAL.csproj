@@ -60,6 +60,10 @@
     <Compile Include="Migrations\201701061949221_add_Model_Data_Annotations_and_Configurations.Designer.cs">
       <DependentUpon>201701061949221_add_Model_Data_Annotations_and_Configurations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701121313386_add_Payee_and_Category_keys.cs" />
+    <Compile Include="Migrations\201701121313386_add_Payee_and_Category_keys.Designer.cs">
+      <DependentUpon>201701121313386_add_Payee_and_Category_keys.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="CategoryConfiguration.cs" />
     <Compile Include="RentalTrackerContext.cs" />
@@ -83,6 +87,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701061949221_add_Model_Data_Annotations_and_Configurations.resx">
       <DependentUpon>201701061949221_add_Model_Data_Annotations_and_Configurations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701121313386_add_Payee_and_Category_keys.resx">
+      <DependentUpon>201701121313386_add_Payee_and_Category_keys.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

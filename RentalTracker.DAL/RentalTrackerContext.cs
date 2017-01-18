@@ -19,7 +19,7 @@ namespace RentalTracker.DAL
 
         public DbSet<Payee> Payees { get; set; }
 
-        public DbSet<Category> Catgories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
 

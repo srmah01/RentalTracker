@@ -22,3 +22,44 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.tile-block {
+    height: 150px;
+}
+
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card-item {
+    border: solid;
+}
+
+.card-item-account {
+    background-color: blue;
+}
+
+.card-item-expenditure {
+    background-color: red;
+}
+
+.card-item-income {
+    background-color: green;
+}
+
+.card-item-body {
+    padding: 5px 5px;
+    margin: 0px 0px 0px 15px;
+    border: none;
+    background-color: white;
+}
+
+    .card-item-body:hover {
+        background-color: #ebebeb;
+    }
+
+    .card-item-body.selected {
+        background-color: #e4d2d2;
+    }

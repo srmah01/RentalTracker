@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RentalTracker.DAL;
+using RentalTracker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,23 +10,26 @@ namespace RentalTracker.Controllers
 {
     public class HomeController : Controller
     {
+        private IRentalTrackerService rentalTrackerService;
+
+        public HomeController(IRentalTrackerService rentalTrackerService)
+        {
+            this.rentalTrackerService = rentalTrackerService;
+        }
+
         public ActionResult Index()
         {
-            return View();
-        }
+            //var summary = rentalTrackerService.GetSummary();
+            var viewModel = new DashboardViewModel()
+            {
+                NetTotal = 1000.00m,
+                NumberOfAccounts = 3,
+                NumberOfCategories = 4,
+                NumberOfPayess = 6,
+                NumberOfTransactions = 5
+            };
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            return View(viewModel);
         }
     }
 }

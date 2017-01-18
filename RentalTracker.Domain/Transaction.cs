@@ -14,12 +14,13 @@ namespace RentalTracker.Domain
 
         [Required]
         public int AccountId { get; set; }
-
         public Account Account { get; set; }
 
         [Required]
+        public int PayeeId { get; set; }
         public Payee Payee { get; set; }
 
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         [Required]
