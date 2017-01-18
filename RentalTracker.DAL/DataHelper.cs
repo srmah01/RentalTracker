@@ -48,11 +48,11 @@ namespace RentalTracker.DAL
 
             var payeesToAdd = new List<Payee>()
             {
-                new Payee() { Name = "Renter A" },
+                new Payee() { Name = "Renter A", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Rental Income").Single().Id },
                 new Payee() { Name = "Renter B", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Rental Income").Single().Id },
-                new Payee() { Name = "MyBank Interest", Memo = "Paid Monthly" },
+                new Payee() { Name = "MyBank Interest", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Bank Interest").Single().Id, Memo = "Paid Monthly" },
                 new Payee() { Name = "MyBank Charges", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Utilities").Single().Id },
-                new Payee() { Name = "Gas Supplier", DefaultCategoryId = null },
+                new Payee() { Name = "Gas Supplier", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Utilities").Single().Id },
                 new Payee() { Name = "Electricity Supplier", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Bank Charges").Single().Id, Memo = "For Quarter Feb - May" }
             };
             context.Payees.AddRange(payeesToAdd);
@@ -60,15 +60,15 @@ namespace RentalTracker.DAL
             var payeesAdded = context.Payees.Include(p => p.DefaultCategory).ToList();
 
             var defaultTransactionDate = new DateTime(2016, 1, 1);
-            var a1 = accountsAdded.Where(a => a.Name == "BankAccount1").Single();
-            var p1 = payeesAdded.Where(p => p.Name == "Renter A").Single();
             var transactionsToAdd = new List<Transaction>()
             {
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = payeesAdded.Where(p => p.Name == "Renter A").Single().DefaultCategoryId,
                     Amount = 10.00m, Date = defaultTransactionDate},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter B").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
                     Amount = 100.00m, Date = defaultTransactionDate},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,

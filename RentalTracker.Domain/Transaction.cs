@@ -20,7 +20,8 @@ namespace RentalTracker.Domain
         public int PayeeId { get; set; }
         public Payee Payee { get; set; }
 
-        public int? CategoryId { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
 
         [Required]
