@@ -1,5 +1,5 @@
 ﻿$(function () {
-    var trInstance = $('#accounts').find('tr.clickable-row');
+    var trInstance = $('#items-table').find('tr.clickable-row');
     trInstance.click(function () {
         trInstance.find('.card-item-body').removeClass('selected');
         var instance = $(this);
