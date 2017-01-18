@@ -33,13 +33,20 @@ textarea {
     margin-right: auto;
 }
 
-
 .card-item {
     border: solid;
 }
 
 .card-item-account {
+    background-color: blue;
+}
+
+.card-item-caetgory {
     background-color: red;
+}
+
+.card-item-payee {
+    background-color: green;
 }
 
 .card-item-body {
