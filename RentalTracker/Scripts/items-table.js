@@ -9,7 +9,7 @@
         instance.find('.card-item-body').addClass('selected');
 
         $('#edit').removeClass('disabled').attr('href', editUrl);
-        $('#details').removeClass('disabled').attr('href', editUrl);
+        $('#details').removeClass('disabled').attr('href', detailsUrl);
     });
 });
 

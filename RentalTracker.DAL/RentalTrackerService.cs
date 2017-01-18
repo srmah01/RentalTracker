@@ -141,7 +141,7 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                var payee = context.Payees.AsNoTracking()
+                var payee = context.Payees
                                      .Include(a => a.Transactions)
                                      .SingleOrDefault(p => p.Id == id);
 
