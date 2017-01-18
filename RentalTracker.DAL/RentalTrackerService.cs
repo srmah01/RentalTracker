@@ -10,6 +10,56 @@ namespace RentalTracker.DAL
 {
     public class RentalTrackerService : IRentalTrackerService
     {
+        #region Dashboard
+        public int GetNumberOfAccounts()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Accounts.Count();
+            }
+        }
+
+        public int GetNumberOfCategories()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Categories.Count();
+            }
+        }
+
+        public int GetNumberOfPayees()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Payees.Count();
+            }
+        }
+
+        public int GetNumberOfTransactions()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Transactions.Count();
+            }
+        }
+
+        public Decimal GetTotalOfAccountBalances()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                var balance = 0.0m;
+
+                foreach (var account in context.Accounts)
+                {
+                    balance += GetAccountBalance(account.Id);
+                }
+
+                return balance;
+            }
+        }
+
+        #endregion
+
         #region Accounts
 
         public ICollection<Account> GetAllAccounts()
@@ -34,7 +84,7 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 return context.Accounts.AsNoTracking()
-                                       .Include(a => a.Transactions)
+                                       .Include(a => a.Transactions).AsNoTracking()
                                        .SingleOrDefault(a => a.Id == id);
             }
         }
@@ -57,9 +107,25 @@ namespace RentalTracker.DAL
             }
         }
 
+        public Decimal GetAccountBalance(int? id)
+        {
+            // TODO: Revist these to see if SQL could be improved.
+            if (id != null)
+            {
+                using (var context = new RentalTrackerContext())
+                {
+                    var openingBalance = context.Accounts.SingleOrDefault(a => a.Id == id).OpeningBalance;
+
+                    var x = context.Accounts.Include("Transactions").SingleOrDefault(a => a.Id == id).Transactions.Sum(t => t.Amount);
+                    return (openingBalance + x);
+                }
+            }
+            return 0.00m;
+        }
+
         #endregion
 
-        #region Categopries
+        #region Categories
         public ICollection<Category> GetAllCategories()
         {
             using (var context = new RentalTrackerContext())
@@ -180,12 +246,13 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        public ICollection<Transaction> GetAllTransactionsWithAccounts()
+        public ICollection<Transaction> GetAllTransactionsWithAccountAndCategory()
         {
             using (var context = new RentalTrackerContext())
             {
                 var transactions = context.Transactions.AsNoTracking()
-                                                       .Include(t => t.Account);
+                                                       .Include(t => t.Account)
+                                                       .Include(t => t.Category);
                 return transactions.ToList();
             }
         }

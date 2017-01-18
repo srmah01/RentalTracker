@@ -9,10 +9,24 @@ namespace RentalTracker.DAL
 {
     public interface IRentalTrackerService
     {
+        #region Dashboard
+        int GetNumberOfAccounts();
+
+        int GetNumberOfCategories();
+
+        int GetNumberOfPayees();
+
+        int GetNumberOfTransactions();
+
+        Decimal GetTotalOfAccountBalances();
+
+        #endregion
 
         #region Accounts
 
         ICollection<Account> GetAllAccounts();
+
+        Decimal GetAccountBalance(int? id);
 
         Account FindAccount(int? id);
 
@@ -54,7 +68,7 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        ICollection<Transaction> GetAllTransactionsWithAccounts();
+        ICollection<Transaction> GetAllTransactionsWithAccountAndCategory();
 
         Transaction FindTransaction(int? id);
 

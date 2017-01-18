@@ -23,7 +23,7 @@ namespace RentalTracker.Controllers
         // GET: Transactions
         public ActionResult Index()
         {
-            return View(rentalTrackerService.GetAllTransactionsWithAccounts());
+            return View(rentalTrackerService.GetAllTransactionsWithAccountAndCategory());
         }
 
         // GET: Transactions/Details/5

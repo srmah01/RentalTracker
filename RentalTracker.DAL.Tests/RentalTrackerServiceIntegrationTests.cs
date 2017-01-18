@@ -9,6 +9,56 @@ namespace RentalTracker.DAL.Tests
     public class RentalTrackerServiceIntegrationTests
     {
         [TestMethod, TestCategory("Integration")]
+        public void CanGetNumberOfAccounts()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(3, service.GetNumberOfAccounts());
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanGetNumberOfCategories()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(4, service.GetNumberOfCategories());
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanGetNumberOfPayees()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(6, service.GetNumberOfPayees());
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanGetNumberOfTransactions()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(5, service.GetNumberOfTransactions());
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanGetTotalOfAccountBalances()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(1180.99m, service.GetTotalOfAccountBalances());
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void CanGetAnEmptyListOfAccounts()
         {
             DataHelper.NewDb(false);
@@ -27,6 +77,19 @@ namespace RentalTracker.DAL.Tests
 
             Assert.AreEqual(3, service.GetAllAccounts().Count);
         }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanGetAccountBalanceByAccountId()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(210.99m, service.GetAccountBalance(1));
+            Assert.AreEqual(0.00m, service.GetAccountBalance(2));
+            Assert.AreEqual(970.00m, service.GetAccountBalance(3));
+        }
+
 
         [TestMethod, TestCategory("Integration")]
         public void CanInsertNewAccount()

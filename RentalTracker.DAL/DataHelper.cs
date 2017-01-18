@@ -77,11 +77,11 @@ namespace RentalTracker.DAL
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Gas Supplier").Single().Id,
                     CategoryId = categoriesAdded.Where(p => p.Name == "Utilities").Single().Id,
-                    Amount = 200.00m, Date = defaultTransactionDate.AddDays(2),  Memo = "For Quarter May - Aug"},
+                    Amount = -200.00m, Date = defaultTransactionDate.AddDays(2),  Memo = "For Quarter May - Aug"},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount3").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "MyBank Charges").Single().Id,
                     CategoryId = categoriesAdded.Where(p => p.Name == "Bank Charges").Single().Id,
-                    Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
+                    Amount = -30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
             context.Transactions.AddRange(transactionsToAdd);
             context.SaveChanges();

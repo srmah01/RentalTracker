@@ -19,14 +19,13 @@ namespace RentalTracker.Controllers
 
         public ActionResult Index()
         {
-            //var summary = rentalTrackerService.GetSummary();
             var viewModel = new DashboardViewModel()
             {
-                NetTotal = 1000.00m,
-                NumberOfAccounts = 3,
-                NumberOfCategories = 4,
-                NumberOfPayess = 6,
-                NumberOfTransactions = 5
+                NetTotal = rentalTrackerService.GetTotalOfAccountBalances(),
+                NumberOfAccounts = rentalTrackerService.GetNumberOfAccounts(),
+                NumberOfCategories = rentalTrackerService.GetNumberOfCategories(),
+                NumberOfPayess = rentalTrackerService.GetNumberOfPayees(),
+                NumberOfTransactions = rentalTrackerService.GetNumberOfTransactions()
             };
 
             return View(viewModel);
