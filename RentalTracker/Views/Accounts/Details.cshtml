@@ -1,14 +1,19 @@
 ﻿@model RentalTracker.Domain.Account
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Accounts";
 }
 
-<h2>Details</h2>
+<div class="jumbotron">
+    <div>
+        <a href="~/Home/Index">
+            <p class="h1 col-sm-1" style="color:black"><i class="glyphicon glyphicon-circle-arrow-left"></i></p>
+        </a>
+        <p class="h1">@ViewBag.Title</p>
+    </div>
+</div>
 
-<div>
-    <h4>Account</h4>
-    <hr />
+<div class="container">
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -27,24 +32,81 @@
         </dd>
     </dl>
     <hr />
-    <table width="300" class="table table-bordered">
+
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Account</th>
-                <th>Amount</th>
                 <th>Date</th>
+                <th>
+                    Payee
+                    <br />
+                    Category
+                </th>
+                <th>Income</th>
+                <th>Expenditure</th>
+                <th>Balance</th>
+                <th>
+                    <span><i class="glyphicon glyphicon-check"></i></span>
+                </th>
+                <th>
+                    Reference
+                    <br/>
+                    Memo
+                </th>
             </tr>
         </thead>
-        @foreach (var item in Model.Transactions)
-        {
+        <tbody>
+            @foreach (var item in Model.Transactions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Date)
+                    </td>
 
-            <tr>
-                <td width="100"> @item.Account.Name</td>
-                <td width="100">@item.Amount </td>
-                <td width="100">@item.Date </td>
-            </tr>
+                    <td>
+                        <p>
+                            @Html.DisplayFor(model => item.Payee.Name)
+                        </p>
+                        <p>
+                            @Html.DisplayFor(model => item.Category.Name)
+                        </p>
+                    </td>
 
-        }
+                    <td>
+                        @Html.DisplayFor(model => item.Amount)
+                        @*@if (item.Category.Type == RentalTracker.Domain.CategoryType.Income)
+                        {
+                            @Html.DisplayFor(model => item.Amount)
+                        }*@
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(model => item.Amount)
+                        @*@if (item.Category.Type == RentalTracker.Domain.CategoryType.Expenditure)
+                        {
+                            @Html.DisplayFor(model => item.Amount)
+                        }*@
+                    </td>
+
+                    <td>
+                        @Html.DisplayNameFor(model => item.Amount)
+                    </td>
+
+                    <td>
+                        <span><i class="glyphicon glyphicon-ok"></i></span>
+                    </td>
+
+                    <td>
+                        <p>
+                            @Html.DisplayFor(model => item.Reference)
+                        </p>
+                        <p>
+                            @Html.DisplayFor(model => item.Memo)
+                        </p>
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 
 </div>

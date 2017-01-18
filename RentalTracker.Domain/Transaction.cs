@@ -24,17 +24,14 @@ namespace RentalTracker.Domain
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
-        [Required]
+        [Required, DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime Date { get; set; }
 
-        [Required]
+        [Required, DisplayFormat(ApplyFormatInEditMode = true, DataFormatString ="{0:c}")]
         public Decimal Amount { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(30)]
         public string Reference { get; set; }
-
-        [MaxLength(20)]
-        public string Number { get; set; }
 
         [MaxLength(200)]
         public string Memo { get; set; }
