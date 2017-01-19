@@ -24,6 +24,10 @@ namespace RentalTracker.Domain
         [DisplayFormat(DataFormatString = "{0:c}")]
         public Decimal OpeningBalance { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:c}")]
+        public Decimal Balance { get; set; }
+
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

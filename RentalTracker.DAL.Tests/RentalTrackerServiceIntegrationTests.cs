@@ -90,6 +90,15 @@ namespace RentalTracker.DAL.Tests
             Assert.AreEqual(970.00m, service.GetAccountBalance(3));
         }
 
+        [TestMethod, TestCategory("Integration")]
+        public void GettingBalanceOfNonExistentAccountReturnsZero()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            Assert.AreEqual(0.00m, service.GetAccountBalance(4));
+        }
 
         [TestMethod, TestCategory("Integration")]
         public void CanInsertNewAccount()

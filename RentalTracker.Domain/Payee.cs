@@ -28,6 +28,6 @@ namespace RentalTracker.Domain
         [MaxLength(200)]
         public string Memo { get; set; }
 
-        public ICollection<Transaction> Transactions { get; private set; }
+        public virtual ICollection<Transaction> Transactions { get; private set; }
     }
 }

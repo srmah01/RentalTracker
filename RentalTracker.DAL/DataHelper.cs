@@ -27,9 +27,9 @@ namespace RentalTracker.DAL
         {
             var accountsToAdd = new List<Account>()
             {
-                new Account() { Name = "BankAccount1", OpeningBalance = 100.99m },
-                new Account() { Name = "BankAccount2" },
-                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m }
+                new Account() { Name = "BankAccount1", OpeningBalance = 100.99m, Balance = 0m },
+                new Account() { Name = "BankAccount2", Balance = 0m },
+                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m, Balance = 0m }
             };
             context.Accounts.AddRange(accountsToAdd);
             context.SaveChanges();
@@ -84,6 +84,13 @@ namespace RentalTracker.DAL
                     Amount = -30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
             context.Transactions.AddRange(transactionsToAdd);
+
+            // Seed Balance with value including amounts from transactions
+            foreach (var account in accountsAdded)
+            {
+                var amounts = transactionsToAdd.Where(t => t.AccountId == account.Id).Sum(t => t.Amount);
+                account.Balance = account.OpeningBalance + amounts;
+            }
             context.SaveChanges();
         }
     }

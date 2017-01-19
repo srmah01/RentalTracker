@@ -72,6 +72,10 @@
     <Compile Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.Designer.cs">
       <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701191930597_add_balance_to_Account.cs" />
+    <Compile Include="Migrations\201701191930597_add_balance_to_Account.Designer.cs">
+      <DependentUpon>201701191930597_add_balance_to_Account.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="CategoryConfiguration.cs" />
     <Compile Include="RentalTrackerContext.cs" />
@@ -104,6 +108,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.resx">
       <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701191930597_add_balance_to_Account.resx">
+      <DependentUpon>201701191930597_add_balance_to_Account.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

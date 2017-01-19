@@ -109,21 +109,13 @@ namespace RentalTracker.DAL
 
         public Decimal GetAccountBalance(int? id)
         {
-            // Making Transaction.Amount positive for income values and negative for expenditure values
-            // makes the calculation of the account balance trivial. Simply, just sum the Amount column
-            // and add it to the OpeningBalance.
-            // TODO: Revist these to see if SQL could be improved.
-            if (id != null)
+            using (var context = new RentalTrackerContext())
             {
-                using (var context = new RentalTrackerContext())
-                {
-                    var openingBalance = context.Accounts.SingleOrDefault(a => a.Id == id).OpeningBalance;
-
-                    var x = context.Accounts.Include("Transactions").SingleOrDefault(a => a.Id == id).Transactions.Sum(t => t.Amount);
-                    return (openingBalance + x);
-                }
+                // Generates SQL that gets only the specific column
+                return (from a in context.Accounts
+                                     where a.Id == id
+                                     select a.Balance).FirstOrDefault();
             }
-            return 0.00m;
         }
 
         #endregion
