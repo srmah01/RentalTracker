@@ -83,9 +83,18 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking()
-                                       .Include(a => a.Transactions).AsNoTracking()
+                var account = context.Accounts
+                                       .Include(a => a.Transactions)
                                        .SingleOrDefault(a => a.Id == id);
+
+                foreach (var transaction in account.Transactions)
+                {
+                    // Explicitly load the Payee & Category references
+                    context.Entry(transaction).Reference(t => t.Payee).Load();
+                    context.Entry(transaction).Reference(t => t.Category).Load();
+                }
+
+                return account;
             }
         }
 

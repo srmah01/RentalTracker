@@ -1,4 +1,4 @@
-﻿@model RentalTracker.Domain.Account
+﻿@model RentalTracker.Models.Accounts.AccountDetailsViewModel
 
 @{
     ViewBag.Title = "Accounts";
@@ -16,24 +16,37 @@
 <div class="container">
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Account.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Account.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.OpeningBalance)
+            @Html.DisplayNameFor(model => model.Account.OpeningBalance)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.OpeningBalance)
+            @Html.DisplayFor(model => model.Account.OpeningBalance)
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Account.Balance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Account.Balance)
+        </dd>
+
     </dl>
     <hr />
 
-    <table class="table table-bordered">
+    <p>
+        @Html.Partial("_AccountTransactionsList", Model.Transactions)
+    </p>
+
+    @*<table class="table table-bordered">
         <thead>
             <tr>
                 <th>Date</th>
@@ -74,18 +87,10 @@
 
                     <td>
                         @Html.DisplayFor(model => item.Amount)
-                        @*@if (item.Category.Type == RentalTracker.Domain.CategoryType.Income)
-                        {
-                            @Html.DisplayFor(model => item.Amount)
-                        }*@
                     </td>
 
                     <td>
                         @Html.DisplayFor(model => item.Amount)
-                        @*@if (item.Category.Type == RentalTracker.Domain.CategoryType.Expenditure)
-                        {
-                            @Html.DisplayFor(model => item.Amount)
-                        }*@
                     </td>
 
                     <td>
@@ -107,10 +112,10 @@
                 </tr>
             }
         </tbody>
-    </table>
+    </table>*@
 
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Account.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
