@@ -9,6 +9,7 @@ using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
+using RentalTracker.Models.Accounts;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -64,8 +65,9 @@ namespace RentalTracker.Tests.Controllers
             var mockService = new Mock<IRentalTrackerService>();
             var name = "BankAccount1";
             var openingBalance = 20.00m;
+            var balance = 20.00m;
             mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
-                new Account() { Id = 1, Name = name, OpeningBalance = openingBalance }
+                new Account() { Id = 1, Name = name, OpeningBalance = openingBalance,Balance = balance }
             );
             AccountsController controller = new AccountsController(mockService.Object);
 
@@ -74,9 +76,10 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as Account;
-            Assert.AreEqual(name, model.Name);
-            Assert.AreEqual(openingBalance, model.OpeningBalance);
+            var model = result.Model as AccountDetailsViewModel;
+            Assert.AreEqual(name, model.Account.Name);
+            Assert.AreEqual(openingBalance, model.Account.OpeningBalance);
+            Assert.AreEqual(balance, model.Account.Balance);
             Assert.AreEqual(0, model.Transactions.Count);
         }
 
@@ -87,14 +90,22 @@ namespace RentalTracker.Tests.Controllers
             var mockService = new Mock<IRentalTrackerService>();
             var name = "BankAccount1";
             var openingBalance = 0.00m;
-            var account = new Account() { Id = 1, Name = name, OpeningBalance = openingBalance };
+            var balance = 0.00m;
+            var account = new Account() { Id = 1, Name = name, OpeningBalance = openingBalance, Balance = balance };
             var amount = 10.00m;
             var today = DateTime.Today;
             mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
                 new Account() { Id = 1, Name = account.Name, OpeningBalance = account.OpeningBalance,
                                 Transactions = new List<Transaction>()
                                 {
-                                   new Transaction { Account = account, Amount = amount, Date = today }
+                                   new Transaction { Account = account,
+                                       Payee = new Payee() { Name = "Payee1" },
+                                       Category = new Category { Name = "Category1", Type = CategoryType.Income },
+                                       Amount = amount, Date = today },
+                                   new Transaction { Account = account,
+                                       Payee = new Payee() { Name = "Payee2" },
+                                       Category = new Category { Name = "Category2", Type = CategoryType.Expenditure },
+                                       Amount = -amount, Date = today }
                                 }
                 }
             );
@@ -105,11 +116,14 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as Account;
-            Assert.AreEqual(model.Name, name);
-            Assert.AreEqual(model.OpeningBalance, openingBalance);
-            Assert.AreEqual(1, model.Transactions.Count);
-            Assert.AreEqual(amount, model.Transactions.ElementAt(0).Amount);
+            var model = result.Model as AccountDetailsViewModel;
+            Assert.AreEqual(name, model.Account.Name);
+            Assert.AreEqual(openingBalance, model.Account.OpeningBalance);
+            Assert.AreEqual(balance, model.Account.Balance);
+            Assert.AreEqual(2, model.Transactions.Count);
+            Assert.AreEqual(amount, model.Transactions.ElementAt(0).Income);
+            Assert.AreEqual(today, model.Transactions.ElementAt(0).Date);
+            Assert.AreEqual(amount, model.Transactions.ElementAt(1).Expense);
             Assert.AreEqual(today, model.Transactions.ElementAt(0).Date);
         }
 
