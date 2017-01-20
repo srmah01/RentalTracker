@@ -23,6 +23,8 @@ namespace RentalTracker.Domain
 
         [Required]
         public int DefaultCategoryId { get; set; }
+
+        [Display(Name = "Default Category")]
         public Category DefaultCategory { get; set; }
 
         [MaxLength(200)]
