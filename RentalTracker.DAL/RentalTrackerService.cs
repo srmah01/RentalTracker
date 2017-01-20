@@ -159,8 +159,9 @@ namespace RentalTracker.DAL
                 {
                     foreach (var transaction in category.Transactions)
                     {
-                        // Explicitly load the Account reference
+                        // Explicitly load the Account & Payee references
                         context.Entry(transaction).Reference(t => t.Account).Load();
+                        context.Entry(transaction).Reference(t => t.Payee).Load();
                     }
                 }
 
@@ -219,8 +220,9 @@ namespace RentalTracker.DAL
                 {
                     foreach (var transaction in payee.Transactions)
                     {
-                        // Explicitly load the Account reference
+                        // Explicitly load the Account & Category references
                         context.Entry(transaction).Reference(t => t.Account).Load();
+                        context.Entry(transaction).Reference(t => t.Category).Load();
                     }
                 }
 

@@ -47,25 +47,25 @@ namespace RentalTracker.Controllers
 
             foreach (var item in account.Transactions)
             {
-                var atlvm = new TransactionsListViewModel();
+                var transactionViewModel = new TransactionsListViewModel();
 
-                atlvm.Date = item.Date;
-                atlvm.Payee = item.Payee.Name; 
-                atlvm.Category = item.Category.Name;
+                transactionViewModel.Date = item.Date;
+                transactionViewModel.Payee = item.Payee.Name; 
+                transactionViewModel.Category = item.Category.Name;
                 if (item.Category.Type == CategoryType.Income)
                 {
-                    atlvm.Income = item.Amount;
-                    atlvm.Expense = null;
+                    transactionViewModel.Income = item.Amount;
+                    transactionViewModel.Expense = null;
                 }
                 else
                 {
-                    atlvm.Income = null;
-                    atlvm.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Income = null;
+                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
                 }
-                atlvm.Balance = item.Balance;
-                atlvm.Reference = item.Reference;
-                atlvm.Memo = item.Memo;
-                accountViewModel.Transactions.Add(atlvm);
+                transactionViewModel.Balance = item.Balance;
+                transactionViewModel.Reference = item.Reference;
+                transactionViewModel.Memo = item.Memo;
+                accountViewModel.Transactions.Add(transactionViewModel);
             }
 
             return View(accountViewModel);

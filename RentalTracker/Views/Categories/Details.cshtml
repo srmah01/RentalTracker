@@ -1,53 +1,46 @@
-﻿@model RentalTracker.Domain.Category
+﻿@model EntityDetailsViewModel<Category>
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Categories";
 }
 
-<h2>Details</h2>
+<div class="jumbotron">
+    <div>
+        <a href="~/Home/Index">
+            <p class="h1 col-sm-1" style="color:black"><i class="glyphicon glyphicon-circle-arrow-left"></i></p>
+        </a>
+        <p class="h1">@ViewBag.Title</p>
+    </div>
+</div>
 
-<div>
-    <h4>Category</h4>
-    <hr />
+<div class="container">
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Entity.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Entity.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayNameFor(model => model.Entity.Type)
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.Type)
+            @Html.DisplayFor(model => model.Entity.Type)
         </dd>
 
     </dl>
     <hr />
-    <table width="300" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Account</th>
-                <th>Amount</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        @foreach (var item in Model.Transactions)
-        {
-            <tr>
-                <td width="100"> @item.Account.Name</td>
-                <td width="100">@item.Amount </td>
-                <td width="100">@item.Date </td>
-            </tr>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Entity.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
 
-        }
-    </table>
+    <hr />
+
+    <p>
+        @Html.Partial("_CategoryTransactionsList", Model.Transactions)
+    </p>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+

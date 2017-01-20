@@ -274,6 +274,7 @@
     <Content Include="Views\Transactions\Edit.cshtml" />
     <Content Include="Views\Transactions\Index.cshtml" />
     <Content Include="Views\Accounts\_AccountTransactionsList.cshtml" />
+    <Content Include="Views\Categories\_CategoryTransactionsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
