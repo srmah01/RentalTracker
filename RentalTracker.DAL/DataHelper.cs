@@ -39,8 +39,8 @@ namespace RentalTracker.DAL
             {
                 new Category() { Name = "Rental Income", Type = CategoryType.Income },
                 new Category() { Name = "Bank Interest", Type = CategoryType.Income },
-                new Category() { Name = "Utilities", Type = CategoryType.Expenditure },
-                new Category() { Name = "Bank Charges", Type = CategoryType.Expenditure }
+                new Category() { Name = "Utilities", Type = CategoryType.Expense },
+                new Category() { Name = "Bank Charges", Type = CategoryType.Expense }
             };
             context.Categories.AddRange(categoriesToAdd);
             context.SaveChanges();

@@ -104,7 +104,7 @@ namespace RentalTracker.Tests.Controllers
                                        Amount = amount, Date = today },
                                    new Transaction { Account = account,
                                        Payee = new Payee() { Name = "Payee2" },
-                                       Category = new Category { Name = "Category2", Type = CategoryType.Expenditure },
+                                       Category = new Category { Name = "Category2", Type = CategoryType.Expense },
                                        Amount = -amount, Date = today }
                                 }
                 }
