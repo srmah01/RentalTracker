@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,9 @@ namespace RentalTracker.Domain
         // Amount is positive if it represents Income, or negative if it represents Expense
         [Required, DisplayFormat(ApplyFormatInEditMode = true, DataFormatString ="{0:c}")]
         public Decimal Amount { get; set; }
+
+        [NotMapped]
+        public Decimal Balance { get; set; }
 
         [MaxLength(30)]
         public string Reference { get; set; }

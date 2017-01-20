@@ -1,4 +1,4 @@
-﻿@model RentalTracker.Models.Accounts.AccountDetailsViewModel
+﻿@model RentalTracker.Models.EntityDetailsViewModel<RentalTracker.Domain.Account>
 
 @{
     ViewBag.Title = "Accounts";
@@ -16,106 +16,39 @@
 <div class="container">
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Account.Name)
+            @Html.DisplayNameFor(model => model.Entity.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Account.Name)
+            @Html.DisplayFor(model => model.Entity.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Account.OpeningBalance)
+            @Html.DisplayNameFor(model => model.Entity.OpeningBalance)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Account.OpeningBalance)
+            @Html.DisplayFor(model => model.Entity.OpeningBalance)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Account.Balance)
+            @Html.DisplayNameFor(model => model.Entity.Balance)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Account.Balance)
+            @Html.DisplayFor(model => model.Entity.Balance)
         </dd>
 
     </dl>
+
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Entity.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+
     <hr />
 
     <p>
         @Html.Partial("_AccountTransactionsList", Model.Transactions)
     </p>
-
-    @*<table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>
-                    Payee
-                    <br />
-                    Category
-                </th>
-                <th>Income</th>
-                <th>Expenditure</th>
-                <th>Balance</th>
-                <th>
-                    <span><i class="glyphicon glyphicon-check"></i></span>
-                </th>
-                <th>
-                    Reference
-                    <br/>
-                    Memo
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Transactions)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => item.Date)
-                    </td>
-
-                    <td>
-                        <p>
-                            @Html.DisplayFor(model => item.Payee.Name)
-                        </p>
-                        <p>
-                            @Html.DisplayFor(model => item.Category.Name)
-                        </p>
-                    </td>
-
-                    <td>
-                        @Html.DisplayFor(model => item.Amount)
-                    </td>
-
-                    <td>
-                        @Html.DisplayFor(model => item.Amount)
-                    </td>
-
-                    <td>
-                        @Html.DisplayNameFor(model => item.Amount)
-                    </td>
-
-                    <td>
-                        <span><i class="glyphicon glyphicon-ok"></i></span>
-                    </td>
-
-                    <td>
-                        <p>
-                            @Html.DisplayFor(model => item.Reference)
-                        </p>
-                        <p>
-                            @Html.DisplayFor(model => item.Memo)
-                        </p>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
-
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Account.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

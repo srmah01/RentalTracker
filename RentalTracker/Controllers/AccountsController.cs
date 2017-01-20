@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
-using RentalTracker.Models.Accounts;
 using RentalTracker.Models;
 
 namespace RentalTracker.Controllers
@@ -41,9 +40,9 @@ namespace RentalTracker.Controllers
                 return HttpNotFound();
             }
 
-            var accountViewModel = new AccountDetailsViewModel()
+            var accountViewModel = new EntityDetailsViewModel<Account>()
             {
-                Account = account
+                Entity = account
             };
 
             foreach (var item in account.Transactions)
@@ -63,7 +62,7 @@ namespace RentalTracker.Controllers
                     atlvm.Income = null;
                     atlvm.Expense = item.Amount * -1;   // Alway display a posivive amount
                 }
-                atlvm.Balance = -9999999.99m;
+                atlvm.Balance = item.Balance;
                 atlvm.Reference = item.Reference;
                 atlvm.Memo = item.Memo;
                 accountViewModel.Transactions.Add(atlvm);

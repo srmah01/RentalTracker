@@ -9,7 +9,7 @@ using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
-using RentalTracker.Models.Accounts;
+using RentalTracker.Models;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -76,10 +76,10 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as AccountDetailsViewModel;
-            Assert.AreEqual(name, model.Account.Name);
-            Assert.AreEqual(openingBalance, model.Account.OpeningBalance);
-            Assert.AreEqual(balance, model.Account.Balance);
+            var model = result.Model as EntityDetailsViewModel<Account>;
+            Assert.AreEqual(name, model.Entity.Name);
+            Assert.AreEqual(openingBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(balance, model.Entity.Balance);
             Assert.AreEqual(0, model.Transactions.Count);
         }
 
@@ -116,10 +116,10 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as AccountDetailsViewModel;
-            Assert.AreEqual(name, model.Account.Name);
-            Assert.AreEqual(openingBalance, model.Account.OpeningBalance);
-            Assert.AreEqual(balance, model.Account.Balance);
+            var model = result.Model as EntityDetailsViewModel<Account>;
+            Assert.AreEqual(name, model.Entity.Name);
+            Assert.AreEqual(openingBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(balance, model.Entity.Balance);
             Assert.AreEqual(2, model.Transactions.Count);
             Assert.AreEqual(amount, model.Transactions.ElementAt(0).Income);
             Assert.AreEqual(today, model.Transactions.ElementAt(0).Date);

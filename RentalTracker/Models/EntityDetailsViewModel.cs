@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace RentalTracker.Models.Accounts
+namespace RentalTracker.Models
 {
-    public class AccountDetailsViewModel
+    public class EntityDetailsViewModel<T>
     {
-        public AccountDetailsViewModel()
+        public EntityDetailsViewModel()
         {
             Transactions = new List<TransactionsListViewModel>();
         }
 
-        public Account Account { get; set; }
+        public T Entity { get; set; }
 
         public ICollection<TransactionsListViewModel> Transactions { get; set; }
     }
