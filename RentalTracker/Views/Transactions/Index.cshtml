@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<RentalTracker.Domain.Transaction>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Transactions";
 }
 
-<h2>Index</h2>
+@Html.Partial("_JumboHeader")
 
 <p>
     @Html.ActionLink("Create New", "Create")
