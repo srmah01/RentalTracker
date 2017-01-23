@@ -57,6 +57,9 @@ namespace RentalTracker.Controllers
         // GET: Transactions/Details/5
         public ActionResult Details(int? id)
         {
+            // For now make Details page unreachable - it might be removed later
+            return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
