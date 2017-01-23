@@ -252,12 +252,13 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        public ICollection<Transaction> GetAllTransactionsWithAccountAndCategory()
+        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory()
         {
             using (var context = new RentalTrackerContext())
             {
                 var transactions = context.Transactions.AsNoTracking()
                                                        .Include(t => t.Account)
+                                                       .Include(t => t.Payee)
                                                        .Include(t => t.Category);
                 return transactions.ToList();
             }

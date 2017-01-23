@@ -277,6 +277,7 @@
     <Content Include="Views\Categories\_CategoryTransactionsList.cshtml" />
     <Content Include="Views\Payees\_PayeeTransactionsList.cshtml" />
     <Content Include="Views\Shared\_JumboHeader.cshtml" />
+    <Content Include="Views\Transactions\_TransactionsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

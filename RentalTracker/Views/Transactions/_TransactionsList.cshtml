@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<TransactionsListViewModel>
 
-<table class="table table-responsive">
+<table id="items-table" class="table table-responsive">
     <thead>
         <tr>
             <th>
@@ -35,7 +35,18 @@
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class="clickable-row row-item-body">
+                <td class="hidden">
+                    @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id = "urle", @class = "hidden" })
+                </td>
+                <td class="hidden">
+                    @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
+                </td>
+                <td class="hidden">
+                    @Html.RouteLink("urlR", new { action = "Delete", id = item.Id }, new { id = "urlr", @class = "hidden" })
+                </td>
+
+
                 <td>
                     @Html.DisplayFor(model => item.Date)
                 </td>

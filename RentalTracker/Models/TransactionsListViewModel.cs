@@ -8,6 +8,8 @@ namespace RentalTracker.Models
 {
     public class TransactionsListViewModel
     {
+        public int Id { get; set; }
+
         [DisplayFormat(DataFormatString ="{0:d}")]
         public DateTime Date { get; set; }
 

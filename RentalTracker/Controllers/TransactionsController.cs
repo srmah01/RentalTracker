@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
+using RentalTracker.Models;
 
 namespace RentalTracker.Controllers
 {
@@ -23,7 +24,34 @@ namespace RentalTracker.Controllers
         // GET: Transactions
         public ActionResult Index()
         {
-            return View(rentalTrackerService.GetAllTransactionsWithAccountAndCategory());
+            var transactions = rentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory();
+            var indexViewModel = new EntityDetailsViewModel<Transaction>();
+
+            foreach (var item in transactions)
+            {
+                var transactionViewModel = new TransactionsListViewModel();
+
+                transactionViewModel.Id = item.Id;
+                transactionViewModel.Date = item.Date;
+                transactionViewModel.Account = item.Account.Name;
+                transactionViewModel.Payee = item.Payee.Name;
+                transactionViewModel.Category = item.Category.Name;
+                if (item.Category.Type == CategoryType.Income)
+                {
+                    transactionViewModel.Income = item.Amount;
+                    transactionViewModel.Expense = null;
+                }
+                else
+                {
+                    transactionViewModel.Income = null;
+                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                }
+                transactionViewModel.Reference = item.Reference;
+                transactionViewModel.Memo = item.Memo;
+                indexViewModel.Transactions.Add(transactionViewModel);
+            }
+
+            return View(indexViewModel);
         }
 
         // GET: Transactions/Details/5
