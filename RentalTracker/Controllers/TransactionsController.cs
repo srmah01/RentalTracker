@@ -58,7 +58,7 @@ namespace RentalTracker.Controllers
         public ActionResult Details(int? id)
         {
             // For now make Details page unreachable - it might be removed later
-            return HttpNotFound();
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             if (id == null)
             {
@@ -75,8 +75,6 @@ namespace RentalTracker.Controllers
         // GET: Transactions/Create
         public ActionResult Create()
         {
-            //ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name");
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             return View();
         }
 

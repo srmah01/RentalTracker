@@ -90,7 +90,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\TransactionsControllerTest.cs" />
+    <Compile Include="Controllers\PayeesControllerTest.cs" />
+    <Compile Include="Controllers\CategoriesControllerTest.cs" />
     <Compile Include="Controllers\AccountsControllerTest.cs" />
+    <Compile Include="MockedData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
