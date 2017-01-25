@@ -24,6 +24,6 @@ namespace RentalTracker.Domain
         [Range(1,2)]
         public CategoryType Type { get; set; }
 
-        public ICollection<Transaction> Transactions { get; private set; }
+        public virtual ICollection<Transaction> Transactions { get; private set; }
     }
 }

@@ -63,3 +63,12 @@ textarea {
     .card-item-body.selected {
         background-color: #e4d2d2;
     }
+
+    .row-item-body:hover {
+        background-color: #ebebeb;
+    }
+
+    .row-item-body.selected {
+        background-color: #e4d2d2;
+    }
+

@@ -27,9 +27,9 @@ namespace RentalTracker.DAL
         {
             var accountsToAdd = new List<Account>()
             {
-                new Account() { Name = "BankAccount1", OpeningBalance = 100.99m },
-                new Account() { Name = "BankAccount2" },
-                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m }
+                new Account() { Name = "BankAccount1", OpeningBalance = 100.99m, Balance = 0m },
+                new Account() { Name = "BankAccount2", Balance = 0m },
+                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m, Balance = 0m }
             };
             context.Accounts.AddRange(accountsToAdd);
             context.SaveChanges();
@@ -39,8 +39,8 @@ namespace RentalTracker.DAL
             {
                 new Category() { Name = "Rental Income", Type = CategoryType.Income },
                 new Category() { Name = "Bank Interest", Type = CategoryType.Income },
-                new Category() { Name = "Utilities", Type = CategoryType.Expenditure },
-                new Category() { Name = "Bank Charges", Type = CategoryType.Expenditure }
+                new Category() { Name = "Utilities", Type = CategoryType.Expense },
+                new Category() { Name = "Bank Charges", Type = CategoryType.Expense }
             };
             context.Categories.AddRange(categoriesToAdd);
             context.SaveChanges();
@@ -48,11 +48,11 @@ namespace RentalTracker.DAL
 
             var payeesToAdd = new List<Payee>()
             {
-                new Payee() { Name = "Renter A" },
+                new Payee() { Name = "Renter A", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Rental Income").Single().Id },
                 new Payee() { Name = "Renter B", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Rental Income").Single().Id },
-                new Payee() { Name = "MyBank Interest", Memo = "Paid Monthly" },
+                new Payee() { Name = "MyBank Interest", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Bank Interest").Single().Id, Memo = "Paid Monthly" },
                 new Payee() { Name = "MyBank Charges", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Utilities").Single().Id },
-                new Payee() { Name = "Gas Supplier", DefaultCategoryId = null },
+                new Payee() { Name = "Gas Supplier", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Utilities").Single().Id },
                 new Payee() { Name = "Electricity Supplier", DefaultCategoryId = categoriesAdded.Where(c => c.Name == "Bank Charges").Single().Id, Memo = "For Quarter Feb - May" }
             };
             context.Payees.AddRange(payeesToAdd);
@@ -60,15 +60,15 @@ namespace RentalTracker.DAL
             var payeesAdded = context.Payees.Include(p => p.DefaultCategory).ToList();
 
             var defaultTransactionDate = new DateTime(2016, 1, 1);
-            var a1 = accountsAdded.Where(a => a.Name == "BankAccount1").Single();
-            var p1 = payeesAdded.Where(p => p.Name == "Renter A").Single();
             var transactionsToAdd = new List<Transaction>()
             {
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = payeesAdded.Where(p => p.Name == "Renter A").Single().DefaultCategoryId,
                     Amount = 10.00m, Date = defaultTransactionDate},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter B").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
                     Amount = 100.00m, Date = defaultTransactionDate},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
@@ -77,13 +77,20 @@ namespace RentalTracker.DAL
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "Gas Supplier").Single().Id,
                     CategoryId = categoriesAdded.Where(p => p.Name == "Utilities").Single().Id,
-                    Amount = 200.00m, Date = defaultTransactionDate.AddDays(2),  Memo = "For Quarter May - Aug"},
+                    Amount = -200.00m, Date = defaultTransactionDate.AddDays(2),  Memo = "For Quarter May - Aug"},
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount3").Single().Id,
                     PayeeId = payeesAdded.Where(p => p.Name == "MyBank Charges").Single().Id,
                     CategoryId = categoriesAdded.Where(p => p.Name == "Bank Charges").Single().Id,
-                    Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
+                    Amount = -30.00m, Date = defaultTransactionDate.AddDays(3)},
             };
             context.Transactions.AddRange(transactionsToAdd);
+
+            // Seed Balance with value including amounts from transactions
+            foreach (var account in accountsAdded)
+            {
+                var amounts = transactionsToAdd.Where(t => t.AccountId == account.Id).Sum(t => t.Amount);
+                account.Balance = account.OpeningBalance + amounts;
+            }
             context.SaveChanges();
         }
     }

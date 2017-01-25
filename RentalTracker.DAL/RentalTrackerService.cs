@@ -10,6 +10,56 @@ namespace RentalTracker.DAL
 {
     public class RentalTrackerService : IRentalTrackerService
     {
+        #region Dashboard
+        public int GetNumberOfAccounts()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Accounts.Count();
+            }
+        }
+
+        public int GetNumberOfCategories()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Categories.Count();
+            }
+        }
+
+        public int GetNumberOfPayees()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Payees.Count();
+            }
+        }
+
+        public int GetNumberOfTransactions()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Transactions.Count();
+            }
+        }
+
+        public Decimal GetTotalOfAccountBalances()
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                var balance = 0.0m;
+
+                foreach (var account in context.Accounts)
+                {
+                    balance += GetAccountBalance(account.Id);
+                }
+
+                return balance;
+            }
+        }
+
+        #endregion
+
         #region Accounts
 
         public ICollection<Account> GetAllAccounts()
@@ -33,9 +83,18 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking()
+                var account = context.Accounts
                                        .Include(a => a.Transactions)
                                        .SingleOrDefault(a => a.Id == id);
+
+                foreach (var transaction in account.Transactions)
+                {
+                    // Explicitly load the Payee & Category references
+                    context.Entry(transaction).Reference(t => t.Payee).Load();
+                    context.Entry(transaction).Reference(t => t.Category).Load();
+                }
+
+                return account;
             }
         }
 
@@ -57,9 +116,20 @@ namespace RentalTracker.DAL
             }
         }
 
+        public Decimal GetAccountBalance(int? id)
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                // Generates SQL that gets only the specific column
+                return (from a in context.Accounts
+                                     where a.Id == id
+                                     select a.Balance).FirstOrDefault();
+            }
+        }
+
         #endregion
 
-        #region Categopries
+        #region Categories
         public ICollection<Category> GetAllCategories()
         {
             using (var context = new RentalTrackerContext())
@@ -89,8 +159,9 @@ namespace RentalTracker.DAL
                 {
                     foreach (var transaction in category.Transactions)
                     {
-                        // Explicitly load the Account reference
+                        // Explicitly load the Account & Payee references
                         context.Entry(transaction).Reference(t => t.Account).Load();
+                        context.Entry(transaction).Reference(t => t.Payee).Load();
                     }
                 }
 
@@ -141,7 +212,7 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                var payee = context.Payees.AsNoTracking()
+                var payee = context.Payees
                                      .Include(a => a.Transactions)
                                      .SingleOrDefault(p => p.Id == id);
 
@@ -149,8 +220,9 @@ namespace RentalTracker.DAL
                 {
                     foreach (var transaction in payee.Transactions)
                     {
-                        // Explicitly load the Account reference
+                        // Explicitly load the Account & Category references
                         context.Entry(transaction).Reference(t => t.Account).Load();
+                        context.Entry(transaction).Reference(t => t.Category).Load();
                     }
                 }
 
@@ -180,12 +252,14 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        public ICollection<Transaction> GetAllTransactionsWithAccounts()
+        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory()
         {
             using (var context = new RentalTrackerContext())
             {
                 var transactions = context.Transactions.AsNoTracking()
-                                                       .Include(t => t.Account);
+                                                       .Include(t => t.Account)
+                                                       .Include(t => t.Payee)
+                                                       .Include(t => t.Category);
                 return transactions.ToList();
             }
         }

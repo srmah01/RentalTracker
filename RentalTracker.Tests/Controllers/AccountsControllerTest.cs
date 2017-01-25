@@ -9,14 +9,23 @@ using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
+using RentalTracker.Models;
 
 namespace RentalTracker.Tests.Controllers
 {
     [TestClass]
     public class AccountsControllerTest
     {
+        private MockedData mockedData;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            mockedData = new MockedData();
+        }
+
         [TestMethod]
-        public void CanGetIndexView()
+        public void CanReturnAnAccountIndexViewWithAnEmptyList()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
@@ -34,18 +43,13 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void CanGetIndexViewWithListOfAccounts()
+        public void CanReturnAnAccountIndexViewWithAListOfAccounts()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.GetAllAccounts()).Returns(new List<Account>()
-                {
-                    new Account() { Id = 1, Name = "BankAccount1", OpeningBalance = 0.00m },
-                    new Account() { Id = 2, Name = "BankAccount2", OpeningBalance = 1.99m },
-                    new Account() { Id = 3, Name = "BankAccount3", OpeningBalance = 1000.00m },
-                }
+            mockService.Setup(s => s.GetAllAccounts()).Returns(
+                mockedData.Accounts.Take(3).ToList()
             );
-
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
@@ -58,14 +62,13 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void CanGetDetailsOfAccountWithNoTransactions()
+        public void CanReturnAnAccountDetailsViewWithAnEmptyListOfTransactions()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var name = "BankAccount1";
-            var openingBalance = 20.00m;
+            var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single(); ;
             mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
-                new Account() { Id = 1, Name = name, OpeningBalance = openingBalance }
+                mockedAccount
             );
             AccountsController controller = new AccountsController(mockService.Object);
 
@@ -74,29 +77,20 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as Account;
-            Assert.AreEqual(name, model.Name);
-            Assert.AreEqual(openingBalance, model.OpeningBalance);
+            var model = result.Model as EntityDetailsViewModel<Account>;
+            Assert.AreEqual(mockedAccount.Name, model.Entity.Name);
+            Assert.AreEqual(mockedAccount.OpeningBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(mockedAccount.Balance, model.Entity.Balance);
             Assert.AreEqual(0, model.Transactions.Count);
         }
 
         [TestMethod]
-        public void CanGetDetailsOfAccountWithTransactions()
+        public void CanReturnAnAccountDetailsViewWithAListOfTransactions()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var name = "BankAccount1";
-            var openingBalance = 0.00m;
-            var account = new Account() { Id = 1, Name = name, OpeningBalance = openingBalance };
-            var amount = 10.00m;
-            var today = DateTime.Today;
             mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
-                new Account() { Id = 1, Name = account.Name, OpeningBalance = account.OpeningBalance,
-                                Transactions = new List<Transaction>()
-                                {
-                                   new Transaction { Account = account, Amount = amount, Date = today }
-                                }
-                }
+                mockedData.Accounts.First()
             );
             AccountsController controller = new AccountsController(mockService.Object);
 
@@ -105,17 +99,21 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            var model = result.Model as Account;
-            Assert.AreEqual(model.Name, name);
-            Assert.AreEqual(model.OpeningBalance, openingBalance);
-            Assert.AreEqual(1, model.Transactions.Count);
-            Assert.AreEqual(amount, model.Transactions.ElementAt(0).Amount);
-            Assert.AreEqual(today, model.Transactions.ElementAt(0).Date);
+            var model = result.Model as EntityDetailsViewModel<Account>;
+            Assert.AreEqual(mockedData.Accounts.First().Name, model.Entity.Name);
+            Assert.AreEqual(mockedData.Accounts.First().OpeningBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(mockedData.Accounts.First().Balance, model.Entity.Balance);
+            Assert.AreEqual(mockedData.Accounts.First().Transactions.Count(), model.Transactions.Count);
+            for (int i = 0; i < model.Transactions.Count; i++)
+            {
+                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Amount, model.Transactions.ElementAt(i).Income);
+                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Date, model.Transactions.ElementAt(i).Date);
+            }
         }
 
 
         [TestMethod]
-        public void CanGetCreateNewAccountView()
+        public void CanReturnAnAccountCreateView()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();

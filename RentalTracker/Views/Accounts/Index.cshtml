@@ -4,14 +4,7 @@
     ViewBag.Title = "Accounts";
 }
 
-<div class="jumbotron">
-    <div>
-        <a href="~/Home/Index">
-            <p class="h1 col-sm-1" style="color:black"><i class="glyphicon glyphicon-circle-arrow-left"></i></p>
-        </a>
-        <p class="h1">@ViewBag.Title</p>
-    </div>
-</div>
+@Html.Partial("_JumboHeader")
 
 <div class="container">
 
@@ -31,7 +24,7 @@
                             <div class="card-item card-item-account">
                                 <div class="card-item-body">
                                     <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
-                                    <p class="text-right">&pound; @Html.DisplayFor(modelItem => item.OpeningBalance)</p>
+                                    <p class="text-right">@Html.DisplayFor(modelItem => item.OpeningBalance)</p>
                                 </div>
                             </div>
                         </td>

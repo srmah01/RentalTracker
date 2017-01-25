@@ -64,6 +64,18 @@
     <Compile Include="Migrations\201701121313386_add_Payee_and_Category_keys.Designer.cs">
       <DependentUpon>201701121313386_add_Payee_and_Category_keys.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701181118338_make_category_required_in_Payee_and_Transaction.cs" />
+    <Compile Include="Migrations\201701181118338_make_category_required_in_Payee_and_Transaction.Designer.cs">
+      <DependentUpon>201701181118338_make_category_required_in_Payee_and_Transaction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs" />
+    <Compile Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.Designer.cs">
+      <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701191930597_add_balance_to_Account.cs" />
+    <Compile Include="Migrations\201701191930597_add_balance_to_Account.Designer.cs">
+      <DependentUpon>201701191930597_add_balance_to_Account.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="CategoryConfiguration.cs" />
     <Compile Include="RentalTrackerContext.cs" />
@@ -90,6 +102,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701121313386_add_Payee_and_Category_keys.resx">
       <DependentUpon>201701121313386_add_Payee_and_Category_keys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701181118338_make_category_required_in_Payee_and_Transaction.resx">
+      <DependentUpon>201701181118338_make_category_required_in_Payee_and_Transaction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.resx">
+      <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701191930597_add_balance_to_Account.resx">
+      <DependentUpon>201701191930597_add_balance_to_Account.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

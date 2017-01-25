@@ -21,8 +21,13 @@ namespace RentalTracker.Domain
         [MaxLength(100)]
         public String Name { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:c}")]
         public Decimal OpeningBalance { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:c}")]
+        public Decimal Balance { get; set; }
+
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

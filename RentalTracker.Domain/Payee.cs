@@ -21,12 +21,15 @@ namespace RentalTracker.Domain
         [MaxLength(100)]
         public string Name { get; set; }
 
-        public int? DefaultCategoryId { get; set; }
+        [Required]
+        public int DefaultCategoryId { get; set; }
+
+        [Display(Name = "Default Category")]
         public Category DefaultCategory { get; set; }
 
         [MaxLength(200)]
         public string Memo { get; set; }
 
-        public ICollection<Transaction> Transactions { get; private set; }
+        public virtual ICollection<Transaction> Transactions { get; private set; }
     }
 }

@@ -1,63 +1,23 @@
-﻿@model IEnumerable<RentalTracker.Domain.Transaction>
+﻿@model EntityDetailsViewModel<Transaction>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Transactions";
 }
 
-<h2>Index</h2>
+@Html.Partial("_JumboHeader")
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Account.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Amount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Reference)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Number)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Memo)
-        </th>
-        <th></th>
-    </tr>
+<div class="container">
+    @Html.Partial("_TransactionsList", Model.Transactions)
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Account.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Amount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Reference)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Number)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Memo)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+<div class="center-block">
+    <a class="btn btn-default" href="@Url.Action(  "Create" )"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Add</a>
+    <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit" )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+    <a id="details" class="btn btn-default disabled hidden" href="@Url.Action( "Details" )"><i class="glyphicon glyphicon-list"></i>&nbsp;Details</a>
+    <a id="delete" class="btn btn-default disabled" href="@Url.Action( "Delete" )"><i class="glyphicon glyphicon-remove"></i>&nbsp;Delete</a>
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/items-table.js"></script>
 }
-
-</table>
