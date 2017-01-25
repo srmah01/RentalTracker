@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RentalTracker.Domain
 {
-    public class Transaction
+    public class Transaction : IValidatableObject
     {
         [Key]
         public int Id { get; set; }
@@ -40,5 +40,20 @@ namespace RentalTracker.Domain
 
         [MaxLength(200)]
         public string Memo { get; set; }
+
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        {
+            if (Date <= DateTime.MinValue)
+            {
+                yield return new ValidationResult
+                  ("Date must be specified.", new[] { "Date" }); ;
+            }
+
+            if (Amount == 0.00m)
+            {
+                yield return new ValidationResult(
+                  "Amount must be non-zero", new[] { "Amount" }); ;
+            }
+        }
     }
 }
