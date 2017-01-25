@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using System.Data.Entity.Validation;
+using RentalTracker.Utilities;
 
 namespace RentalTracker.Controllers
 {
@@ -86,8 +88,15 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewAccount(account);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveNewAccount(account);
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.EntityValidationErrors);
+                }
             }
 
             return View(account);
@@ -137,6 +146,5 @@ namespace RentalTracker.Controllers
             }
             return View(account);
         }
-
     }
 }

@@ -121,6 +121,24 @@ namespace RentalTracker.DAL.Tests
             Assert.AreEqual(4, service.GetAllAccounts().Count);
         }
 
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(DbEntityValidationException))]
+        public void CannotInsertNewAccountWithSameNameAsAnExistingAccount()
+        {
+            DataHelper.NewDb();
+
+            var accountToAdd = new Account()
+            {
+                Name = "BankAccount3",
+                OpeningBalance = 100.99m
+            };
+
+            var service = new RentalTrackerService();
+            service.SaveNewAccount(accountToAdd);
+            Assert.Fail("Added an account with same name as an exiting account");
+        }
+
+
         [TestMethod, TestCategory("Integration")]
         public void CanUpdateAccount()
         {

@@ -10,6 +10,8 @@ using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -126,5 +128,28 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        //TODO: Need to re-write this test to use an Exception that can be mocked
+        [TestMethod]
+        public void CreatingAnAccountWithADuplicateNameReturnsModelErrors()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            Account account = new Account() { Name = "BankAccount1", OpeningBalance = 0.00m };
+            mockService.Setup(s => s.SaveNewAccount(It.IsAny<Account>())).Throws(
+                new DbEntityValidationException("Error")
+            );
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Create(account) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            // Unable to test for invalid model because not able to mock a DbEntityValidationException
+            // because it is hightly dependent on the internal workings of the EntityFramework
+        }
+
     }
 }
