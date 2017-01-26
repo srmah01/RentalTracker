@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RentalTracker;
 using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
-using System.Data.Entity.Validation;
-using System.Data.Entity.Infrastructure;
+using RentalTracker.DAL.Exceptions;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -137,7 +137,11 @@ namespace RentalTracker.Tests.Controllers
             var mockService = new Mock<IRentalTrackerService>();
             Account account = new Account() { Name = "BankAccount1", OpeningBalance = 0.00m };
             mockService.Setup(s => s.SaveNewAccount(It.IsAny<Account>())).Throws(
-                new DbEntityValidationException("Error")
+                new RentalTrackerServiceValidationException("Error", 
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Duplicate Name.", new [] {  "Name" } )
+                    })
             );
 
             AccountsController controller = new AccountsController(mockService.Object);
@@ -147,8 +151,7 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            // Unable to test for invalid model because not able to mock a DbEntityValidationException
-            // because it is hightly dependent on the internal workings of the EntityFramework
+            Assert.IsFalse(controller.ModelState.IsValid);
         }
 
     }

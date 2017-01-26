@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RentalTracker.Domain;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using RentalTracker.DAL.Exceptions;
 
 namespace RentalTracker.DAL.Tests
 {
@@ -122,7 +123,7 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration"),
-            ExpectedException(typeof(DbEntityValidationException))]
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
         public void CannotInsertNewAccountWithSameNameAsAnExistingAccount()
         {
             DataHelper.NewDb();
@@ -176,7 +177,7 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration"),
-         ExpectedException(typeof(DbEntityValidationException))]
+         ExpectedException(typeof(RentalTrackerServiceValidationException))]
         public void CannotInsertANewCategoryWithoutACategoryType()
         {
             DataHelper.NewDb();
@@ -368,7 +369,7 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration"),
-         ExpectedException(typeof(DbEntityValidationException))]
+         ExpectedException(typeof(RentalTrackerServiceValidationException))]
         public void CannotInsertANewTransactionWithoutADate()
         {
             DataHelper.NewDb();
@@ -391,7 +392,7 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration"),
-         ExpectedException(typeof(DbEntityValidationException))]
+         ExpectedException(typeof(RentalTrackerServiceValidationException))]
         public void CannotInsertANewTransactionWithoutAnAmount()
         {
             DataHelper.NewDb();

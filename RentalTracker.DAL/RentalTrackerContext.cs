@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.ComponentModel.DataAnnotations;
+using RentalTracker.DAL.Exceptions;
 
 namespace RentalTracker.DAL
 {
@@ -56,7 +58,7 @@ namespace RentalTracker.DAL
                 var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
 
                 // Throw a new DbEntityValidationException with the improved exception message.
-                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+                throw new RentalTrackerServiceValidationException(exceptionMessage, GetErrors(ex.EntityValidationErrors));
             }
         }
 
@@ -71,8 +73,7 @@ namespace RentalTracker.DAL
                 if (Accounts.Where(p => p.Name == post.Name).Count() > 0)
                 {
                     result.ValidationErrors.Add(
-                            new System.Data.Entity.Validation.DbValidationError("Name",
-                            "Account name must be unique."));
+                            new DbValidationError("Name", "Account name must be unique."));
                 }
             }
 
@@ -85,5 +86,14 @@ namespace RentalTracker.DAL
                 return base.ValidateEntity(entityEntry, items);
             }
         }
+
+        private IEnumerable<ValidationResult> GetErrors(IEnumerable<DbEntityValidationResult> errors)
+        {
+            return errors.SelectMany(
+                        x => x.ValidationErrors.Select(y =>
+                              new ValidationResult(y.ErrorMessage, new[] { y.PropertyName })))
+                        .ToList();
+        }
+
     }
 }
