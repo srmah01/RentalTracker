@@ -64,11 +64,17 @@ textarea {
         background-color: #e4d2d2;
     }
 
-    .row-item-body:hover {
-        background-color: #ebebeb;
-    }
+.row-item-body:hover {
+    background-color: #ebebeb;
+}
 
-    .row-item-body.selected {
-        background-color: #e4d2d2;
-    }
+.row-item-body.selected {
+    background-color: #e4d2d2;
+}
 
+.card-item-body-no-selection {
+    padding: 5px 5px;
+    margin: 0px 0px 0px 15px;
+    border: none;
+    background-color: white;
+}
