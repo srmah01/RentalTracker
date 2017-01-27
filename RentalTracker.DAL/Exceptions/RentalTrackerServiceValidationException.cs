@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 
 namespace RentalTracker.DAL.Exceptions
 {
+    [Serializable]
     public class RentalTrackerServiceValidationException : Exception
     {
         private IEnumerable<ValidationResult> validationResults;

@@ -155,6 +155,22 @@ namespace RentalTracker.DAL.Tests
 
             Assert.AreEqual(expected, service.FindAccount(1).Name);
         }
+
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotUpdateAnAccountNameToTheSameNameAsAnExistingAccount()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+            var account = service.FindAccount(1);
+            account.Name = "BankAccount3";
+
+            service.SaveUpdatedAccount(account);
+
+            Assert.Fail("Added an account with same name as an exiting account");
+        }
+
         #endregion
 
         #region Categories
@@ -193,6 +209,80 @@ namespace RentalTracker.DAL.Tests
 
             Assert.Fail("Category was added without a CatgeoryType");
         }
+
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotInsertNewCategorytWithSameNameAsAnExistingCategory()
+        {
+            DataHelper.NewDb();
+
+            var categoryToAdd = new Category()
+            {
+                Name = "Rental Income",
+                Type = CategoryType.Expense
+            };
+
+            var service = new RentalTrackerService();
+            service.SaveNewCategory(categoryToAdd);
+            Assert.Fail("Added an category with same name as an exiting category");
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindCategoryById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindCategory(1);
+
+            Assert.AreEqual("Rental Income", actual.Name);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindCategoryByIdWithAllItsTransactions()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindCategoryWithTransactions(1);
+
+            Assert.AreEqual("Rental Income", actual.Name);
+            Assert.AreNotEqual(0, actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanUpdateCategory()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var category = service.FindCategory(1);
+            string expected = "Changed Name";
+            category.Name = expected;
+
+            service.SaveUpdatedCategory(category);
+
+            Assert.AreEqual(expected, service.FindCategory(1).Name);
+        }
+
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotUpdateACategoryNameToTheSameNameAsAnExistingCategory()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+            var category = service.FindCategory(1);
+            category.Name = "Utilities";
+
+            service.SaveUpdatedCategory(category);
+
+            Assert.Fail("Added an category with same name as an exiting category");
+        }
+
         #endregion
 
         #region Payees
@@ -232,6 +322,22 @@ namespace RentalTracker.DAL.Tests
             Assert.Fail("Payee was added without a DefaultCategory");
         }
 
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotInsertNewPayeetWithSameNameAsAnExistingPayee()
+        {
+            DataHelper.NewDb();
+
+            var payeeToAdd = new Payee()
+            {
+                Name = "Renter A",
+                DefaultCategoryId = 1
+            };
+
+            var service = new RentalTrackerService();
+            service.SaveNewPayee(payeeToAdd);
+            Assert.Fail("Added an payee with same name as an exiting payee");
+        }
 
         [TestMethod, TestCategory("Integration")]
         public void CanInsertNewPayeeWithANewDefaultCategoryAndBothWillBeInserted()
@@ -250,6 +356,63 @@ namespace RentalTracker.DAL.Tests
 
             Assert.AreEqual(7, service.GetNumberOfPayees());
             Assert.AreEqual(5, service.GetNumberOfCategories());
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindPayeeById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindPayee(1);
+
+            Assert.AreEqual("Renter A", actual.Name);
+            Assert.IsNotNull(actual.DefaultCategory);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindPayeeByIdWithAllItsTransactions()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindPayeeWithTransactions(1);
+
+            Assert.AreEqual("Renter A", actual.Name);
+            Assert.AreNotEqual(0, actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanUpdatePayee()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var payee = service.FindPayee(1);
+            string expected = "Changed Name";
+            payee.Name = expected;
+
+            service.SaveUpdatedPayee(payee);
+
+            Assert.AreEqual(expected, service.FindPayee(1).Name);
+        }
+
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotUpdateAPayeeNameToTheSameNameAsAnExistingPayee()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+            var payee = service.FindPayee(1);
+            payee.Name = "Renter B";
+
+            service.SaveUpdatedPayee(payee);
+
+            Assert.Fail("Added an payee with same name as an exiting payee");
         }
         #endregion
 
