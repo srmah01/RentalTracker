@@ -75,7 +75,25 @@ namespace RentalTracker.Controllers
         // GET: Transactions/Create
         public ActionResult Create()
         {
-            return View();
+            var transactionViewModel = new TransactionViewModel();
+            transactionViewModel.Accounts = rentalTrackerService.GetAllAccounts().Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.Id.ToString()
+            });
+
+            transactionViewModel.Categories = rentalTrackerService.GetAllCategories().Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.Id.ToString()
+            });
+            transactionViewModel.Payees = rentalTrackerService.GetAllPayees().Select(a => new SelectListItem
+            {
+                Text = a.Name,
+                Value = a.Id.ToString()
+            });
+
+            return View(transactionViewModel);
         }
 
         // POST: Transactions/Create
