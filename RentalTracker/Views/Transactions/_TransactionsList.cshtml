@@ -32,50 +32,58 @@
     </thead>
 
     <tbody>
-
-        @foreach (var item in Model)
+        @if (Model.Count() == 0)
         {
-            <tr class="clickable-row row-item-body">
-                <td class="hidden">
-                    @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id = "urle", @class = "hidden" })
-                </td>
-                <td class="hidden">
-                    @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
-                </td>
-                <td class="hidden">
-                    @Html.RouteLink("urlR", new { action = "Delete", id = item.Id }, new { id = "urlr", @class = "hidden" })
-                </td>
-
-
-                <td>
-                    @Html.DisplayFor(model => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Payee)
-                    <br />
-                    @Html.DisplayFor(model => item.Category)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Income)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Expense)
-                </td>
-                <td>
-                    @if (item.Reconciled != null && item.Reconciled == true)
-                    {
-                        <span><i class="glyphicon glyphicon-ok"></i></span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Account)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Reference)
-                    <br />
-                    @Html.DisplayFor(model => item.Memo)
-                </td>
+            <tr>
+                <td>No transactions.</td>
             </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr class="clickable-row row-item-body">
+                    <td class="hidden">
+                        @Html.RouteLink("urlE", new { action = "Edit", id = item.Id }, new { id = "urle", @class = "hidden" })
+                    </td>
+                    <td class="hidden">
+                        @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
+                    </td>
+                    <td class="hidden">
+                        @Html.RouteLink("urlR", new { action = "Delete", id = item.Id }, new { id = "urlr", @class = "hidden" })
+                    </td>
+
+
+                    <td>
+                        @Html.DisplayFor(model => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Payee)
+                        <br />
+                        @Html.DisplayFor(model => item.Category)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Income)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Expense)
+                    </td>
+                    <td>
+                        @if (item.Reconciled != null && item.Reconciled == true)
+                    {
+                            <span><i class="glyphicon glyphicon-ok"></i></span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Account)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Reference)
+                        <br />
+                        @Html.DisplayFor(model => item.Memo)
+                    </td>
+                </tr>
+            }
         }
 
     </tbody>

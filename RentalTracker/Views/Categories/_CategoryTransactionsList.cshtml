@@ -30,35 +30,44 @@
 
     <tbody>
 
-        @foreach (var item in Model)
+        @if (Model.Count() == 0)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(model => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Account)
-                    <br />
-                    @Html.DisplayFor(model => item.Payee)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Income)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Expense)
-                </td>
-                <td>
-                    @if (item.Reconciled != null && item.Reconciled == true)
-                    {
-                        <span><i class="glyphicon glyphicon-ok"></i></span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Reference)
-                    <br />
-                    @Html.DisplayFor(model => item.Memo)
-                </td>
+                <td>No transactions.</td>
             </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Account)
+                        <br />
+                        @Html.DisplayFor(model => item.Payee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Income)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Expense)
+                    </td>
+                    <td>
+                        @if (item.Reconciled != null && item.Reconciled == true)
+                    {
+                            <span><i class="glyphicon glyphicon-ok"></i></span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Reference)
+                        <br />
+                        @Html.DisplayFor(model => item.Memo)
+                    </td>
+                </tr>
+            }
         }
 
     </tbody>
