@@ -94,6 +94,19 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.GetAllAccounts()).Returns(new List<Account> {
+                new Account() { Id = 1, Name = "Account1" },
+                new Account() { Id = 2, Name = "Account2" }
+            });
+            mockService.Setup(s => s.GetAllCategories()).Returns(new List<Category> {
+                new Category() { Id = 1, Name = "Category1" },
+                new Category() { Id = 2, Name = "Category2" }
+            });
+            mockService.Setup(s => s.GetAllPayees()).Returns(new List<Payee> {
+                new Payee() { Id = 1, Name = "Payee1" },
+                new Payee() { Id = 2, Name = "Payee2" }
+            });
+
             TransactionsController controller = new TransactionsController(mockService.Object);
 
             // Act
