@@ -7,44 +7,39 @@
 @Html.Partial("_JumboHeader")
 
 <div class="container">
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Entity.Name)
-        </dt>
+    <div class="card-item card-item-income">
+        <div class="card-item-body-no-selection">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Entity.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Name)</p>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Entity.Name)
-        </dd>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Entity.DefaultCategory.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.DefaultCategory.Name)</p>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Entity.DefaultCategory)
-        </dt>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Entity.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Memo)</p>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Entity.DefaultCategory.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Entity.Memo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Entity.Memo)
-        </dd>
-
-    </dl>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i cla><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i cla><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+                        <a class="btn btn-default col-md-offset-8" href="@Url.Action("Index")"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Back to List</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-
-    <hr />
-    <p>
-        <a class="btn btn-default" href="@Url.Action("Index")"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Back to List</a>
-    </p>
 
     <hr />
 
