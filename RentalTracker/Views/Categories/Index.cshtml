@@ -21,7 +21,7 @@
                             @Html.RouteLink("urlD", new { action = "Details", id = item.Id }, new { id = "urld", @class = "hidden" })
                         </td>
                         <td>
-                            <div class="card-item @(@item.Type == RentalTracker.Domain.CategoryType.Income ? "card-item-income" : "card-item-expenditure")">
+                            <div class="card-item card-item-@item.Type.ToString().ToLower()">
                                 <div class="card-item-body">
                                     <p class="h4">@Html.DisplayFor(modelItem => item.Name)</p>
                                     <p class="text-right">@Html.DisplayFor(modelItem => item.Type)</p>

@@ -195,7 +195,11 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Payees.AsNoTracking().ToList();
+                return context.Payees
+                    .AsNoTracking()
+                    .Include(p => p.DefaultCategory)
+                    .AsNoTracking()
+                    .ToList();
             }
         }
 
@@ -204,7 +208,8 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 return context.Payees.AsNoTracking()
-                                       .SingleOrDefault(p => p.Id == id);
+                                     .Include(p => p.DefaultCategory)
+                                     .SingleOrDefault(p => p.Id == id);
             }
         }
 
@@ -213,7 +218,8 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 var payee = context.Payees
-                                     .Include(a => a.Transactions)
+                                     .Include(p => p.DefaultCategory)
+                                     .Include(p => p.Transactions)
                                      .SingleOrDefault(p => p.Id == id);
 
                 if (payee != null)

@@ -7,50 +7,60 @@
 @Html.Partial("_JumboHeader")
 
 <div class="container">
-    <div class="card-item card-item-account">
-        <div class="card-item-body-no-selection">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Entity.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Name)</p>
+    <div class="col-md-4">
+        <div class="card-item card-item-account">
+            <div class="card-item-body-no-selection">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Name)</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.OpeningBalance, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.OpeningBalance)</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Entity.OpeningBalance, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.OpeningBalance)</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i cla><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
-                        <a class="btn btn-default col-md-offset-8" href="@Url.Action("Index")"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Back to List</a>
-                    </div>
+        <div>
+            <div class="form-group">
+                <div class="col-md-4">
+                    <a class="btn btn-default" href="@Url.Action("Index")"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Back to List</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <hr />
-
-    <p>
-        @Html.Partial("_AccountTransactionsList", Model.Transactions)
-    </p>
+    <div class="col-md-8">
+        <p>
+            @Html.Partial("_AccountTransactionsList", Model.Transactions)
+        </p>
+    </div>
 </div>
