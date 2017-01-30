@@ -9,17 +9,6 @@
 
 <div class="container">
 
-    @*<div class='col-sm-6'>
-        <div class="form-group">
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-    </div>*@
-
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -29,9 +18,9 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Entity.Date, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <div id='transaction-datepicker' class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
                         </span>
                         @Html.EditorFor(model => model.Entity.Date, new { htmlAttributes = new { @class = "form-control" } })
                     </div>
@@ -104,11 +93,6 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
-    @*<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker1').datetimepicker();
-            });
-    </script>*@
-
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/transaction-input")
 }
