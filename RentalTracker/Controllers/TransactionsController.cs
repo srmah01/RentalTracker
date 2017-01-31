@@ -75,25 +75,8 @@ namespace RentalTracker.Controllers
         // GET: Transactions/Create
         public ActionResult Create()
         {
-            var transactionViewModel = new TransactionViewModel();
-            transactionViewModel.Accounts = rentalTrackerService.GetAllAccounts().Select(a => new SelectListItem
-            {
-                Text = a.Name,
-                Value = a.Id.ToString()
-            });
-
-            transactionViewModel.Categories = rentalTrackerService.GetAllCategories().Select(a => new SelectListItem
-            {
-                Text = a.Name,
-                Value = a.Id.ToString()
-            });
-            transactionViewModel.Payees = rentalTrackerService.GetAllPayees().Select(a => new SelectListItem
-            {
-                Text = a.Name,
-                Value = a.Id.ToString()
-            });
-
-            return View(transactionViewModel);
+            GetReferenceData();
+            return View();
         }
 
         // POST: Transactions/Create
@@ -101,7 +84,7 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,AccountId,Date,Amount,Reference,Number,Memo")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
@@ -109,7 +92,7 @@ namespace RentalTracker.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -125,7 +108,8 @@ namespace RentalTracker.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -134,14 +118,14 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,AccountId,Date,Amount,Reference,Number,Memo")] Transaction transaction)
+        public ActionResult Edit([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
                 rentalTrackerService.SaveUpdatedTransaction(transaction);
                 return RedirectToAction("Index");
             }
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -167,6 +151,13 @@ namespace RentalTracker.Controllers
         {
             rentalTrackerService.RemoveTransaction(id);
             return RedirectToAction("Index");
+        }
+
+        private void GetReferenceData()
+        {
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+            ViewBag.CategoryId = new SelectList(rentalTrackerService.GetAllCategories(), "Id", "Name");
+            ViewBag.PayeeId = new SelectList(rentalTrackerService.GetAllPayees(), "Id", "Name");
         }
     }
 }

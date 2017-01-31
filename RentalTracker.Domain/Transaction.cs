@@ -29,7 +29,7 @@ namespace RentalTracker.Domain
         public DateTime Date { get; set; }
 
         // Amount is positive if it represents Income, or negative if it represents Expense
-        [Required, DisplayFormat(ApplyFormatInEditMode = true, DataFormatString ="{0:c}")]
+        [Required, DisplayFormat(ApplyFormatInEditMode = false, DataFormatString ="{0:c}")]
         public Decimal Amount { get; set; }
 
         [NotMapped]

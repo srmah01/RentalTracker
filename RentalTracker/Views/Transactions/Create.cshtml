@@ -1,4 +1,4 @@
-﻿@model TransactionViewModel
+﻿@model Transaction
 
 @{
     ViewBag.Title = "Transactions";
@@ -15,69 +15,11 @@
 
         <div class="form-horizontal">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Date, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div id='transaction-datepicker' class="input-group date">
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                        @Html.EditorFor(model => model.Entity.Date, new { htmlAttributes = new { @class = "form-control" } })
-                    </div>
-                    @Html.ValidationMessageFor(model => model.Entity.Date, "", new { @class = "text-danger" })
-                </div>
-            </div>
+        
+            @Html.Partial("_Transaction", Model)
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Account, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("AccountId", Model.Accounts, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Entity.AccountId, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("AccountId", Model.Payees, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Entity.PayeeId, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Category, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("AccountId", Model.Categories, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Entity.CategoryId, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Entity.Amount, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Entity.Amount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Entity.Reference, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Entity.Reference, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Entity.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Entity.Memo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Entity.Memo, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-offset-2 col-md-4">
                     <button type="submit" value="Create" class="btn btn-default">
                         <span><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Create</span>
                     </button>
