@@ -10,6 +10,8 @@ using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -94,18 +96,9 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.GetAllAccounts()).Returns(new List<Account> {
-                new Account() { Id = 1, Name = "Account1" },
-                new Account() { Id = 2, Name = "Account2" }
-            });
-            mockService.Setup(s => s.GetAllCategories()).Returns(new List<Category> {
-                new Category() { Id = 1, Name = "Category1" },
-                new Category() { Id = 2, Name = "Category2" }
-            });
-            mockService.Setup(s => s.GetAllPayees()).Returns(new List<Payee> {
-                new Payee() { Id = 1, Name = "Payee1" },
-                new Payee() { Id = 2, Name = "Payee2" }
-            });
+            mockService.Setup(s => s.GetAllAccounts()).Returns(mockedData.Accounts.ToList());
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedData.Categories.ToList());
+            mockService.Setup(s => s.GetAllPayees()).Returns(mockedData.Payees.ToList());
 
             TransactionsController controller = new TransactionsController(mockService.Object);
 
@@ -114,6 +107,128 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.AreEqual(mockedData.Accounts.Count(), controller.ViewBag.AccountId.Items.Count);
+            Assert.AreEqual(mockedData.Categories.Count(), controller.ViewBag.CategoryId.Items.Count);
+            Assert.AreEqual(mockedData.Payees.Count(), controller.ViewBag.PayeeId.Items.Count);
         }
+
+        [TestMethod]
+        public void InsertingAValidNewTransactionRedirectsToIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveNewTransaction(It.IsAny<Transaction>()));
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.Create(new Transaction()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void InsertingAnInvalidNewTransactionDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.GetAllAccounts()).Returns(mockedData.Accounts.ToList());
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedData.Categories.ToList());
+            mockService.Setup(s => s.GetAllPayees()).Returns(mockedData.Payees.ToList());
+            mockService.Setup(s => s.SaveNewTransaction(It.IsAny<Transaction>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Amount must be non-zero.", new [] {  "Amount" } )
+                    }));
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Create(new Transaction()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+            Assert.AreEqual(mockedData.Accounts.Count(), controller.ViewBag.AccountId.Items.Count);
+            Assert.AreEqual(mockedData.Categories.Count(), controller.ViewBag.CategoryId.Items.Count);
+            Assert.AreEqual(mockedData.Payees.Count(), controller.ViewBag.PayeeId.Items.Count);
+        }
+
+
+        [TestMethod]
+        public void CanReturnATransactionEditView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedTransaction = mockedData.Transactions.First();
+            mockService.Setup(s => s.FindTransaction(It.IsAny<int>())).Returns(mockedTransaction);
+            mockService.Setup(s => s.GetAllAccounts()).Returns(mockedData.Accounts.ToList());
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedData.Categories.ToList());
+            mockService.Setup(s => s.GetAllPayees()).Returns(mockedData.Payees.ToList());
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(1) as ViewResult;
+            var model = result.Model as Transaction;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(mockedData.Accounts.Count(), controller.ViewBag.AccountId.Items.Count);
+            Assert.AreEqual(mockedData.Categories.Count(), controller.ViewBag.CategoryId.Items.Count);
+            Assert.AreEqual(mockedData.Payees.Count(), controller.ViewBag.PayeeId.Items.Count);
+            Assert.AreEqual(mockedTransaction.Date, model.Date);
+            Assert.AreEqual(mockedTransaction.Amount, model.Amount);
+            Assert.AreEqual(mockedTransaction.Reference, model.Reference);
+            Assert.AreEqual(mockedTransaction.Memo, model.Memo);
+        }
+
+        [TestMethod]
+        public void UpdatingAValidTransactionRedirectsToIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedTransaction(It.IsAny<Transaction>()));
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.Edit(new Transaction()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void UpdatingAnInvalidTransactionDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.GetAllAccounts()).Returns(mockedData.Accounts.ToList());
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedData.Categories.ToList());
+            mockService.Setup(s => s.GetAllPayees()).Returns(mockedData.Payees.ToList());
+            mockService.Setup(s => s.SaveUpdatedTransaction(It.IsAny<Transaction>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Amount must be non-zero.", new [] {  "Amount" } )
+                    }));
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(new Transaction()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+            Assert.AreEqual(mockedData.Accounts.Count(), controller.ViewBag.AccountId.Items.Count);
+            Assert.AreEqual(mockedData.Categories.Count(), controller.ViewBag.CategoryId.Items.Count);
+            Assert.AreEqual(mockedData.Payees.Count(), controller.ViewBag.PayeeId.Items.Count);
+        }
+
+
     }
 }
