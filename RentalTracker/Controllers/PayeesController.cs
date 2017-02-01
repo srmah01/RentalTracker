@@ -120,32 +120,5 @@ namespace RentalTracker.Controllers
             }
             return View(payee);
         }
-
-        // GET: Payees/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Payee payee = rentalTrackerService.FindPayee(id);
-            if (payee == null)
-            {
-                return HttpNotFound();
-            }
-            return View(payee);
-        }
-
-        // POST: Payees/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Payee payee = db.Payees.Find(id);
-        //    db.Payees.Remove(payee);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
-
     }
 }

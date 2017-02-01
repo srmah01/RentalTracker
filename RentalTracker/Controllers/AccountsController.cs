@@ -133,19 +133,5 @@ namespace RentalTracker.Controllers
             return View(account);
         }
 
-        // GET: Accounts/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Account account = rentalTrackerService.FindAccount(id);
-            if (account == null)
-            {
-                return HttpNotFound();
-            }
-            return View(account);
-        }
     }
 }
