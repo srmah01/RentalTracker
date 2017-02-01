@@ -72,6 +72,8 @@ namespace RentalTracker.DAL
 
         Transaction FindTransaction(int? id);
 
+        Transaction FindTransactionWithAccountAndPayeeAndCategory(int? id);
+
         void SaveNewTransaction(Transaction transaction);
 
         void SaveUpdatedTransaction(Transaction transaction);

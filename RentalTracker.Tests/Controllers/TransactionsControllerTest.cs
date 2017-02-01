@@ -220,7 +220,7 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedTransaction = mockedData.Transactions.First();
-            mockService.Setup(s => s.FindTransaction(It.IsAny<int>())).Returns(mockedTransaction);
+            mockService.Setup(s => s.FindTransactionWithAccountAndPayeeAndCategory(It.IsAny<int>())).Returns(mockedTransaction);
 
             TransactionsController controller = new TransactionsController(mockService.Object);
 
@@ -236,7 +236,7 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindTransaction(It.IsAny<int>())).Returns((Transaction) null);
+            mockService.Setup(s => s.FindTransactionWithAccountAndPayeeAndCategory(It.IsAny<int>())).Returns((Transaction) null);
 
             TransactionsController controller = new TransactionsController(mockService.Object);
             

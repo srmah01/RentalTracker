@@ -143,7 +143,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Transaction transaction = rentalTrackerService.FindTransaction(id);
+            Transaction transaction = rentalTrackerService.FindTransactionWithAccountAndPayeeAndCategory(id);
             if (transaction == null)
             {
                 return HttpNotFound();

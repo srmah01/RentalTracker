@@ -122,8 +122,8 @@ namespace RentalTracker.DAL
             {
                 // Generates SQL that gets only the specific column
                 return (from a in context.Accounts
-                                     where a.Id == id
-                                     select a.Balance).FirstOrDefault();
+                        where a.Id == id
+                        select a.Balance).FirstOrDefault();
             }
         }
 
@@ -275,6 +275,18 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 return context.Transactions.AsNoTracking()
+                                           .SingleOrDefault(p => p.Id == id);
+            }
+        }
+
+        public Transaction FindTransactionWithAccountAndPayeeAndCategory(int? id)
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Transactions.AsNoTracking()
+                                           .Include(t => t.Account)
+                                           .Include(t => t.Payee)
+                                           .Include(t => t.Category)
                                            .SingleOrDefault(p => p.Id == id);
             }
         }
