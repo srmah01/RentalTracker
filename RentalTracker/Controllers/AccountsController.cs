@@ -98,6 +98,10 @@ namespace RentalTracker.Controllers
                 {
                     HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
                 }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
 
             return View(account);
@@ -127,8 +131,19 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedAccount(account);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveUpdatedAccount(account);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
             return View(account);
         }

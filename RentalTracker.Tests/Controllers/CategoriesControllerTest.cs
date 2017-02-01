@@ -10,6 +10,8 @@ using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -107,6 +109,22 @@ namespace RentalTracker.Tests.Controllers
             }
         }
 
+        [TestMethod]
+        public void DisplayingDetailsOfANonExistentCategoryReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns((Category)null);
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
 
         [TestMethod]
         public void CanReturnACategoryCreateView()
@@ -122,5 +140,102 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        [TestMethod]
+        public void InsertingAnInvalidNewCategoryDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveNewCategory(It.IsAny<Category>())).Throws(new RentalTrackerServiceValidationException("Error",
+                     new List<ValidationResult>()
+                     {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                     }));
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Create(new Category()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+        }
+
+
+        [TestMethod]
+        public void CanReturnACategoryEditView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategory = mockedData.Categories.First();
+            mockService.Setup(s => s.FindCategory(It.IsAny<int>())).Returns(mockedCategory);
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(1) as ViewResult;
+            var model = result.Model as Category;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(mockedCategory.Name, model.Name);
+            Assert.AreEqual(mockedCategory.Type, model.Type);
+        }
+
+        [TestMethod]
+        public void EditingANonExistentCategoryReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindCategory(It.IsAny<int>())).Returns((Category)null);
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Edit(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void UpdatingAValidCategoryRedirectsToIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedAccount(It.IsAny<Account>()));
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.Edit(new Category()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void UpdatingAnInvalidCategoryDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedCategory(It.IsAny<Category>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                    }));
+
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(new Category()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+        }
+
     }
 }

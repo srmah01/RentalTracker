@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using RentalTracker.Utilities;
 
 namespace RentalTracker.Controllers
 {
@@ -85,8 +87,15 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewCategory(category);
+                try
+                {
+                    rentalTrackerService.SaveNewCategory(category);
                 return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
             }
 
             return View(category);
@@ -116,8 +125,19 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedCategory(category);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveUpdatedCategory(category);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
             return View(category);
         }

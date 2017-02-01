@@ -10,6 +10,8 @@ using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -108,6 +110,21 @@ namespace RentalTracker.Tests.Controllers
             }
         }
 
+        [TestMethod]
+        public void DisplayingDetailsOfANonExistentPayeeReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns((Payee)null);
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
 
         [TestMethod]
         public void CanReturnAPayeeCreateView()
@@ -122,6 +139,103 @@ namespace RentalTracker.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void InsertingAnInvalidNewPayeeDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveNewPayee(It.IsAny<Payee>())).Throws(new RentalTrackerServiceValidationException("Error",
+                     new List<ValidationResult>()
+                     {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                     }));
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Create(new Payee()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+        }
+
+
+        [TestMethod]
+        public void CanReturnAnPayeeEditView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedPayee = mockedData.Payees.First();
+            mockService.Setup(s => s.FindPayee(It.IsAny<int>())).Returns(mockedPayee);
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(1) as ViewResult;
+            var model = result.Model as Payee;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(mockedPayee.Name, model.Name);
+            Assert.AreEqual(mockedPayee.DefaultCategory.Name, model.DefaultCategory.Name);
+            Assert.AreEqual(mockedPayee.Memo, model.Memo);
+        }
+
+        [TestMethod]
+        public void EditingANonExistentPayeeReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindPayee(It.IsAny<int>())).Returns((Payee)null);
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Edit(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void UpdatingAValidPayeeRedirectsToIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedPayee(It.IsAny<Payee>()));
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.Edit(new Payee()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void UpdatingAnInvalidPayeeDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedPayee(It.IsAny<Payee>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                    }));
+
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(new Payee()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
         }
     }
 }
