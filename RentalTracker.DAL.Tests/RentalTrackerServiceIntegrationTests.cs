@@ -107,6 +107,30 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void CanFindAccountyById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccount(1);
+
+            Assert.AreEqual("BankAccount1", actual.Name);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAnAccountThatDoesNotExistReturnsNull()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccount(999);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void CanInsertNewAccount()
         {
             DataHelper.NewDb();
@@ -138,7 +162,6 @@ namespace RentalTracker.DAL.Tests
             service.SaveNewAccount(accountToAdd);
             Assert.Fail("Added an account with same name as an exiting account");
         }
-
 
         [TestMethod, TestCategory("Integration")]
         public void CanUpdateAccount()
@@ -237,6 +260,18 @@ namespace RentalTracker.DAL.Tests
             var actual = service.FindCategory(1);
 
             Assert.AreEqual("Rental Income", actual.Name);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindACategoryThatDoesNotExistReturnsNull()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindCategory(999);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -369,6 +404,18 @@ namespace RentalTracker.DAL.Tests
 
             Assert.AreEqual("Renter A", actual.Name);
             Assert.IsNotNull(actual.DefaultCategory);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAPayeeThatDoesNotExistReturnsNull()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindPayee(999);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -603,6 +650,112 @@ namespace RentalTracker.DAL.Tests
             Assert.AreEqual(7, service.GetNumberOfPayees());
             Assert.AreEqual(5, service.GetNumberOfCategories());
         }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindTransactionById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindTransaction(1);
+
+            Assert.AreEqual("01/01/2016", actual.Date.ToShortDateString());
+            Assert.AreEqual(10.00m, actual.Amount);
+            Assert.AreEqual(1, actual.AccountId);
+            Assert.AreEqual(1, actual.PayeeId);
+            Assert.AreEqual(1, actual.CategoryId);
+            Assert.IsNull(actual.Reference);
+            Assert.IsNull(actual.Memo);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindATransactionThatDoesNotExistReturnsNull()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindTransaction(999);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindTransactionWithAccountAndPayeeAndCategoryById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindTransactionWithAccountAndPayeeAndCategory(1);
+
+            Assert.AreEqual("01/01/2016", actual.Date.ToShortDateString());
+            Assert.AreEqual(10.00m, actual.Amount);
+            Assert.AreEqual("BankAccount1", actual.Account.Name);
+            Assert.AreEqual("Renter A", actual.Payee.Name);
+            Assert.AreEqual("Rental Income", actual.Category.Name);
+            Assert.AreEqual(1, actual.CategoryId);
+            Assert.IsNull(actual.Reference);
+            Assert.IsNull(actual.Memo);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanUpdateTransaction()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var transaction = service.FindTransaction(1);
+            DateTime expected = DateTime.Today;
+            transaction.Date = expected;
+
+            service.SaveUpdatedTransaction(transaction);
+
+            Assert.AreEqual(expected, service.FindTransaction(1).Date);
+        }
+
+        [TestMethod, TestCategory("Integration"),
+            ExpectedException(typeof(RentalTrackerServiceValidationException))]
+        public void CannotUpdateATransactionToHaveAnAmountOfZero()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+            var transaction = service.FindTransaction(1);
+            transaction.Amount = 0.00m;
+
+            service.SaveUpdatedTransaction(transaction);
+
+            Assert.Fail("Added an transaction with an amount of zero");
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanDeleteTransaction()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            service.RemoveTransaction(1);
+
+            Assert.AreEqual(4, service.GetAllTransactionsWithAccountAndPayeeAndCategory().Count);
+        }
+
+        [TestMethod, TestCategory("Integration")
+            ExpectedException(typeof(ArgumentNullException))]
+        public void CannotDeleteTransactionThatDoesNotExist()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            service.RemoveTransaction(999);
+
+            Assert.Fail("Deleted a non-existent transaction");
+        }
+
         #endregion
     }
 }
