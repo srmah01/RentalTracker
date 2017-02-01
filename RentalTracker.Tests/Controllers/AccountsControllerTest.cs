@@ -129,7 +129,6 @@ namespace RentalTracker.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
-        //TODO: Need to re-write this test to use an Exception that can be mocked
         [TestMethod]
         public void CreatingAnAccountWithADuplicateNameReturnsModelErrors()
         {

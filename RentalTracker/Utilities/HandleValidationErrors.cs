@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity.Validation;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace RentalTracker.Utilities
@@ -20,5 +17,18 @@ namespace RentalTracker.Utilities
                 }
             }
         }
+
+        public static void AddExceptionError(Controller controller, Exception ex)
+        {
+            Exception inner = ex;
+            string message = String.Empty;
+            while (inner != null)
+            {
+                message = inner.Message;
+                inner = inner.InnerException;
+            }
+            controller.ModelState.AddModelError(String.Empty, message);
+        }
+
     }
 }

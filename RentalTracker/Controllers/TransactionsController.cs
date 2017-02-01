@@ -56,24 +56,6 @@ namespace RentalTracker.Controllers
             return View(indexViewModel);
         }
 
-        // GET: Transactions/Details/5
-        public ActionResult Details(int? id)
-        {
-            // For now make Details page unreachable - it might be removed later
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Transaction transaction = rentalTrackerService.FindTransaction(id);
-            if (transaction == null)
-            {
-                return HttpNotFound();
-            }
-            return View(transaction);
-        }
-
         // GET: Transactions/Create
         public ActionResult Create()
         {
@@ -98,6 +80,10 @@ namespace RentalTracker.Controllers
                 catch (RentalTrackerServiceValidationException ex)
                 {
                     HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
                 }
             }
 
@@ -140,6 +126,10 @@ namespace RentalTracker.Controllers
                 {
                     HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
                 }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
 
             GetReferenceData();
@@ -166,8 +156,15 @@ namespace RentalTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            rentalTrackerService.RemoveTransaction(id);
-            return RedirectToAction("Index");
+            try
+            {
+                rentalTrackerService.RemoveTransaction(id);
+                return RedirectToAction("Index");
+            }
+            catch (ArgumentNullException)
+            {
+                return HttpNotFound();
+            }
         }
 
         private void GetReferenceData()

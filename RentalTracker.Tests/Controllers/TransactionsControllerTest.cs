@@ -77,21 +77,6 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void RequestingATransactionDetailsViewReturnsBadRequest()
-        {
-            // Arrange
-            var mockService = new Mock<IRentalTrackerService>();
-            TransactionsController controller = new TransactionsController(mockService.Object);
-
-            // Act
-            HttpStatusCodeResult result = controller.Details(1) as HttpStatusCodeResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(400, result.StatusCode);
-        }
-
-        [TestMethod]
         public void CanReturnATransactionCreateView()
         {
             // Arrange
@@ -229,6 +214,71 @@ namespace RentalTracker.Tests.Controllers
             Assert.AreEqual(mockedData.Payees.Count(), controller.ViewBag.PayeeId.Items.Count);
         }
 
+        [TestMethod]
+        public void CanReturnADeleteTransactionView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedTransaction = mockedData.Transactions.First();
+            mockService.Setup(s => s.FindTransaction(It.IsAny<int>())).Returns(mockedTransaction);
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Delete(1) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void AttemptingToReturnADeleteViewForANonExistentTranscationReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindTransaction(It.IsAny<int>())).Returns((Transaction) null);
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+            
+            // Act
+            HttpNotFoundResult result = controller.Delete(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void DeletingATransactionReturnsIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.RemoveTransaction(It.IsAny<int>()));
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.DeleteConfirmed(1) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void DeletingAnAlreadyDeletedTransactionReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.RemoveTransaction(It.IsAny<int>())).Throws(new ArgumentNullException());
+
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.DeleteConfirmed(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
 
     }
 }
