@@ -26,7 +26,7 @@ namespace RentalTracker.DAL.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            DataHelper.PrepareData(context);
+            DataHelper.NewDb();
         }
     }
 }

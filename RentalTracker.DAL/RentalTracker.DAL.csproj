@@ -73,6 +73,10 @@
     <Compile Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.Designer.cs">
       <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702021437594_add_Taxable_column_to_Transaction.cs" />
+    <Compile Include="Migrations\201702021437594_add_Taxable_column_to_Transaction.Designer.cs">
+      <DependentUpon>201702021437594_add_Taxable_column_to_Transaction.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="CategoryConfiguration.cs" />
     <Compile Include="RentalTrackerContext.cs" />
@@ -106,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.resx">
       <DependentUpon>201701181503322_remove_Number_column_and_reduce_size_of_Reference_column.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702021437594_add_Taxable_column_to_Transaction.resx">
+      <DependentUpon>201702021437594_add_Taxable_column_to_Transaction.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

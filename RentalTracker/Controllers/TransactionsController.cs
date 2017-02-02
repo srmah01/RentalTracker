@@ -46,7 +46,7 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;
                 }
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
@@ -68,7 +68,7 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Reference,Memo")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Taxable,Amount,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Reference,Memo")] Transaction transaction)
+        public ActionResult Edit([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Taxable,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
