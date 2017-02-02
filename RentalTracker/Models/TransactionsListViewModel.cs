@@ -29,7 +29,7 @@ namespace RentalTracker.Models
         public decimal Balance { get; set; }
 
         [Display(Name = "")]
-        public bool? Reconciled { get; set; }
+        public bool? Taxable { get; set; }
 
         public string Reference { get; set; }
 

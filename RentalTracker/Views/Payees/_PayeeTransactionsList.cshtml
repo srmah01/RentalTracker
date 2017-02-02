@@ -56,8 +56,8 @@
                         @Html.DisplayFor(model => item.Expense)
                     </td>
                     <td>
-                        @if (item.Reconciled != null && item.Reconciled == true)
-                    {
+                        @if (item.Taxable != null && item.Taxable == true)
+                        {
                             <span><i class="glyphicon glyphicon-ok"></i></span>
                         }
                     </td>
