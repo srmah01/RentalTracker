@@ -48,6 +48,7 @@ namespace RentalTracker.Controllers
                     transactionViewModel.Income = null;
                     transactionViewModel.Expense = item.Amount;
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
                 indexViewModel.Transactions.Add(transactionViewModel);

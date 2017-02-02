@@ -67,7 +67,8 @@ namespace RentalTracker.Tests.Controllers
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Date, model.Transactions.ElementAt(i).Date);
                 Assert.IsTrue(
                     mockedData.Transactions.ElementAt(i).Amount == model.Transactions.ElementAt(i).Income ||
-                    (mockedData.Transactions.ElementAt(i).Amount *-1) == model.Transactions.ElementAt(i).Expense);
+                    mockedData.Transactions.ElementAt(i).Amount == model.Transactions.ElementAt(i).Expense);
+                Assert.AreEqual(mockedData.Transactions.ElementAt(i).Taxable, model.Transactions.ElementAt(i).Taxable);
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Account.Name, model.Transactions.ElementAt(i).Account);
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Category.Name, model.Transactions.ElementAt(i).Category);
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Payee.Name, model.Transactions.ElementAt(i).Payee);
