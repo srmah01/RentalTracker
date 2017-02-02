@@ -66,7 +66,13 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking().ToList();
+                var accounts = context.Accounts.AsNoTracking().ToList();
+                foreach (var account in accounts)
+                {
+                    account.Balance = GetAccountBalance(account.Id);
+                }
+
+                return accounts;
             }
         }
 
@@ -74,8 +80,14 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking()
+                var account = context.Accounts.AsNoTracking()
                                        .SingleOrDefault(a => a.Id == id);
+                if (account != null)
+                {
+                    account.Balance = GetAccountBalance(id);
+                }
+
+                return account;
             }
         }
 
@@ -86,12 +98,16 @@ namespace RentalTracker.DAL
                 var account = context.Accounts
                                        .Include(a => a.Transactions)
                                        .SingleOrDefault(a => a.Id == id);
-
-                foreach (var transaction in account.Transactions)
+                if (account != null)
                 {
-                    // Explicitly load the Payee & Category references
-                    context.Entry(transaction).Reference(t => t.Payee).Load();
-                    context.Entry(transaction).Reference(t => t.Category).Load();
+                    foreach (var transaction in account.Transactions)
+                    {
+                        // Explicitly load the Payee & Category references
+                        context.Entry(transaction).Reference(t => t.Payee).Load();
+                        context.Entry(transaction).Reference(t => t.Category).Load();
+                    }
+
+                    account.Balance = GetAccountBalance(id);
                 }
 
                 return account;
@@ -120,10 +136,20 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
+                var openingBalance = (from a in context.Accounts
+                                      where a.Id == id
+                                      select a.OpeningBalance).FirstOrDefault();
+
                 // Generates SQL that gets only the specific column
-                return (from a in context.Accounts
-                        where a.Id == id
-                        select a.Balance).FirstOrDefault();
+                var amounts = (from t in context.Transactions
+                where t.AccountId == id
+                               select new { Amount = t.Amount, CategoryType = t.Category.Type }).ToList();
+
+                var income = amounts.Where(a => a.CategoryType == CategoryType.Income).ToList().Sum(a => a.Amount);
+
+                var expense = amounts.Where(a => a.CategoryType == CategoryType.Expense).ToList().Sum(a => a.Amount);
+
+                return (openingBalance + income - expense);
             }
         }
 

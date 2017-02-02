@@ -97,6 +97,20 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void GetAllAccountsIncludesBalances()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+            var actual = new List<Account> (service.GetAllAccounts());
+
+            Assert.AreEqual(3, actual.Count);
+            Assert.AreEqual(210.99m, actual[0].Balance);
+            Assert.AreEqual(0.00m, actual[1].Balance);
+            Assert.AreEqual(970.00m, actual[2].Balance);
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void GettingBalanceOfNonExistentAccountReturnsZero()
         {
             DataHelper.NewDb();
@@ -107,7 +121,7 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
-        public void CanFindAccountyById()
+        public void CanFindAccountById()
         {
             DataHelper.NewDb();
 
@@ -116,6 +130,8 @@ namespace RentalTracker.DAL.Tests
             var actual = service.FindAccount(1);
 
             Assert.AreEqual("BankAccount1", actual.Name);
+            Assert.AreEqual(100.99m, actual.OpeningBalance);
+            Assert.AreEqual(210.99m, actual.Balance);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -126,6 +142,33 @@ namespace RentalTracker.DAL.Tests
             var service = new RentalTrackerService();
 
             var actual = service.FindAccount(999);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void CanFindAccountWithTransactionsById()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccountWithTransactions(1);
+
+            Assert.AreEqual("BankAccount1", actual.Name);
+            Assert.AreEqual(100.99m, actual.OpeningBalance);
+            Assert.AreEqual(210.99m, actual.Balance);
+            Assert.AreEqual(2, actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAnAccountWithTransactionsThatDoesNotExistReturnsNull()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccountWithTransactions(999);
 
             Assert.IsNull(actual);
         }

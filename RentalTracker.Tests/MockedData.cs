@@ -19,10 +19,10 @@ namespace RentalTracker.Tests
         {
             defaultTransactionDate = new DateTime(2017, 1, 1);
             accounts = new List<Account>() {
-                new Account() { Id = 1, Name = "BankAccount1", OpeningBalance = 100.99m, Balance = 0m },
-                new Account() { Id = 2, Name = "BankAccount2", Balance = 0m },
-                new Account() { Id = 3, Name = "BankAccount3", OpeningBalance = 1000.00m, Balance = 0m },
-                new Account() { Id = 4, Name = "AccountWithNoTransactions", OpeningBalance = 0.0m, Balance = 0.0m }
+                new Account() { Id = 1, Name = "BankAccount1", OpeningBalance = 100.99m },
+                new Account() { Id = 2, Name = "BankAccount2" },
+                new Account() { Id = 3, Name = "BankAccount3", OpeningBalance = 1000.00m },
+                new Account() { Id = 4, Name = "AccountWithNoTransactions", OpeningBalance = 0.0m }
             };
 
             categories = new List<Category>() {
@@ -91,14 +91,6 @@ namespace RentalTracker.Tests
                     Date = defaultTransactionDate.AddDays(3)
                 }
             };
-
-
-            // Seed Balance with value including amounts from transactions
-            foreach (var account in accounts)
-            {
-                var amounts = transactions.Where(t => t.AccountId == account.Id).Sum(t => t.Amount);
-                account.Balance = account.OpeningBalance + amounts;
-            }
 
             // Wire up references
             foreach(var payee in payees)
