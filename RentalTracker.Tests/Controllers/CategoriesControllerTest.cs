@@ -104,8 +104,13 @@ namespace RentalTracker.Tests.Controllers
             Assert.AreEqual(mockedData.Categories.First().Transactions.Count(), model.Transactions.Count);
             for (int i = 0; i < model.Transactions.Count; i++)
             {
-                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Amount, model.Transactions.ElementAt(i).Income);
                 Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Date, model.Transactions.ElementAt(i).Date);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Account.Name, model.Transactions.ElementAt(i).Account);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Payee.Name, model.Transactions.ElementAt(i).Payee);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Amount, model.Transactions.ElementAt(i).Income);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Taxable, model.Transactions.ElementAt(i).Taxable);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Reference, model.Transactions.ElementAt(i).Reference);
+                Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Memo, model.Transactions.ElementAt(i).Memo);
             }
         }
 

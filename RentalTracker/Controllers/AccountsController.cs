@@ -63,8 +63,9 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;   // Alway display a posivive amount
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Balance = item.Balance;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
