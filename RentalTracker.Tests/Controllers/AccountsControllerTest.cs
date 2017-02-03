@@ -69,7 +69,7 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
+            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>())).Returns(
                 mockedAccount
             );
             AccountsController controller = new AccountsController(mockService.Object);
@@ -91,9 +91,9 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
-                mockedData.Accounts.First()
-            );
+            var mockedAccount = mockedData.Accounts.First();
+            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>()))
+                       .Returns(mockedAccount);
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
@@ -102,19 +102,30 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
             var model = result.Model as EntityDetailsViewModel<Account>;
-            Assert.AreEqual(mockedData.Accounts.First().Name, model.Entity.Name);
-            Assert.AreEqual(mockedData.Accounts.First().OpeningBalance, model.Entity.OpeningBalance);
-            Assert.AreEqual(mockedData.Accounts.First().Balance, model.Entity.Balance);
-            Assert.AreEqual(mockedData.Accounts.First().Transactions.Count(), model.Transactions.Count);
+            Assert.AreEqual(mockedAccount.Name, model.Entity.Name);
+            Assert.AreEqual(mockedAccount.OpeningBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(mockedAccount.Balance, model.Entity.Balance);
+            Assert.AreEqual(mockedAccount.Transactions.Count(), model.Transactions.Count);
             for (int i = 0; i < model.Transactions.Count; i++)
             {
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Date, model.Transactions.ElementAt(i).Date);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Category.Name, model.Transactions.ElementAt(i).Category);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Payee.Name, model.Transactions.ElementAt(i).Payee);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Amount, model.Transactions.ElementAt(i).Income);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Taxable, model.Transactions.ElementAt(i).Taxable);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Reference, model.Transactions.ElementAt(i).Reference);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Memo, model.Transactions.ElementAt(i).Memo);
+                var expected = mockedData.Accounts.First().Transactions.ElementAt(i);
+                var actual = model.Transactions.ElementAt(i);
+                bool isIncome = expected.Category.Type == CategoryType.Income;
+                Assert.AreEqual(expected.Date, actual.Date);
+                Assert.AreEqual(expected.Category.Name, actual.Category);
+                Assert.AreEqual(expected.Payee.Name, actual.Payee);
+                if (isIncome)
+                {
+                    Assert.AreEqual(expected.Amount, actual.Income);
+                }
+                else
+                {
+                    Assert.AreEqual(expected.Amount, actual.Expense);
+                }
+                Assert.AreEqual(expected.Taxable, actual.Taxable);
+                Assert.AreEqual(expected.Balance, actual.Balance);
+                Assert.AreEqual(expected.Reference, actual.Reference);
+                Assert.AreEqual(expected.Memo, actual.Memo);
             }
         }
 

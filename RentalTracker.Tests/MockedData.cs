@@ -50,7 +50,7 @@ namespace RentalTracker.Tests
                     AccountId = accounts.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payees.Where(p => p.Name == "Renter A").Single().Id,
                     CategoryId = payees.Where(p => p.Name == "Renter A").Single().DefaultCategoryId,
-                    Amount = 10.00m,
+                    Amount = 10.00m, Balance = 110.99m,
                     Date = defaultTransactionDate
                 },
                 new Transaction()
@@ -59,7 +59,7 @@ namespace RentalTracker.Tests
                     AccountId = accounts.Where(a => a.Name == "BankAccount1").Single().Id,
                     PayeeId = payees.Where(p => p.Name == "Renter B").Single().Id,
                     CategoryId = categories.Where(p => p.Name == "Rental Income").Single().Id,
-                    Amount = 100.00m,
+                    Amount = 100.00m, Balance = 210.99m,
                     Date = defaultTransactionDate
                 },
                 new Transaction()
@@ -68,7 +68,7 @@ namespace RentalTracker.Tests
                     AccountId = accounts.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payees.Where(p => p.Name == "Renter A").Single().Id,
                     CategoryId = payees.Where(p => p.Name == "Renter A").Single().DefaultCategoryId,
-                    Amount = 200.00m,
+                    Amount = 200.00m, Balance = 200.00m,
                     Date = defaultTransactionDate.AddDays(1)
                 },
                 new Transaction()
@@ -77,7 +77,7 @@ namespace RentalTracker.Tests
                     AccountId = accounts.Where(a => a.Name == "BankAccount2").Single().Id,
                     PayeeId = payees.Where(p => p.Name == "Gas Supplier").Single().Id,
                     CategoryId = categories.Where(p => p.Name == "Utilities").Single().Id,
-                    Amount = -200.00m,
+                    Amount = 200.00m, Balance = 0.00m,
                     Date = defaultTransactionDate.AddDays(2),
                     Memo = "For Quarter May - Aug"
                 },
@@ -87,7 +87,7 @@ namespace RentalTracker.Tests
                     AccountId = accounts.Where(a => a.Name == "BankAccount3").Single().Id,
                     PayeeId = payees.Where(p => p.Name == "MyBank Charges").Single().Id,
                     CategoryId = categories.Where(p => p.Name == "Bank Charges").Single().Id,
-                    Amount = -30.00m,
+                    Amount = 30.00m, Balance = 970.00m,
                     Date = defaultTransactionDate.AddDays(3)
                 }
             };

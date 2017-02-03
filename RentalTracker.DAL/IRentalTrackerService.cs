@@ -30,7 +30,7 @@ namespace RentalTracker.DAL
 
         Account FindAccount(int? id);
 
-        Account FindAccountWithTransactions(int? id);
+        Account FindAccountWithTransactions(int? id, bool ascending = true);
 
         void SaveNewAccount(Account account);
 

@@ -8,8 +8,21 @@ using System.Threading.Tasks;
 
 namespace RentalTracker.DAL
 {
+    /// <summary>
+    /// Class to help create and seed the database for testing.
+    /// </summary>
     public class DataHelper
     {
+        // Getters / Setters of Seed data to help with testing
+        public static IList<Account> Accounts { get; set; }
+        public static IList<Category> Categories { get; set; }
+        public static IList<Payee> Payees { get; set; }
+        public static IList<Transaction> Transactions { get; set; }
+
+        /// <summary>
+        /// Drop and re-add the database instance with or without seeded data
+        /// </summary>
+        /// <param name="withSeed"></param>
         public static void NewDb(bool withSeed = true)
         {
             Database.SetInitializer(new DropCreateDatabaseAlways<RentalTrackerContext>());
@@ -23,6 +36,10 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// Seed the context with some representative dummy data
+        /// </summary>
+        /// <param name="context"></param>
         public static void PrepareData(RentalTrackerContext context)
         {
             var accountsToAdd = new List<Account>()
@@ -85,6 +102,31 @@ namespace RentalTracker.DAL
             };
             context.Transactions.AddRange(transactionsToAdd);
             context.SaveChanges();
+
+            Accounts = accountsAdded;
+            Categories = categoriesAdded;
+            Payees = payeesAdded;
+            Transactions = context.Transactions.ToList();
+        }
+
+        /// <summary>
+        /// Get the Account balance of an account using seed transactions
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        static public Decimal GetAccountBalance(int id)
+        {
+            var openingBalance = Accounts.FirstOrDefault(a => a.Id == id).OpeningBalance;
+
+            var amounts = Transactions.Where(t => t.AccountId == id)
+                                       .Select(t => new { Amount = t.Amount, CategoryType = t.Category.Type })
+                                       .ToList();
+
+            var income = amounts.Where(a => a.CategoryType == CategoryType.Income).ToList().Sum(a => a.Amount);
+
+            var expense = amounts.Where(a => a.CategoryType == CategoryType.Expense).ToList().Sum(a => a.Amount);
+
+            return (openingBalance + income - expense);
         }
     }
 }

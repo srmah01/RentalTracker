@@ -5,6 +5,7 @@ using RentalTracker.Domain;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using RentalTracker.DAL.Exceptions;
+using System.Linq;
 
 namespace RentalTracker.DAL.Tests
 {
@@ -19,7 +20,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(3, service.GetNumberOfAccounts());
+            Assert.AreEqual(DataHelper.Accounts.Count, service.GetNumberOfAccounts());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -29,7 +30,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(4, service.GetNumberOfCategories());
+            Assert.AreEqual(DataHelper.Categories.Count, service.GetNumberOfCategories());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -39,7 +40,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(6, service.GetNumberOfPayees());
+            Assert.AreEqual(DataHelper.Payees.Count, service.GetNumberOfPayees());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -49,7 +50,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(5, service.GetNumberOfTransactions());
+            Assert.AreEqual(DataHelper.Transactions.Count, service.GetNumberOfTransactions());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -58,8 +59,13 @@ namespace RentalTracker.DAL.Tests
             DataHelper.NewDb();
 
             var service = new RentalTrackerService();
+            var total = 0.00m;
+            foreach (var account in DataHelper.Accounts)
+            {
+                total += DataHelper.GetAccountBalance(account.Id);
+            }
 
-            Assert.AreEqual(1180.99m, service.GetTotalOfAccountBalances());
+            Assert.AreEqual(total, service.GetTotalOfAccountBalances());
         }
         #endregion
 
@@ -81,7 +87,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(3, service.GetAllAccounts().Count);
+            Assert.AreEqual(DataHelper.Accounts.Count, service.GetAllAccounts().Count);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -91,9 +97,9 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(210.99m, service.GetAccountBalance(1));
-            Assert.AreEqual(0.00m, service.GetAccountBalance(2));
-            Assert.AreEqual(970.00m, service.GetAccountBalance(3));
+            Assert.AreEqual(DataHelper.GetAccountBalance(1), service.GetAccountBalance(1));
+            Assert.AreEqual(DataHelper.GetAccountBalance(2), service.GetAccountBalance(2));
+            Assert.AreEqual(DataHelper.GetAccountBalance(3), service.GetAccountBalance(3));
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -102,12 +108,12 @@ namespace RentalTracker.DAL.Tests
             DataHelper.NewDb();
 
             var service = new RentalTrackerService();
-            var actual = new List<Account> (service.GetAllAccounts());
+            var actual = new List<Account>(service.GetAllAccounts());
 
-            Assert.AreEqual(3, actual.Count);
-            Assert.AreEqual(210.99m, actual[0].Balance);
-            Assert.AreEqual(0.00m, actual[1].Balance);
-            Assert.AreEqual(970.00m, actual[2].Balance);
+            Assert.AreEqual(DataHelper.Accounts.Count, actual.Count);
+            Assert.AreEqual(DataHelper.GetAccountBalance(1), actual[0].Balance);
+            Assert.AreEqual(DataHelper.GetAccountBalance(2), actual[1].Balance);
+            Assert.AreEqual(DataHelper.GetAccountBalance(3), actual[2].Balance);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -117,7 +123,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
 
-            Assert.AreEqual(0.00m, service.GetAccountBalance(4));
+            Assert.AreEqual(0.00m, service.GetAccountBalance(999));
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -129,9 +135,11 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindAccount(1);
 
-            Assert.AreEqual("BankAccount1", actual.Name);
-            Assert.AreEqual(100.99m, actual.OpeningBalance);
-            Assert.AreEqual(210.99m, actual.Balance);
+            var expected = DataHelper.Accounts.SingleOrDefault(a => a.Id == 1);
+
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.OpeningBalance, actual.OpeningBalance);
+            Assert.AreEqual(DataHelper.GetAccountBalance(1), actual.Balance);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -155,11 +163,31 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindAccountWithTransactions(1);
 
-            Assert.AreEqual("BankAccount1", actual.Name);
-            Assert.AreEqual(100.99m, actual.OpeningBalance);
-            Assert.AreEqual(210.99m, actual.Balance);
-            Assert.AreEqual(2, actual.Transactions.Count);
+            var expected = DataHelper.Accounts.SingleOrDefault(a => a.Id == 1);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.OpeningBalance, actual.OpeningBalance);
+            Assert.AreEqual(DataHelper.GetAccountBalance(1), actual.Balance);
+            Assert.AreEqual(expected.Transactions.Count, actual.Transactions.Count);
         }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindingAnAccountWithTransactionsByIdAlsoReturnsABalanceForEachTransaction()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccountWithTransactions(1);
+
+            var balance = actual.OpeningBalance;
+            var transactions = actual.Transactions.ToArray();
+            foreach (var transaction in transactions)
+            {
+                balance += transaction.Amount;
+                Assert.AreEqual(balance, transaction.Balance);
+            }
+        }
+
 
         [TestMethod, TestCategory("Integration")]
         public void FindAnAccountWithTransactionsThatDoesNotExistReturnsNull()
@@ -186,7 +214,7 @@ namespace RentalTracker.DAL.Tests
 
             var service = new RentalTrackerService();
             service.SaveNewAccount(accountToAdd);
-            Assert.AreEqual(4, service.GetAllAccounts().Count);
+            Assert.AreEqual(DataHelper.Accounts.Count + 1, service.GetAllAccounts().Count);
         }
 
         [TestMethod, TestCategory("Integration"),
@@ -255,7 +283,7 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewCategory(categoryToAdd);
 
-            Assert.AreEqual(5, service.GetNumberOfCategories());
+            Assert.AreEqual(DataHelper.Categories.Count + 1, service.GetNumberOfCategories());
         }
 
         [TestMethod, TestCategory("Integration"),
@@ -302,7 +330,9 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindCategory(1);
 
-            Assert.AreEqual("Rental Income", actual.Name);
+            var expected = DataHelper.Categories.SingleOrDefault(c => c.Id == 1);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.Type, actual.Type);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -326,8 +356,9 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindCategoryWithTransactions(1);
 
-            Assert.AreEqual("Rental Income", actual.Name);
-            Assert.AreNotEqual(0, actual.Transactions.Count);
+            var expected = DataHelper.Categories.SingleOrDefault(c => c.Id == 1);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(DataHelper.Transactions.Count(t => t.CategoryId == 1), actual.Transactions.Count);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -379,7 +410,7 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewPayee(payeeToAdd);
 
-            Assert.AreEqual(7, service.GetNumberOfPayees());
+            Assert.AreEqual(DataHelper.Payees.Count + 1, service.GetNumberOfPayees());
         }
 
         [TestMethod, TestCategory("Integration"),
@@ -432,8 +463,8 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewPayee(payeeToAdd);
 
-            Assert.AreEqual(7, service.GetNumberOfPayees());
-            Assert.AreEqual(5, service.GetNumberOfCategories());
+            Assert.AreEqual(DataHelper.Payees.Count + 1, service.GetNumberOfPayees());
+            Assert.AreEqual(DataHelper.Categories.Count + 1, service.GetNumberOfCategories());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -445,7 +476,10 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindPayee(1);
 
-            Assert.AreEqual("Renter A", actual.Name);
+            var expected = DataHelper.Payees.SingleOrDefault(p => p.Id == 1);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.DefaultCategoryId, actual.DefaultCategoryId);
+            Assert.AreEqual(expected.Memo, actual.Memo);
             Assert.IsNotNull(actual.DefaultCategory);
         }
 
@@ -470,8 +504,11 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindPayeeWithTransactions(1);
 
-            Assert.AreEqual("Renter A", actual.Name);
-            Assert.AreNotEqual(0, actual.Transactions.Count);
+            var expected = DataHelper.Payees.SingleOrDefault(p => p.Id == 1);
+            Assert.AreEqual(expected.Name, actual.Name);
+            Assert.AreEqual(expected.DefaultCategoryId, actual.DefaultCategoryId);
+            Assert.AreEqual(expected.Memo, actual.Memo);
+            Assert.AreEqual(expected.Transactions.Count, actual.Transactions.Count);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -525,7 +562,7 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewTransaction(transactionToAdd);
 
-            Assert.AreEqual(6, service.GetNumberOfTransactions());
+            Assert.AreEqual(DataHelper.Transactions.Count + 1, service.GetNumberOfTransactions());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -548,7 +585,7 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewTransaction(transactionToAdd);
 
-            Assert.AreEqual(6, service.GetNumberOfTransactions());
+            Assert.AreEqual(DataHelper.Transactions.Count + 1, service.GetNumberOfTransactions());
         }
 
 
@@ -667,7 +704,6 @@ namespace RentalTracker.DAL.Tests
             Assert.Fail("Transaction was added without an Amount");
         }
 
-
         [TestMethod, TestCategory("Integration")]
         public void CanInsertNewTransactionWithANewAccountCategoryAndPayeeAndAllWillBeInserted()
         {
@@ -680,7 +716,7 @@ namespace RentalTracker.DAL.Tests
                 Date = DateTime.Today,
                 Amount = 10.00m,
                 Account = new Account() { Name = "New Accoount", OpeningBalance = 0.00m },
-                Payee = new Payee() {  Name = "New Payee", DefaultCategoryId = 1},
+                Payee = new Payee() { Name = "New Payee", DefaultCategoryId = 1 },
                 Category = new Category() { Name = "New Category", Type = CategoryType.Income },
                 Reference = "Reference",
                 Memo = "Memo"
@@ -688,10 +724,10 @@ namespace RentalTracker.DAL.Tests
 
             service.SaveNewTransaction(transactionToAdd);
 
-            Assert.AreEqual(6, service.GetNumberOfTransactions());
-            Assert.AreEqual(4, service.GetNumberOfAccounts());
-            Assert.AreEqual(7, service.GetNumberOfPayees());
-            Assert.AreEqual(5, service.GetNumberOfCategories());
+            Assert.AreEqual(DataHelper.Transactions.Count + 1, service.GetNumberOfTransactions());
+            Assert.AreEqual(DataHelper.Accounts.Count + 1, service.GetNumberOfAccounts());
+            Assert.AreEqual(DataHelper.Payees.Count + 1, service.GetNumberOfPayees());
+            Assert.AreEqual(DataHelper.Categories.Count + 1, service.GetNumberOfCategories());
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -703,13 +739,14 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindTransaction(1);
 
-            Assert.AreEqual("01/01/2016", actual.Date.ToShortDateString());
-            Assert.AreEqual(10.00m, actual.Amount);
-            Assert.AreEqual(1, actual.AccountId);
-            Assert.AreEqual(1, actual.PayeeId);
-            Assert.AreEqual(1, actual.CategoryId);
-            Assert.IsNull(actual.Reference);
-            Assert.IsNull(actual.Memo);
+            var expected = DataHelper.Transactions.SingleOrDefault(t => t.Id == 1);
+            Assert.AreEqual(expected.Date, actual.Date);
+            Assert.AreEqual(expected.Amount, actual.Amount);
+            Assert.AreEqual(expected.AccountId, actual.AccountId);
+            Assert.AreEqual(expected.PayeeId, actual.PayeeId);
+            Assert.AreEqual(expected.CategoryId, actual.CategoryId);
+            Assert.AreEqual(expected.Reference, actual.Reference);
+            Assert.AreEqual(expected.Memo, actual.Memo);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -733,14 +770,14 @@ namespace RentalTracker.DAL.Tests
 
             var actual = service.FindTransactionWithAccountAndPayeeAndCategory(1);
 
-            Assert.AreEqual("01/01/2016", actual.Date.ToShortDateString());
-            Assert.AreEqual(10.00m, actual.Amount);
-            Assert.AreEqual("BankAccount1", actual.Account.Name);
-            Assert.AreEqual("Renter A", actual.Payee.Name);
-            Assert.AreEqual("Rental Income", actual.Category.Name);
-            Assert.AreEqual(1, actual.CategoryId);
-            Assert.IsNull(actual.Reference);
-            Assert.IsNull(actual.Memo);
+            var expected = DataHelper.Transactions.SingleOrDefault(t => t.Id == 1);
+            Assert.AreEqual(expected.Date, actual.Date);
+            Assert.AreEqual(expected.Amount, actual.Amount);
+            Assert.AreEqual(expected.Account.Name, actual.Account.Name);
+            Assert.AreEqual(expected.Payee.Name, actual.Payee.Name);
+            Assert.AreEqual(expected.Category.Name, actual.Category.Name);
+            Assert.AreEqual(expected.Reference, actual.Reference);
+            Assert.AreEqual(expected.Memo, actual.Memo);
         }
 
         [TestMethod, TestCategory("Integration")]
@@ -783,7 +820,7 @@ namespace RentalTracker.DAL.Tests
 
             service.RemoveTransaction(1);
 
-            Assert.AreEqual(4, service.GetAllTransactionsWithAccountAndPayeeAndCategory().Count);
+            Assert.AreEqual(DataHelper.Transactions.Count - 1, service.GetAllTransactionsWithAccountAndPayeeAndCategory().Count);
         }
 
         [TestMethod, TestCategory("Integration")

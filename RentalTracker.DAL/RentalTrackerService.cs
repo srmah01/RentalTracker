@@ -91,23 +91,43 @@ namespace RentalTracker.DAL
             }
         }
 
-        public Account FindAccountWithTransactions(int? id)
+        public Account FindAccountWithTransactions(int? id, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var account = context.Accounts
-                                       .Include(a => a.Transactions)
-                                       .SingleOrDefault(a => a.Id == id);
+                                     .SingleOrDefault(a => a.Id == id);
+
                 if (account != null)
                 {
-                    foreach (var transaction in account.Transactions)
+                    if (ascending)
+                    {
+                        context.Entry(account).Collection(a => a.Transactions).Query()
+                               .OrderBy(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+                    else
+                    {
+                        context.Entry(account).Collection(a => a.Transactions).Query()
+                               .OrderByDescending(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+
+                    account.Balance = GetAccountBalance(id);
+
+                    var balance = account.OpeningBalance;
+
+                    foreach (var transaction in ascending ? account.Transactions : account.Transactions.Reverse())
                     {
                         // Explicitly load the Payee & Category references
                         context.Entry(transaction).Reference(t => t.Payee).Load();
                         context.Entry(transaction).Reference(t => t.Category).Load();
-                    }
 
-                    account.Balance = GetAccountBalance(id);
+                        balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
+                        transaction.Balance = balance;
+                    }
                 }
 
                 return account;
@@ -142,7 +162,7 @@ namespace RentalTracker.DAL
 
                 // Generates SQL that gets only the specific column
                 var amounts = (from t in context.Transactions
-                where t.AccountId == id
+                               where t.AccountId == id
                                select new { Amount = t.Amount, CategoryType = t.Category.Type }).ToList();
 
                 var income = amounts.Where(a => a.CategoryType == CategoryType.Income).ToList().Sum(a => a.Amount);
