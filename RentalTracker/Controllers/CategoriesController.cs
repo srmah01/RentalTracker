@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using RentalTracker.Utilities;
 
 namespace RentalTracker.Controllers
 {
@@ -60,8 +62,9 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
                 categoryViewModel.Transactions.Add(transactionViewModel);
@@ -85,8 +88,15 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewCategory(category);
+                try
+                {
+                    rentalTrackerService.SaveNewCategory(category);
                 return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
             }
 
             return View(category);
@@ -116,36 +126,21 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedCategory(category);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveUpdatedCategory(category);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
             return View(category);
         }
-
-        // GET: Categories/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Category category = rentalTrackerService.FindCategory(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            return View(category);
-        }
-
-        // POST: Categories/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Category category = db.Catgories.Find(id);
-        //    db.Catgories.Remove(category);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
     }
 }

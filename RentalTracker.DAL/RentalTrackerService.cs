@@ -66,7 +66,13 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking().ToList();
+                var accounts = context.Accounts.AsNoTracking().ToList();
+                foreach (var account in accounts)
+                {
+                    account.Balance = GetAccountBalance(account.Id);
+                }
+
+                return accounts;
             }
         }
 
@@ -74,24 +80,54 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Accounts.AsNoTracking()
+                var account = context.Accounts.AsNoTracking()
                                        .SingleOrDefault(a => a.Id == id);
+                if (account != null)
+                {
+                    account.Balance = GetAccountBalance(id);
+                }
+
+                return account;
             }
         }
 
-        public Account FindAccountWithTransactions(int? id)
+        public Account FindAccountWithTransactions(int? id, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var account = context.Accounts
-                                       .Include(a => a.Transactions)
-                                       .SingleOrDefault(a => a.Id == id);
+                                     .SingleOrDefault(a => a.Id == id);
 
-                foreach (var transaction in account.Transactions)
+                if (account != null)
                 {
-                    // Explicitly load the Payee & Category references
-                    context.Entry(transaction).Reference(t => t.Payee).Load();
-                    context.Entry(transaction).Reference(t => t.Category).Load();
+                    if (ascending)
+                    {
+                        context.Entry(account).Collection(a => a.Transactions).Query()
+                               .OrderBy(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+                    else
+                    {
+                        context.Entry(account).Collection(a => a.Transactions).Query()
+                               .OrderByDescending(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+
+                    account.Balance = GetAccountBalance(id);
+
+                    var balance = account.OpeningBalance;
+
+                    foreach (var transaction in ascending ? account.Transactions : account.Transactions.Reverse())
+                    {
+                        // Explicitly load the Payee & Category references
+                        context.Entry(transaction).Reference(t => t.Payee).Load();
+                        context.Entry(transaction).Reference(t => t.Category).Load();
+
+                        balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
+                        transaction.Balance = balance;
+                    }
                 }
 
                 return account;
@@ -120,10 +156,20 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
+                var openingBalance = (from a in context.Accounts
+                                      where a.Id == id
+                                      select a.OpeningBalance).FirstOrDefault();
+
                 // Generates SQL that gets only the specific column
-                return (from a in context.Accounts
-                                     where a.Id == id
-                                     select a.Balance).FirstOrDefault();
+                var amounts = (from t in context.Transactions
+                               where t.AccountId == id
+                               select new { Amount = t.Amount, CategoryType = t.Category.Type }).ToList();
+
+                var income = amounts.Where(a => a.CategoryType == CategoryType.Income).ToList().Sum(a => a.Amount);
+
+                var expense = amounts.Where(a => a.CategoryType == CategoryType.Expense).ToList().Sum(a => a.Amount);
+
+                return (openingBalance + income - expense);
             }
         }
 
@@ -195,7 +241,11 @@ namespace RentalTracker.DAL
         {
             using (var context = new RentalTrackerContext())
             {
-                return context.Payees.AsNoTracking().ToList();
+                return context.Payees
+                    .AsNoTracking()
+                    .Include(p => p.DefaultCategory)
+                    .AsNoTracking()
+                    .ToList();
             }
         }
 
@@ -204,7 +254,8 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 return context.Payees.AsNoTracking()
-                                       .SingleOrDefault(p => p.Id == id);
+                                     .Include(p => p.DefaultCategory)
+                                     .SingleOrDefault(p => p.Id == id);
             }
         }
 
@@ -213,7 +264,8 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 var payee = context.Payees
-                                     .Include(a => a.Transactions)
+                                     .Include(p => p.DefaultCategory)
+                                     .Include(p => p.Transactions)
                                      .SingleOrDefault(p => p.Id == id);
 
                 if (payee != null)
@@ -269,6 +321,18 @@ namespace RentalTracker.DAL
             using (var context = new RentalTrackerContext())
             {
                 return context.Transactions.AsNoTracking()
+                                           .SingleOrDefault(p => p.Id == id);
+            }
+        }
+
+        public Transaction FindTransactionWithAccountAndPayeeAndCategory(int? id)
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                return context.Transactions.AsNoTracking()
+                                           .Include(t => t.Account)
+                                           .Include(t => t.Payee)
+                                           .Include(t => t.Category)
                                            .SingleOrDefault(p => p.Id == id);
             }
         }

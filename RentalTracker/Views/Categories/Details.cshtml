@@ -2,38 +2,52 @@
 
 @{
     ViewBag.Title = "Categories";
+    ViewBag.Category = Model.Entity.Type.ToString().ToLower();
 }
 
 @Html.Partial("_JumboHeader")
 
 <div class="container">
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Entity.Name)
-        </dt>
+    <div class="col-md-4">
+        <div class="card-item card-item-@ViewBag.Category">
+            <div class="card-item-body-no-selection">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Name)</p>
+                        </div>
+                    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Entity.Name)
-        </dd>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Entity.Type, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Name)</p>
+                        </div>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Entity.Type)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Entity.Type)
-        </dd>
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i cla><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="form-group">
+                <div class="col-md-4">
+                    <a class="btn btn-default" href="@Url.Action("Index")"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    </dl>
-    <hr />
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Entity.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-
-    <hr />
-
-    <p>
-        @Html.Partial("_CategoryTransactionsList", Model.Transactions)
-    </p>
+    <div class="col-md-8">
+        <p>
+            @Html.Partial("_CategoryTransactionsList", Model.Transactions)
+        </p>
+    </div>
 </div>
 

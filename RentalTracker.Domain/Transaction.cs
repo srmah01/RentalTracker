@@ -29,8 +29,11 @@ namespace RentalTracker.Domain
         public DateTime Date { get; set; }
 
         // Amount is positive if it represents Income, or negative if it represents Expense
-        [Required, DisplayFormat(ApplyFormatInEditMode = true, DataFormatString ="{0:c}")]
+        [Required, DisplayFormat(ApplyFormatInEditMode = false, DataFormatString ="{0:c}")]
         public Decimal Amount { get; set; }
+
+        [Required]
+        public bool Taxable { get; set; }
 
         [NotMapped]
         public Decimal Balance { get; set; }
@@ -40,6 +43,11 @@ namespace RentalTracker.Domain
 
         [MaxLength(200)]
         public string Memo { get; set; }
+
+        public Transaction()
+        {
+            Taxable = true;
+        }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {

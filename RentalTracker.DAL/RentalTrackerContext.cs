@@ -6,6 +6,10 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
+using System.ComponentModel.DataAnnotations;
+using RentalTracker.DAL.Exceptions;
 
 namespace RentalTracker.DAL
 {
@@ -33,5 +37,108 @@ namespace RentalTracker.DAL
             modelBuilder.Configurations.Add(new TransactionConfiguration());
             base.OnModelCreating(modelBuilder);
         }
+
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new RentalTrackerServiceValidationException(exceptionMessage, GetErrors(ex.EntityValidationErrors));
+            }
+        }
+
+        protected override DbEntityValidationResult ValidateEntity(DbEntityEntry entityEntry, IDictionary<object, object> items)
+        {
+            var result = new DbEntityValidationResult(entityEntry, new List<DbValidationError>());
+            if ((entityEntry.State == EntityState.Added) ||
+                (entityEntry.State == EntityState.Modified))
+            {
+                if (entityEntry.Entity is Account)
+                {
+                    ValidateAccountEntry(entityEntry, result);
+                }
+
+                if (entityEntry.Entity is Category)
+                {
+                    ValidateCategoryEntry(entityEntry, result);
+                }
+
+                if (entityEntry.Entity is Payee)
+                {
+                    ValidatePayeeEntry(entityEntry, result);
+                }
+            }
+
+            if (result.ValidationErrors.Count > 0)
+            {
+                return result;
+            }
+            else
+            {
+                return base.ValidateEntity(entityEntry, items);
+            }
+        }
+
+        private void ValidateAccountEntry(DbEntityEntry entityEntry, DbEntityValidationResult result)
+        {
+            Account account = entityEntry.Entity as Account;
+            //check for uniqueness of Name
+            if ((entityEntry.State == EntityState.Added && Accounts.Count(a => (a.Name == account.Name)) > 0) ||
+                (entityEntry.State == EntityState.Modified && Accounts.Count(a => a.Name == account.Name && (a.Id != account.Id)) >= 1))
+            {
+                result.ValidationErrors.Add(
+                        new DbValidationError("Name", "Account name must be unique."));
+            }
+        }
+
+        private void ValidateCategoryEntry(DbEntityEntry entityEntry, DbEntityValidationResult result)
+        {
+            Category category = entityEntry.Entity as Category;
+            //check for uniqueness of Name
+            if ((entityEntry.State == EntityState.Added && Categories.Count(c => (c.Name == category.Name)) > 0) ||
+                (entityEntry.State == EntityState.Modified && Categories.Count(c => c.Name == category.Name && (c.Id != category.Id)) >= 1))
+            {
+                result.ValidationErrors.Add(
+                        new DbValidationError("Name", "Category name must be unique."));
+            }
+        }
+
+        private void ValidatePayeeEntry(DbEntityEntry entityEntry, DbEntityValidationResult result)
+        {
+            Payee payee = entityEntry.Entity as Payee;
+            //check for uniqueness of Name
+            if ((entityEntry.State == EntityState.Added && Payees.Count(p => (p.Name == payee.Name)) > 0) ||
+                (entityEntry.State == EntityState.Modified && Payees.Count(p => p.Name == payee.Name && (p.Id != payee.Id)) >= 1))
+            {
+                result.ValidationErrors.Add(
+                        new DbValidationError("Name", "Payee name must be unique."));
+            }
+        }
+
+
+
+        private IEnumerable<ValidationResult> GetErrors(IEnumerable<DbEntityValidationResult> errors)
+        {
+            return errors.SelectMany(
+                        x => x.ValidationErrors.Select(y =>
+                              new ValidationResult(y.ErrorMessage, new[] { y.PropertyName })))
+                        .ToList();
+        }
+
     }
 }

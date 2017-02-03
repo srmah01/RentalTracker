@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using System.Data.Entity.Validation;
+using RentalTracker.Utilities;
+using RentalTracker.DAL.Exceptions;
 
 namespace RentalTracker.Controllers
 {
@@ -60,8 +63,9 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;   // Alway display a posivive amount
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Balance = item.Balance;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
@@ -86,8 +90,19 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewAccount(account);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveNewAccount(account);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
 
             return View(account);
@@ -117,23 +132,19 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedAccount(account);
-                return RedirectToAction("Index");
-            }
-            return View(account);
-        }
-
-        // GET: Accounts/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Account account = rentalTrackerService.FindAccount(id);
-            if (account == null)
-            {
-                return HttpNotFound();
+                try
+                {
+                    rentalTrackerService.SaveUpdatedAccount(account);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
             return View(account);
         }

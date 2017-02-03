@@ -19,7 +19,7 @@
             <h4 class="text-center">Accounts</h4>
             <div class="badge">@Model.NumberOfAccounts</div>
             <br /><br />
-            <p class="h5">NET TOTAL @Model.NetTotal</p>
+            <p class="text-muted">NET TOTAL @Html.DisplayFor(model => model.NetTotal)</p>
         </div>
     </a>
     <div class="col-sm-1"></div>
@@ -53,4 +53,25 @@
 <hr />
 
 <div class="row">
+    <a href="~/Home/Index">
+        <div class="col-sm-2 btn btn-default tile-block">
+            <p class="h2"><i class="glyphicon glyphicon-list-alt"></i></p>
+            <h4 class="text-center">Income / Expense</h4>
+        </div>
+    </a>
+    <div class="col-sm-1"></div>
+    <a href="~/Home/Index">
+        <div class="col-sm-2 btn btn-default tile-block">
+            <p class="h2"><i class="glyphicon glyphicon-gbp"></i></p>
+            <h4 class="text-center">Tax Year</h4>
+        </div>
+    </a>
+    <div class="col-sm-1"></div>
+    <a href="~/Home/Index">
+        <div class="col-sm-2 btn btn-default tile-block">
+            <p class="h2"><i class="glyphicon glyphicon-signal"></i></p>
+            <h4 class="text-center">Charts</h4>
+        </div>
+    </a>
+
 </div>

@@ -3,16 +3,16 @@ namespace RentalTracker.DAL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class add_balance_to_Account : DbMigration
+    public partial class add_Taxable_column_to_Transaction : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.Accounts", "Balance", c => c.Decimal(nullable: false, precision: 18, scale: 2));
+            AddColumn("dbo.Transactions", "Taxable", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Accounts", "Balance");
+            DropColumn("dbo.Transactions", "Taxable");
         }
     }
 }

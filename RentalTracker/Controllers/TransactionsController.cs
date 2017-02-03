@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using RentalTracker.Utilities;
 
 namespace RentalTracker.Controllers
 {
@@ -44,8 +46,9 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
                 indexViewModel.Transactions.Add(transactionViewModel);
@@ -54,27 +57,10 @@ namespace RentalTracker.Controllers
             return View(indexViewModel);
         }
 
-        // GET: Transactions/Details/5
-        public ActionResult Details(int? id)
-        {
-            // For now make Details page unreachable - it might be removed later
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Transaction transaction = rentalTrackerService.FindTransaction(id);
-            if (transaction == null)
-            {
-                return HttpNotFound();
-            }
-            return View(transaction);
-        }
-
         // GET: Transactions/Create
         public ActionResult Create()
         {
+            GetReferenceData();
             return View();
         }
 
@@ -83,15 +69,26 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,AccountId,Date,Amount,Reference,Number,Memo")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Taxable,Amount,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewTransaction(transaction);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveNewTransaction(transaction);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
 
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -107,7 +104,8 @@ namespace RentalTracker.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -116,14 +114,26 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,AccountId,Date,Amount,Reference,Number,Memo")] Transaction transaction)
+        public ActionResult Edit([Bind(Include = "Id,Date,AccountId,PayeeId,CategoryId,Amount,Taxable,Reference,Memo")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedTransaction(transaction);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveUpdatedTransaction(transaction);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
-            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+
+            GetReferenceData();
             return View(transaction);
         }
 
@@ -134,7 +144,7 @@ namespace RentalTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Transaction transaction = rentalTrackerService.FindTransaction(id);
+            Transaction transaction = rentalTrackerService.FindTransactionWithAccountAndPayeeAndCategory(id);
             if (transaction == null)
             {
                 return HttpNotFound();
@@ -147,8 +157,22 @@ namespace RentalTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            rentalTrackerService.RemoveTransaction(id);
-            return RedirectToAction("Index");
+            try
+            {
+                rentalTrackerService.RemoveTransaction(id);
+                return RedirectToAction("Index");
+            }
+            catch (ArgumentNullException)
+            {
+                return HttpNotFound();
+            }
+        }
+
+        private void GetReferenceData()
+        {
+            ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
+            ViewBag.CategoryId = new SelectList(rentalTrackerService.GetAllCategories(), "Id", "Name");
+            ViewBag.PayeeId = new SelectList(rentalTrackerService.GetAllPayees(), "Id", "Name");
         }
     }
 }

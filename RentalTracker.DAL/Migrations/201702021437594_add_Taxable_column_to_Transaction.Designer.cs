@@ -7,13 +7,13 @@ namespace RentalTracker.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class add_balance_to_Account : IMigrationMetadata
+    public sealed partial class add_Taxable_column_to_Transaction : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(add_balance_to_Account));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(add_Taxable_column_to_Transaction));
         
         string IMigrationMetadata.Id
         {
-            get { return "201701191930597_add_balance_to_Account"; }
+            get { return "201702021437594_add_Taxable_column_to_Transaction"; }
         }
         
         string IMigrationMetadata.Source

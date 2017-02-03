@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RentalTracker;
 using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.DAL.Exceptions;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -67,7 +69,7 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
+            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>())).Returns(
                 mockedAccount
             );
             AccountsController controller = new AccountsController(mockService.Object);
@@ -89,9 +91,9 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>())).Returns(
-                mockedData.Accounts.First()
-            );
+            var mockedAccount = mockedData.Accounts.First();
+            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>()))
+                       .Returns(mockedAccount);
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
@@ -100,17 +102,48 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
             var model = result.Model as EntityDetailsViewModel<Account>;
-            Assert.AreEqual(mockedData.Accounts.First().Name, model.Entity.Name);
-            Assert.AreEqual(mockedData.Accounts.First().OpeningBalance, model.Entity.OpeningBalance);
-            Assert.AreEqual(mockedData.Accounts.First().Balance, model.Entity.Balance);
-            Assert.AreEqual(mockedData.Accounts.First().Transactions.Count(), model.Transactions.Count);
+            Assert.AreEqual(mockedAccount.Name, model.Entity.Name);
+            Assert.AreEqual(mockedAccount.OpeningBalance, model.Entity.OpeningBalance);
+            Assert.AreEqual(mockedAccount.Balance, model.Entity.Balance);
+            Assert.AreEqual(mockedAccount.Transactions.Count(), model.Transactions.Count);
             for (int i = 0; i < model.Transactions.Count; i++)
             {
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Amount, model.Transactions.ElementAt(i).Income);
-                Assert.AreEqual(mockedData.Accounts.First().Transactions.ElementAt(i).Date, model.Transactions.ElementAt(i).Date);
+                var expected = mockedData.Accounts.First().Transactions.ElementAt(i);
+                var actual = model.Transactions.ElementAt(i);
+                bool isIncome = expected.Category.Type == CategoryType.Income;
+                Assert.AreEqual(expected.Date, actual.Date);
+                Assert.AreEqual(expected.Category.Name, actual.Category);
+                Assert.AreEqual(expected.Payee.Name, actual.Payee);
+                if (isIncome)
+                {
+                    Assert.AreEqual(expected.Amount, actual.Income);
+                }
+                else
+                {
+                    Assert.AreEqual(expected.Amount, actual.Expense);
+                }
+                Assert.AreEqual(expected.Taxable, actual.Taxable);
+                Assert.AreEqual(expected.Balance, actual.Balance);
+                Assert.AreEqual(expected.Reference, actual.Reference);
+                Assert.AreEqual(expected.Memo, actual.Memo);
             }
         }
 
+        [TestMethod]
+        public void DisplayingDetailsOfANonExistentAccountReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindAccount(It.IsAny<int>())).Returns((Account)null);
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
 
         [TestMethod]
         public void CanReturnAnAccountCreateView()
@@ -126,5 +159,102 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        [TestMethod]
+        public void InsertingAnInvalidNewAccountDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+           mockService.Setup(s => s.SaveNewAccount(It.IsAny<Account>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                    }));
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Create(new Account()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+        }
+
+
+        [TestMethod]
+        public void CanReturnAnAccountEditView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedAccount = mockedData.Accounts.First();
+            mockService.Setup(s => s.FindAccount(It.IsAny<int>())).Returns(mockedAccount);
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(1) as ViewResult;
+            var model = result.Model as Account;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(mockedAccount.Name, model.Name);
+            Assert.AreEqual(mockedAccount.OpeningBalance, model.OpeningBalance);
+        }
+
+        [TestMethod]
+        public void EditingANonExistentAccountReturnsHttpNotFound()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.FindAccount(It.IsAny<int>())).Returns((Account) null);
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            HttpNotFoundResult result = controller.Edit(1) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void UpdatingAValidAccountRedirectsToIndexView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedAccount(It.IsAny<Account>()));
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            RedirectToRouteResult result = controller.Edit(new Account()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void UpdatingAnInvalidAccountDisplaysSameView()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            mockService.Setup(s => s.SaveUpdatedAccount(It.IsAny<Account>())).Throws(new RentalTrackerServiceValidationException("Error",
+                    new List<ValidationResult>()
+                    {
+                        new ValidationResult("Some error.", new [] {  "Name" } )
+                    }));
+
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Edit(new Account()) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(controller.ModelState.IsValid);
+        }
+
     }
 }

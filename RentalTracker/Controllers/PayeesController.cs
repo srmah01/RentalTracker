@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Domain;
 using RentalTracker.Models;
+using RentalTracker.Utilities;
+using RentalTracker.DAL.Exceptions;
 
 namespace RentalTracker.Controllers
 {
@@ -59,8 +61,9 @@ namespace RentalTracker.Controllers
                 else
                 {
                     transactionViewModel.Income = null;
-                    transactionViewModel.Expense = item.Amount * -1;   // Alway display a posivive amount
+                    transactionViewModel.Expense = item.Amount;
                 }
+                transactionViewModel.Taxable = item.Taxable;
                 transactionViewModel.Reference = item.Reference;
                 transactionViewModel.Memo = item.Memo;
                 payeeViewModel.Transactions.Add(transactionViewModel);
@@ -84,8 +87,19 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveNewPayee(payee);
+                try
+                {
+                    rentalTrackerService.SaveNewPayee(payee);
                 return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
 
             return View(payee);
@@ -115,37 +129,21 @@ namespace RentalTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                rentalTrackerService.SaveUpdatedPayee(payee);
-                return RedirectToAction("Index");
+                try
+                {
+                    rentalTrackerService.SaveUpdatedPayee(payee);
+                    return RedirectToAction("Index");
+                }
+                catch (RentalTrackerServiceValidationException ex)
+                {
+                    HandleValidationErrors.AddErrorsToModel(this, ex.ValidationResults);
+                }
+                catch (DataException ex)
+                {
+                    HandleValidationErrors.AddExceptionError(this, ex);
+                }
             }
             return View(payee);
         }
-
-        // GET: Payees/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Payee payee = rentalTrackerService.FindPayee(id);
-            if (payee == null)
-            {
-                return HttpNotFound();
-            }
-            return View(payee);
-        }
-
-        // POST: Payees/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Payee payee = db.Payees.Find(id);
-        //    db.Payees.Remove(payee);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
-
     }
 }
