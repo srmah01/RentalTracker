@@ -34,10 +34,10 @@
 
                     <div class="form-group">
                         @*@Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-4" })
-                        <div class="col-md-8">
-                            <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
-                        </div>*@
-                        <label class = "control-label col-md-4">Active</label>
+                            <div class="col-md-8">
+                                <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
+                            </div>*@
+                        <label class="control-label col-md-4">Active</label>
                         <div class="col-md-8">
                             <p class="form-control-static">Yes</p>
                         </div>
@@ -51,6 +51,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <p></p>
+
+        <div>
+
+            @Html.Partial("_DateFilter1")
+
         </div>
 
         <div>

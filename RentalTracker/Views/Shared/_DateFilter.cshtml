@@ -1,0 +1,65 @@
+﻿<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a class="accordion-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Date Filter
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div>
+                            <label class="control-label col-md-1">Date</label>
+                            <div class="col-md-3">
+                                <select class="form-control">
+                                    <option value="1">All Dates</option>
+                                    <option value="2">This Month</option>
+                                    <option value="3">Last 3 Months</option>
+                                    <option value="4">Last 6 Months</option>
+                                    <option value="5">Last 12 Months</option>
+                                    <option value="6">Custom Date</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="control-label col-md-1">Start</label>
+                            <div class="col-md-3">
+                                <div id='transaction-datepicker' class="input-group date">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                    <text class="form-control"></text>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <label class="control-label col-md-1">End</label>
+                            <div class="col-md-3">
+                                <div id='transaction-datepicker' class="input-group date">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                    <text class="form-control"></text>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-2 col-md-push-1">
+                            <button class="btn btn-default"><i class="glyphicon glyphicon-filter"></i>Filter</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
