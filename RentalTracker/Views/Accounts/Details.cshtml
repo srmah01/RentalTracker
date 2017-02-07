@@ -52,15 +52,6 @@
                 </div>
             </div>
         </div>
-
-        <p></p>
-
-        <div>
-
-            @Html.Partial("_DateFilter1")
-
-        </div>
-
         <div>
             <div class="form-group">
                 <div class="col-md-4">
@@ -76,3 +67,9 @@
         </p>
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/date-filter")
+}

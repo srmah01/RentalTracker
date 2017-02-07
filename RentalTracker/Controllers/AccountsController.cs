@@ -31,13 +31,25 @@ namespace RentalTracker.Controllers
         }
 
         // GET: Accounts/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id,
+            DateFilterSelector? filterSelector = null, string filterFromDate = null, string filterToDate = null)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Account account = rentalTrackerService.FindAccountWithTransactions(id);
+            Account account;
+            if (filterSelector == null || filterSelector == DateFilterSelector.AllDates)
+            {
+                account = rentalTrackerService.FindAccountWithTransactions(id);
+            }
+            else
+            {
+                var dateFilter = new DateFilter();
+                dateFilter.SetDateFilter(filterSelector.Value, filterFromDate, filterToDate);
+                account = rentalTrackerService.FindAccountWithDateFilteredTransactions(id, dateFilter.From, dateFilter.To);
+            }
+
             if (account == null)
             {
                 return HttpNotFound();

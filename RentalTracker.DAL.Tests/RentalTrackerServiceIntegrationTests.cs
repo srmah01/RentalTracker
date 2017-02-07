@@ -202,6 +202,20 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void FindAccountWithDateFilteredTransactionsWithDateTodayReturnsEmptyTransactionCollection()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindAccountWithDateFilteredTransactions(1, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(0, actual.Transactions.Count);
+        }
+
+
+        [TestMethod, TestCategory("Integration")]
         public void CanInsertNewAccount()
         {
             DataHelper.NewDb();

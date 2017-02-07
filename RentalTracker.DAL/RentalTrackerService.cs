@@ -93,6 +93,8 @@ namespace RentalTracker.DAL
 
         public Account FindAccountWithTransactions(int? id, bool ascending = true)
         {
+            return FindAccountWithDateFilteredTransactions(id, DateTime.MinValue, DateTime.MaxValue, ascending);
+
             using (var context = new RentalTrackerContext())
             {
                 var account = context.Accounts
@@ -131,6 +133,58 @@ namespace RentalTracker.DAL
                 }
 
                 return account;
+            }
+        }
+
+        public Account FindAccountWithDateFilteredTransactions(int? id, DateTime? from, DateTime? to, bool ascending = true)
+        {
+            using (var context = new RentalTrackerContext())
+            {
+                var account = context.Accounts
+                                     .SingleOrDefault(a => a.Id == id);
+
+                if (account != null)
+                {
+                    context.Accounts.Attach(account);
+                    var transactions = context.Entry(account)
+                                    .Collection(a => a.Transactions)
+                                    .Query()
+                                    .Include(t => t.Payee)
+                                    .Include(t => t.Category)
+                                    .OrderBy(t => t.Date)
+                                    .ThenBy(t => t.Id);
+
+                    CalculateTransactionBalances(transactions, account.OpeningBalance);
+
+                    if (ascending)
+                    {
+                        account.Transactions = transactions
+                                               .Where(t => t.Date >= from && t.Date <= to)
+                                               .ToList();
+                    }
+                    else
+                    {
+                        account.Transactions = transactions
+                                               .Where(t => t.Date >= from && t.Date <= to)
+                                               .Reverse()
+                                               .ToList();
+                    }
+
+                    account.Balance = GetAccountBalance(id);
+                }
+
+                return account;
+            }
+        }
+
+        private void CalculateTransactionBalances(IQueryable<Transaction> transactions, Decimal openingBalance)
+        {
+            var balance = openingBalance;
+
+            foreach (var transaction in transactions)
+            {
+                balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
+                transaction.Balance = balance;
             }
         }
 

@@ -1,20 +1,20 @@
 ﻿<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingOne">
+        <div class="panel-heading" role="tab" id="headingDateFilter">
             <h4 class="panel-title">
-                <a class="accordion-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <a class="accordion-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseDateFilter" aria-expanded="true" aria-controls="collapseOne">
                     Date Filter
                 </a>
             </h4>
         </div>
-        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="collapseDateFilter" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingDateFilter">
             <div class="panel-body">
-                <form class="form-horizontal">
+                <form method="get" class="form-horizontal">
                     <div class="form-group">
                         <div>
                             <label class="control-label col-md-1">Date</label>
                             <div class="col-md-3">
-                                <select class="form-control">
+                                <select id="DateFilterSelection" name="FilterSelector" class="form-control">
                                     <option value="1">All Dates</option>
                                     <option value="2">This Month</option>
                                     <option value="3">Last 3 Months</option>
@@ -25,36 +25,37 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="control-label col-md-1">Start</label>
-                            <div class="col-md-3">
-                                <div id='transaction-datepicker' class="input-group date">
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                    <text class="form-control"></text>
+                        <div id="CustomDateDates" class="hidden">
+                            <div>
+                                <label class="control-label col-md-1">From</label>
+                                <div class="col-md-3">
+                                    <div id='filter-to-datepicker' class="input-group datepicker date">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                        <input type="text" name="FilterFromDate" class="form-control"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="">
-                            <label class="control-label col-md-1">End</label>
-                            <div class="col-md-3">
-                                <div id='transaction-datepicker' class="input-group date">
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                    <text class="form-control"></text>
+                            <div>
+                                <label class="control-label col-md-1">To</label>
+                                <div class="col-md-3">
+                                    <div id='filter-from-datepicker' class="input-group datepicker date">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                        <input type="text" name="FilterFromDate" class="form-control" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
-
                     <div class="form-group">
                         <div class="col-md-2 col-md-push-1">
-                            <button class="btn btn-default"><i class="glyphicon glyphicon-filter"></i>Filter</button>
+                            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-filter"></i>Filter</button>
                         </div>
                     </div>
 

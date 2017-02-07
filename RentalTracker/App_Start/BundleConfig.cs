@@ -35,6 +35,10 @@ namespace RentalTracker
 
             bundles.Add(new ScriptBundle("~/bundles/transaction-input").Include(
                       "~/Scripts/transaction-input.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/date-filter").Include(
+                "~/Scripts/date-filter.js"));
+
         }
     }
 }

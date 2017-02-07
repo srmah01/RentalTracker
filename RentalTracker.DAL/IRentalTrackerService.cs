@@ -32,6 +32,8 @@ namespace RentalTracker.DAL
 
         Account FindAccountWithTransactions(int? id, bool ascending = true);
 
+        Account FindAccountWithDateFilteredTransactions(int? id, DateTime? from, DateTime? to, bool ascending = true);
+
         void SaveNewAccount(Account account);
 
         void SaveUpdatedAccount(Account account);
