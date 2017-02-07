@@ -7,7 +7,7 @@
         format: 'DD/MM/YYYY'
     });
 
-    $('#DateFilterSelection').change(function () {
+    $('#DateFilter').change(function () {
         var str = "";
         $("select option:selected").each(function () {
             str = $(this).text();
@@ -17,6 +17,8 @@
             $('#CustomDateDates').show();
         }
         else {
+            $('#FromDate').val('');
+            $('#ToDate').val('');
             $('#CustomDateDates').hide();
         }
     });

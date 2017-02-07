@@ -179,8 +179,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
-    <Compile Include="Utilities\DateFilter.cs" />
-    <Compile Include="Utilities\DateFilterSelector.cs" />
+    <Compile Include="Models\DateFilterViewModel.cs" />
+    <Compile Include="Enums\DateFilterSelector.cs" />
     <Compile Include="Utilities\HandleValidationErrors.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />

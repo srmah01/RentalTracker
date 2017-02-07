@@ -62,9 +62,10 @@
     </div>
 
     <div class="col-md-8">
-        <p>
-            @Html.Partial("_AccountTransactionsList", Model.Transactions)
-        </p>
+        @Html.Partial("_DateFilter", Model.DateFilter)
+
+
+        @Html.Partial("_AccountTransactionsList", Model.Transactions)
     </div>
 </div>
 

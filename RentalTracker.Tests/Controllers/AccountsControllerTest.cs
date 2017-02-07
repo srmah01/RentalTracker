@@ -68,14 +68,17 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>())).Returns(
-                mockedAccount
-            );
+            var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single();
+            var id = 1;
+            mockService.Setup(s => s.FindAccountWithTransactions(
+                id, null, null, true))
+                .Returns(
+                    mockedAccount
+                );
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -92,12 +95,16 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedAccount = mockedData.Accounts.First();
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>()))
-                       .Returns(mockedAccount);
+            var id = 1;
+            mockService.Setup(s => s.FindAccountWithTransactions(
+                id, null, null, true))
+                .Returns(
+                    mockedAccount
+                );
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);

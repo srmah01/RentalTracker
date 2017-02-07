@@ -12,6 +12,7 @@ using RentalTracker.Models;
 using System.Data.Entity.Validation;
 using RentalTracker.Utilities;
 using RentalTracker.DAL.Exceptions;
+using RentalTracker.Enums;
 
 namespace RentalTracker.Controllers
 {
@@ -32,23 +33,18 @@ namespace RentalTracker.Controllers
 
         // GET: Accounts/Details/5
         public ActionResult Details(int? id,
-            DateFilterSelector? filterSelector = null, string filterFromDate = null, string filterToDate = null)
+            DateFilterSelector dateFilter = DateFilterSelector.AllDates,
+            string fromDate = null, string toDate = null)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Account account;
-            if (filterSelector == null || filterSelector == DateFilterSelector.AllDates)
-            {
-                account = rentalTrackerService.FindAccountWithTransactions(id);
-            }
-            else
-            {
-                var dateFilter = new DateFilter();
-                dateFilter.SetDateFilter(filterSelector.Value, filterFromDate, filterToDate);
-                account = rentalTrackerService.FindAccountWithDateFilteredTransactions(id, dateFilter.From, dateFilter.To);
-            }
+
+            var dateFilterViewModel = new DateFilterViewModel();
+            dateFilterViewModel.SetDateFilter(dateFilter, fromDate, toDate);
+
+            Account account = rentalTrackerService.FindAccountWithTransactions(id, dateFilterViewModel.FromDate, dateFilterViewModel.ToDate);
 
             if (account == null)
             {
@@ -57,7 +53,8 @@ namespace RentalTracker.Controllers
 
             var accountViewModel = new EntityDetailsViewModel<Account>()
             {
-                Entity = account
+                Entity = account,
+                DateFilter = dateFilterViewModel
             };
 
             foreach (var item in account.Transactions)

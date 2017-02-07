@@ -91,52 +91,7 @@ namespace RentalTracker.DAL
             }
         }
 
-        public Account FindAccountWithTransactions(int? id, bool ascending = true)
-        {
-            return FindAccountWithDateFilteredTransactions(id, DateTime.MinValue, DateTime.MaxValue, ascending);
-
-            using (var context = new RentalTrackerContext())
-            {
-                var account = context.Accounts
-                                     .SingleOrDefault(a => a.Id == id);
-
-                if (account != null)
-                {
-                    if (ascending)
-                    {
-                        context.Entry(account).Collection(a => a.Transactions).Query()
-                               .OrderBy(t => t.Date)
-                               .ThenBy(t => t.Id)
-                               .Load();
-                    }
-                    else
-                    {
-                        context.Entry(account).Collection(a => a.Transactions).Query()
-                               .OrderByDescending(t => t.Date)
-                               .ThenBy(t => t.Id)
-                               .Load();
-                    }
-
-                    account.Balance = GetAccountBalance(id);
-
-                    var balance = account.OpeningBalance;
-
-                    foreach (var transaction in ascending ? account.Transactions : account.Transactions.Reverse())
-                    {
-                        // Explicitly load the Payee & Category references
-                        context.Entry(transaction).Reference(t => t.Payee).Load();
-                        context.Entry(transaction).Reference(t => t.Category).Load();
-
-                        balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
-                        transaction.Balance = balance;
-                    }
-                }
-
-                return account;
-            }
-        }
-
-        public Account FindAccountWithDateFilteredTransactions(int? id, DateTime? from, DateTime? to, bool ascending = true)
+        public Account FindAccountWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
@@ -155,6 +110,16 @@ namespace RentalTracker.DAL
                                     .ThenBy(t => t.Id);
 
                     CalculateTransactionBalances(transactions, account.OpeningBalance);
+
+                    if (from == null)
+                    {
+                        from = DateTime.MinValue;
+                    }
+
+                    if (to == null)
+                    {
+                        to = DateTime.MaxValue;
+                    }
 
                     if (ascending)
                     {
