@@ -131,7 +131,8 @@ namespace RentalTracker.DAL
                     {
                         account.Transactions = transactions
                                                .Where(t => t.Date >= from && t.Date <= to)
-                                               .Reverse()
+                                               .OrderByDescending(t => t.Date)
+                                               .ThenByDescending(t => t.Id)
                                                .ToList();
                     }
 

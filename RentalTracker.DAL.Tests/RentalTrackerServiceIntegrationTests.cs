@@ -214,6 +214,87 @@ namespace RentalTracker.DAL.Tests
             Assert.AreEqual(0, actual.Transactions.Count);
         }
 
+        [TestMethod, TestCategory("Integration")]
+        public void FindAccountWithTransactionsOnSortableAccountWithDateTodayReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var accountId = DataHelper.Accounts.Where(a => a.Name == "Sortable Account").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date == DateTime.Today);
+            var actual = service.FindAccountWithTransactions(accountId, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAccountWithTransactionsOnSortableAccountWithDateRangeReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var accountId = DataHelper.Accounts.Where(a => a.Name == "Sortable Account").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindAccountWithTransactions(accountId, DateTime.Today.AddMonths(-6), DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAccountWithTransactionsOnSortableAccountWithDateRangeAndOrderAscendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var accountId = DataHelper.Accounts.Where(a => a.Name == "Sortable Account").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindAccountWithTransactions(accountId, DateTime.Today.AddMonths(-6), DateTime.Today, true);
+
+            Assert.IsNotNull(actual);
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order += 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindAccountWithTransactionsOnSortableAccountWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var accountId = DataHelper.Accounts.Where(a => a.Name == "Sortable Account").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindAccountWithTransactions(accountId, DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
 
         [TestMethod, TestCategory("Integration")]
         public void CanInsertNewAccount()

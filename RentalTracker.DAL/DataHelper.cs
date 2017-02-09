@@ -46,7 +46,8 @@ namespace RentalTracker.DAL
             {
                 new Account() { Name = "BankAccount1", OpeningBalance = 100.99m },
                 new Account() { Name = "BankAccount2" },
-                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m }
+                new Account() { Name = "BankAccount3", OpeningBalance = 1000.00m },
+                new Account() { Name = "Sortable Account", OpeningBalance = 1.00m }
             };
             context.Accounts.AddRange(accountsToAdd);
             context.SaveChanges();
@@ -76,7 +77,8 @@ namespace RentalTracker.DAL
             context.SaveChanges();
             var payeesAdded = context.Payees.Include(p => p.DefaultCategory).ToList();
 
-            var defaultTransactionDate = new DateTime(2016, 1, 1);
+            var defaultTransactionDate = new DateTime(2017, 1, 1);
+            var today = DateTime.Today;
             var transactionsToAdd = new List<Transaction>()
             {
                 new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "BankAccount1").Single().Id,
@@ -99,6 +101,46 @@ namespace RentalTracker.DAL
                     PayeeId = payeesAdded.Where(p => p.Name == "MyBank Charges").Single().Id,
                     CategoryId = categoriesAdded.Where(p => p.Name == "Bank Charges").Single().Id,
                     Amount = 30.00m, Date = defaultTransactionDate.AddDays(3)},
+
+                // Add some transactions that can be searched and sorted
+                // Use Amount to indicate the order in which transcations should appear 
+                // i.e. Oldest by date first, then by id where dates are equal
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 1.00m, Date = today.AddMonths(-24)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 3.00m, Date = today.AddMonths(-6)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 5.00m, Date = today.AddMonths(-3)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 6.00m, Date = today.AddMonths(-1)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 7.00m, Date = today.AddDays(-7)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 8.00m, Date = today},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 2.00m, Date = today.AddMonths(-12)},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 9.00m, Date = today},
+                new Transaction() { AccountId = accountsAdded.Where(a => a.Name == "Sortable Account").Single().Id,
+                    PayeeId = payeesAdded.Where(p => p.Name == "Renter A").Single().Id,
+                    CategoryId = categoriesAdded.Where(p => p.Name == "Rental Income").Single().Id,
+                    Amount = 4.00m, Date = today.AddMonths(-4)},
             };
             context.Transactions.AddRange(transactionsToAdd);
             context.SaveChanges();
