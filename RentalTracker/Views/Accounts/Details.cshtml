@@ -2,6 +2,10 @@
 
 @{
     ViewBag.Title = "Accounts";
+    ViewBag.DateFilter = Model.DateFilter.DateFilter;
+    ViewBag.FromDate = Model.DateFilter.FromDate;
+    ViewBag.ToDate = Model.DateFilter.ToDate;
+    ViewBag.SortOrder = Model.DateFilter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")

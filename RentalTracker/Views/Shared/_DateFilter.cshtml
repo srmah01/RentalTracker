@@ -11,7 +11,9 @@
         </div>
         <div id="collapseDateFilter" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingDateFilter">
             <div class="panel-body">
-                <form method="get" class="form-horizontal">
+                @Html.HiddenFor(model => model.DateFilter, htmlAttributes: new { id = "DateFilterValue", name = "DateFilterValue", data_value_id = (int)Model.DateFilter })
+                <form method="get" id="DateFilterForm" class="form-horizontal">
+                    @Html.HiddenFor(model => model.SortOrder)
                     <div class="form-group">
                         <div>
                             @Html.LabelFor(model => model.DateFilter, htmlAttributes: new { @class = "control-label col-md-1" })

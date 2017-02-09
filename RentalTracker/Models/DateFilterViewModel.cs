@@ -7,9 +7,8 @@ namespace RentalTracker.Models
 {
     public class DateFilterViewModel
     {
-        [Required]
         [Display(Name = "Date")]
-        public DateFilterSelector DateFilter { get; private set; }
+        public DateFilterSelector DateFilter { get; set; }
 
         [Required]
         [Display(Name = "From")]

@@ -44,7 +44,7 @@
 
 .card-item-body {
     padding: 5px 5px;
-    margin: 0px 0px 0px 15px;
+    margin: 0 0 0 15px;
     border: none;
     background-color: white;
 }
@@ -67,7 +67,7 @@
 
 .card-item-body-no-selection {
     padding: 5px 5px;
-    margin: 0px 0px 0px 15px;
+    margin: 0 0 0 15px;
     border: none;
     background-color: white;
 }
@@ -147,7 +147,7 @@
 }
 
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px;
+    right: 0;
 }
 
 a.accordion-toggle {
@@ -157,12 +157,29 @@ a.accordion-toggle {
 .panel-heading .accordion-toggle:after {
     /* symbol for "opening" panels */
     font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
-    content: "\2b";    /* adjust as needed, taken from bootstrap.css */
-    float: right;        /* adjust as needed */
-    color: grey;         /* adjust as needed */
+    content: "\2b";    /* + sign */
+    float: right;
+    color: grey;
 }
+
 .panel-heading .accordion-toggle.collapsed:after {
     /* symbol for "collapsed" panels */
-    content: "\2212";    /* adjust as needed, taken from bootstrap.css */
+    content: "\2212";    /* - sign */
+}
+
+a.date-sort-toggle {
+    text-decoration: none;
+    color: #333;
+}
+
+.date-sort-toggle:after {
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    color: #333;
+    padding-left: 10px;
+    content:"\e253";
+}
+
+.date-sort-toggle.descending:after {
+    content:"\e252";
 }
 
