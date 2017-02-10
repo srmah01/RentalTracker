@@ -3,6 +3,10 @@
 @{
     ViewBag.Title = "Payees";
     ViewBag.Category = Model.Entity.DefaultCategory != null ? Model.Entity.DefaultCategory.Type.ToString().ToLower() : "none";
+    ViewBag.DateFilter = Model.DateFilter.DateFilter;
+    ViewBag.FromDate = Model.DateFilter.FromDate;
+    ViewBag.ToDate = Model.DateFilter.ToDate;
+    ViewBag.SortOrder = Model.DateFilter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")
@@ -56,9 +60,18 @@
     </div>
 
     <div class="col-md-8">
-        <p>
-            @Html.Partial("_PayeeTransactionsList", Model.Transactions)
-        </p>
+        @Html.Partial("_DateFilter", Model.DateFilter)
+
+        @Html.Partial("_PayeeTransactionsList", Model.Transactions)
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/date-filter")
+}
+
+
+
 

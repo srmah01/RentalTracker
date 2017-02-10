@@ -12,6 +12,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -115,6 +117,37 @@ namespace RentalTracker.Tests.Controllers
                 Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Reference, model.Transactions.ElementAt(i).Reference);
                 Assert.AreEqual(mockedData.Categories.First().Transactions.ElementAt(i).Memo, model.Transactions.ElementAt(i).Memo);
             }
+        }
+
+        [TestMethod]
+        public void CanReturnACategoryDetailsViewWithDateFilterModel()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategory = mockedData.Categories.First();
+            var id = 1;
+            var filter = DateFilterSelector.CustomDate;
+            var date = DateTime.Today;
+            var sortOrder = SortDirection.Descending;
+            mockService.Setup(s => s.FindCategoryWithTransactions(
+                id, date, date, false))
+                .Returns(
+                    mockedCategory
+                );
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Details(id,
+                DateFilterSelector.CustomDate, date.ToShortDateString(),
+                date.ToShortDateString(), sortOrder) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as EntityDetailsViewModel<Category>;
+            Assert.AreEqual(filter, model.DateFilter.DateFilter);
+            Assert.AreEqual(date, model.DateFilter.FromDate);
+            Assert.AreEqual(date, model.DateFilter.ToDate);
+            Assert.AreEqual(sortOrder, model.DateFilter.SortOrder);
         }
 
         [TestMethod]

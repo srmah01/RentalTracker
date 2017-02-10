@@ -11,6 +11,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.Utilities;
 using RentalTracker.DAL.Exceptions;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Controllers
 {
@@ -30,20 +32,29 @@ namespace RentalTracker.Controllers
         }
 
         // GET: Payees/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id,
+            DateFilterSelector dateFilter = DateFilterSelector.AllDates,
+            string fromDate = null, string toDate = null,
+            SortDirection sortOrder = SortDirection.Ascending)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payee payee = rentalTrackerService.FindPayeeWithTransactions(id);
+            var dateFilterViewModel = new DateFilterViewModel();
+            dateFilterViewModel.SetDateFilter(dateFilter, fromDate, toDate, sortOrder);
+
+            Payee payee = rentalTrackerService.FindPayeeWithTransactions(id, dateFilterViewModel.FromDate,
+                 dateFilterViewModel.ToDate, (sortOrder == SortDirection.Ascending));
+
             if (payee == null)
             {
                 return HttpNotFound();
             }
             var payeeViewModel = new EntityDetailsViewModel<Payee>()
             {
-                Entity = payee
+                Entity = payee,
+                DateFilter = dateFilterViewModel
             };
 
             foreach (var item in payee.Transactions)

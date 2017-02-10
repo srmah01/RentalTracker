@@ -3,6 +3,10 @@
 @{
     ViewBag.Title = "Categories";
     ViewBag.Category = Model.Entity.Type.ToString().ToLower();
+    ViewBag.DateFilter = Model.DateFilter.DateFilter;
+    ViewBag.FromDate = Model.DateFilter.FromDate;
+    ViewBag.ToDate = Model.DateFilter.ToDate;
+    ViewBag.SortOrder = Model.DateFilter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")
@@ -34,7 +38,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div>
             <div class="form-group">
                 <div class="col-md-4">
@@ -45,9 +49,16 @@
     </div>
 
     <div class="col-md-8">
-        <p>
-            @Html.Partial("_CategoryTransactionsList", Model.Transactions)
-        </p>
+        @Html.Partial("_DateFilter", Model.DateFilter)
+
+        @Html.Partial("_CategoryTransactionsList", Model.Transactions)
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/date-filter")
+}
+
 
