@@ -85,52 +85,39 @@ namespace RentalTracker.Tests.Models
             Assert.AreEqual(SortDirection.Ascending, actual.SortOrder);
         }
 
-        [TestMethod, 
-         ExpectedException(typeof(ArgumentException))]
-        public void SetDateFilterWithNoDatesThrows()
+        [TestMethod]
+        public void SetDateFilterWithNoDatesUsesDefaults()
         {
             var actual = new DateFilterViewModel();
 
             actual.SetDateFilter(DateFilterSelector.CustomDate, null, null);
 
-            Assert.Fail("Set a custom date with no dates");
+            Assert.AreEqual(DateTime.MaxValue, actual.ToDate);
+            Assert.AreEqual(DateTime.MinValue, actual.FromDate);
         }
 
-        [TestMethod,
-         ExpectedException(typeof(ArgumentException))]
-        public void SetDateFilterWithOnlyFromDateThrows()
+        [TestMethod]
+        public void SetDateFilterWithOnlyFromDateUsesDefaultToDate()
         {
             var actual = new DateFilterViewModel();
 
             var dateStr = DateTime.Today.ToShortDateString();
             actual.SetDateFilter(DateFilterSelector.CustomDate, dateStr, null);
 
-            Assert.Fail("Set a custom date with only From date");
+            Assert.AreEqual(DateTime.MaxValue, actual.ToDate);
+            Assert.AreEqual(DateTime.Today, actual.FromDate);
         }
 
-        [TestMethod,
-         ExpectedException(typeof(ArgumentException))]
-        public void SetDateFilterWithOnlyToDateThrows()
+        [TestMethod]
+        public void SetDateFilterWithOnlyToDateUsesDefaultFromDate()
         {
             var actual = new DateFilterViewModel();
 
             var dateStr = DateTime.Today.ToShortDateString();
             actual.SetDateFilter(DateFilterSelector.CustomDate, null, dateStr);
 
-            Assert.Fail("Set a custom date with only To date");
-        }
-
-        [TestMethod,
-         ExpectedException(typeof(ArgumentException))]
-        public void SetDateFilterWithToDateEarlierThanFromDateThrows()
-        {
-            var actual = new DateFilterViewModel();
-
-            var todayStr = DateTime.Today.ToShortDateString();
-            var tomorrowStr = DateTime.Today.AddDays(1).ToShortDateString();
-            actual.SetDateFilter(DateFilterSelector.CustomDate, tomorrowStr, todayStr);
-
-            Assert.Fail("Set a custom date with an earlier To date");
+            Assert.AreEqual(DateTime.Today, actual.ToDate);
+            Assert.AreEqual(DateTime.MinValue, actual.FromDate);
         }
 
         [TestMethod]

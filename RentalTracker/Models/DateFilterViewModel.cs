@@ -25,9 +25,11 @@ namespace RentalTracker.Models
         {
             DateFilter = DateFilterSelector.AllDates;
             SortOrder = SortDirection.Ascending;
+            FromDate = DateTime.MinValue;
+            ToDate = DateTime.MaxValue;
         }
 
-        public void SetDateFilter(DateFilterSelector selector, string from = null, string to = null, 
+        public void SetDateFilter(DateFilterSelector selector, string from = null, string to = null,
             SortDirection sortOder = SortDirection.Ascending)
         {
             DateFilter = selector;
@@ -56,16 +58,16 @@ namespace RentalTracker.Models
                     FromDate = ToDate.Value.AddMonths(-12);
                     break;
                 default:
-                    if (String.IsNullOrEmpty(from) || String.IsNullOrEmpty(to))
+                    // If either date string is null or empty then default Min or Max value is used
+                    // Shouldn't happen because client validation ensures the fields are completed.
+                    if (!String.IsNullOrEmpty(from))
                     {
-                        throw (new ArgumentException("Custom date must specify a from date and a to date."));
+                        FromDate = DateTime.Parse(from);
                     }
-                    FromDate = DateTime.Parse(from);
-                    ToDate = DateTime.Parse(to);
 
-                    if (FromDate > ToDate)
+                    if (!String.IsNullOrEmpty(to))
                     {
-                        throw (new ArgumentException("Custom date must specify a to date that is equal to or later than a from to date."));
+                        ToDate = DateTime.Parse(to);
                     }
                     break;
             }
