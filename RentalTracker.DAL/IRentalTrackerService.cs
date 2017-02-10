@@ -44,7 +44,7 @@ namespace RentalTracker.DAL
 
         Category FindCategory(int? id);
 
-        Category FindCategoryWithTransactions(int? id);
+        Category FindCategoryWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         void SaveNewCategory(Category category);
 

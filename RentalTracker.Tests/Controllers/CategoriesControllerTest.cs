@@ -67,14 +67,15 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var mockedCategory = mockedData.Categories.Where(c => c.Name == "CategoryWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns(
+            var mockedCategory = mockedData.Categories.Where(c => c.Name == "CategoryWithNoTransactions").Single();
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(id, null, null, true)).Returns(
                 mockedCategory
             );
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,11 +91,13 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns(mockedData.Categories.First());
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(id, null, null, true)).Returns(
+                mockedData.Categories.First());
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -119,12 +122,14 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns((Category)null);
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(
+                id, null, null, true)).Returns((Category)null);
 
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+            HttpNotFoundResult result = controller.Details(id) as HttpNotFoundResult;
 
             // Assert
             Assert.IsNotNull(result);

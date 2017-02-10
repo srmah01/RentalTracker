@@ -457,6 +457,101 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void FindCategoryWithTransactionsWithDateTodayReturnsEmptyTransactionCollection()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindCategoryWithTransactions(1, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(0, actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindCategoryWithTransactionsOnSortableIncomeWithDateTodayReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var categoryId = DataHelper.Categories.Where(a => a.Name == "Sortable Income").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date == DateTime.Today);
+            var actual = service.FindCategoryWithTransactions(categoryId, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindCategoryWithTransactionsOnSortableIncomeWithDateRangeReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var categoryId = DataHelper.Categories.Where(a => a.Name == "Sortable Income").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindCategoryWithTransactions(categoryId, DateTime.Today.AddMonths(-6), DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindCategoryWithTransactionsOnSortableIncomeWithDateRangeAndOrderAscendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var categoryId = DataHelper.Categories.Where(a => a.Name == "Sortable Income").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindCategoryWithTransactions(categoryId, DateTime.Today.AddMonths(-6), DateTime.Today, true);
+
+            Assert.IsNotNull(actual);
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order += 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindCategoryWithTransactionsOnSortableIncomeWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var categoryId = DataHelper.Categories.Where(a => a.Name == "Sortable Income").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindCategoryWithTransactions(categoryId, DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void CanUpdateCategory()
         {
             DataHelper.NewDb();
