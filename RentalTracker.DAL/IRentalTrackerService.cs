@@ -58,7 +58,7 @@ namespace RentalTracker.DAL
 
         Payee FindPayee(int? id);
 
-        Payee FindPayeeWithTransactions(int? id);
+        Payee FindPayeeWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         void SaveNewPayee(Payee payee);
 

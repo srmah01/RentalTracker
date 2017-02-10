@@ -69,13 +69,14 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedPayee = mockedData.Payees.Where(c => c.Name == "PayeeWithNoTransactions").Single();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns(
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns(
                 mockedPayee
             );
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,12 +91,13 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns(
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns(
                 mockedData.Payees.First());
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -120,12 +122,13 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns((Payee)null);
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns((Payee)null);
 
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+            HttpNotFoundResult result = controller.Details(id) as HttpNotFoundResult;
 
             // Assert
             Assert.IsNotNull(result);

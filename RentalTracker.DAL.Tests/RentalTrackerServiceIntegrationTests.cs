@@ -702,6 +702,101 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void FindPayeeWithTransactionsWithDateTodayReturnsEmptyTransactionCollection()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.FindPayeeWithTransactions(1, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(0, actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindPayeeWithTransactionsOnSortablePayeeWithDateTodayReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var payeeId = DataHelper.Payees.Where(a => a.Name == "Sortable Payee").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date == DateTime.Today);
+            var actual = service.FindPayeeWithTransactions(payeeId, DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindPayeeWithTransactionsOnSortablePayeeWithDateRangeReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var payeeId = DataHelper.Payees.Where(a => a.Name == "Sortable Payee").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindPayeeWithTransactions(payeeId, DateTime.Today.AddMonths(-6), DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Transactions.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindPayeeWithTransactionsOnSortablePayeeWithDateRangeAndOrderAscendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var payeeId = DataHelper.Payees.Where(a => a.Name == "Sortable Payee").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindPayeeWithTransactions(payeeId, DateTime.Today.AddMonths(-6), DateTime.Today, true);
+
+            Assert.IsNotNull(actual);
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order += 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void FindPayeeWithTransactionsOnSortablePayeeWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var payeeId = DataHelper.Payees.Where(a => a.Name == "Sortable Payee").SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.FindPayeeWithTransactions(payeeId, DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.Transactions.First().Amount;
+            foreach (var transaction in actual.Transactions)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void CanUpdatePayee()
         {
             DataHelper.NewDb();
