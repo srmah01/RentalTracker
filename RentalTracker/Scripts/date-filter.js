@@ -1,12 +1,29 @@
 ﻿$(function () {
+    // Remove the hidden class so thay jQuery hide() and show() work unhindered
     $('.hidden').hide().removeClass('hidden');
 
     $('.datepicker').datetimepicker({
         showClear: true,
         showClose: true,
         format: 'DD/MM/YYYY'
+    }).on('dp.change', function (e) {
+        // If any date changes, then re-validate the To Date
+        if ($('#ToDate').val() !== "") {
+            var validator = $("#DateFilterForm").validate();
+            validator.element("#ToDate");
+        }
     });
 
+    // Validation rules for To Date
+    $.validator.addMethod("dategreaterthan", function (value, element, param) {
+        return Date.parse(value) >= Date.parse($('#' + param).val());
+    }, "Date must not be earlier than other Date");
+
+    $('#ToDate').rules("add", {
+        dategreaterthan: { param: 'FromDate' }
+    });
+
+    // Handle changes to filter selection
     $('#DateFilter').change(function () {
         var str = $("select option:selected").text();
 
