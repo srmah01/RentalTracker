@@ -34,7 +34,9 @@ namespace RentalTracker.Controllers
             var searchFilterViewModel = new SearchFilterViewModel();
             searchFilterViewModel.SetSearchFilter(account, payee, category, dateFilter, fromDate, toDate, sortOrder);
 
-            var transactions = rentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory();
+            var transactions = rentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, payee, category,
+                searchFilterViewModel.FromDate, searchFilterViewModel.ToDate, sortOrder == SortDirection.Ascending);
             var indexViewModel = new EntityDetailsViewModel<Transaction>()
             {
                 Filter = searchFilterViewModel

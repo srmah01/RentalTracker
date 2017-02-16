@@ -830,6 +830,182 @@ namespace RentalTracker.DAL.Tests
 
         #region Transactions
         [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsWithNoFilteringReturnsAllTransactionsCollection()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory();
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(DataHelper.Transactions.Count, actual.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsWithDateTomorrowReturnsEmptyTransactionCollection()
+        {
+            DataHelper.NewDb();
+
+            var service = new RentalTrackerService();
+
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                null, null, null,
+                DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(0, actual.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortableAccountWithDateTodayReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var account = "Sortable Account";
+            var accountId = DataHelper.Accounts.Where(a => a.Name == account).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date == DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, null, null,
+                DateTime.Today, DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortableAccountWithDateRangeReturnsTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var account = "Sortable Account";
+            var accountId = DataHelper.Accounts.Where(a => a.Name == account).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, null, null,
+                DateTime.Today.AddMonths(-6), DateTime.Today);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected.Count(), actual.Count);
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortableAccountWithDateRangeAndOrderAscendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var account = "Sortable Account";
+            var accountId = DataHelper.Accounts.Where(a => a.Name == account).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, null, null,
+                DateTime.Today.AddMonths(-6), DateTime.Today, true);
+
+            Assert.IsNotNull(actual);
+            var order = actual.First().Amount;
+            foreach (var transaction in actual)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order += 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortableAccountWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var account = "Sortable Account";
+            var accountId = DataHelper.Accounts.Where(a => a.Name == account).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account,null, null,
+                DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.First().Amount;
+            foreach (var transaction in actual)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortablePayeeWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var payee = "Sortable Payee";
+            var payeeId = DataHelper.Payees.Where(a => a.Name == payee).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                null, payee, null,
+                DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.First().Amount;
+            foreach (var transaction in actual)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsOnSortableCategoryWithDateRangeAndOrderDescendingReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var category = "Sortable Income";
+            var categoryId = DataHelper.Categories.Where(a => a.Name == category).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expected = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today);
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                null, null, category,
+                DateTime.Today.AddMonths(-6), DateTime.Today, false);
+
+            Assert.IsNotNull(actual);
+
+            var order = actual.First().Amount;
+            foreach (var transaction in actual)
+            {
+                Assert.AreEqual(order, transaction.Amount);
+                order -= 1.00m;
+            }
+        }
+
+        [TestMethod, TestCategory("Integration")]
         public void CanInsertNewTransactionWithAllMandatoryDataPresent()
         {
             DataHelper.NewDb();

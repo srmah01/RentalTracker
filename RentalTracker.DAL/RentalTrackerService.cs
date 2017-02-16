@@ -382,14 +382,59 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory()
+        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory(
+            String account = null, String payee = null, String category = null,
+            DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var transactions = context.Transactions.AsNoTracking()
                                                        .Include(t => t.Account)
                                                        .Include(t => t.Payee)
-                                                       .Include(t => t.Category);
+                                                       .Include(t => t.Category)
+                                                       .AsQueryable();
+
+                if (from == null)
+                {
+                    from = DateTime.MinValue;
+                }
+
+                if (to == null)
+                {
+                    to = DateTime.MaxValue;
+                }
+
+                if (account != null)
+                {
+                    transactions = transactions.Where(t => t.Account.Name.ToLower().Contains(account.ToLower()));
+                }
+
+                if (payee != null)
+                {
+                    transactions = transactions.Where(t => t.Payee.Name.ToLower().Contains(payee.ToLower()));
+                }
+
+                if (category != null)
+                {
+                    transactions = transactions.Where(t => t.Category.Name.ToLower().Contains(category.ToLower()));
+                }
+
+                if (ascending)
+                {
+                    transactions = transactions
+                                    .Where(t => t.Date >= from && t.Date <= to)
+                                    .OrderBy(t => t.Date)
+                                    .ThenBy(t => t.Id);
+                }
+                else
+                {
+                    transactions = transactions
+                                    .Where(t => t.Date >= from && t.Date <= to)
+                                    .OrderByDescending(t => t.Date)
+                                    .ThenByDescending(t => t.Id);
+                }
+
+
                 return transactions.ToList();
             }
         }

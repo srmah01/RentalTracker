@@ -68,7 +68,9 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory();
+        ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory(
+            String account = null, String payee = null, String category = null,
+            DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         Transaction FindTransaction(int? id);
 

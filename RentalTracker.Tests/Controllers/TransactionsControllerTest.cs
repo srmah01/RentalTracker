@@ -33,7 +33,9 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory()).Returns(new List<Transaction>());
+            mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                    null, null, null, null, null, true
+                )).Returns(new List<Transaction>());
 
             TransactionsController controller = new TransactionsController(mockService.Object);
 
@@ -51,7 +53,9 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory()).Returns(
+            mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                    null, null, null, null, null, true
+                )).Returns(
                 mockedData.Transactions
             );
 
@@ -92,7 +96,7 @@ namespace RentalTracker.Tests.Controllers
             var date = DateTime.Today;
             var sortOrder = SortDirection.Descending;
             mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory(
-                //account, payee, category, date, date, false
+                    account, payee, category, date, date, false
                 ))
                 .Returns(
                     mockedTransactions
@@ -278,10 +282,10 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindTransactionWithAccountAndPayeeAndCategory(It.IsAny<int>())).Returns((Transaction) null);
+            mockService.Setup(s => s.FindTransactionWithAccountAndPayeeAndCategory(It.IsAny<int>())).Returns((Transaction)null);
 
             TransactionsController controller = new TransactionsController(mockService.Object);
-            
+
             // Act
             HttpNotFoundResult result = controller.Delete(1) as HttpNotFoundResult;
 
