@@ -404,17 +404,17 @@ namespace RentalTracker.DAL
                     to = DateTime.MaxValue;
                 }
 
-                if (account != null)
+                if (!String.IsNullOrEmpty(account))
                 {
                     transactions = transactions.Where(t => t.Account.Name.ToLower().Contains(account.ToLower()));
                 }
 
-                if (payee != null)
+                if (!String.IsNullOrEmpty(payee))
                 {
                     transactions = transactions.Where(t => t.Payee.Name.ToLower().Contains(payee.ToLower()));
                 }
 
-                if (category != null)
+                if (!String.IsNullOrEmpty(category))
                 {
                     transactions = transactions.Where(t => t.Category.Name.ToLower().Contains(category.ToLower()));
                 }
