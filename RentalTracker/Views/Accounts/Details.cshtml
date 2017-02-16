@@ -2,10 +2,12 @@
 
 @{
     ViewBag.Title = "Accounts";
-    ViewBag.DateFilter = Model.DateFilter.DateFilter;
-    ViewBag.FromDate = Model.DateFilter.FromDate;
-    ViewBag.ToDate = Model.DateFilter.ToDate;
-    ViewBag.SortOrder = Model.DateFilter.SortOrder;
+
+    var filter = Model.Filter as DateFilterViewModel;
+    ViewBag.DateFilter = filter.DateFilter;
+    ViewBag.FromDate = filter.FromDate;
+    ViewBag.ToDate = filter.ToDate;
+    ViewBag.SortOrder = filter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")
@@ -66,7 +68,7 @@
     </div>
 
     <div class="col-md-8">
-        @Html.Partial("_DateFilter", Model.DateFilter)
+        @Html.Partial("_DateFilter", filter)
 
 
         @Html.Partial("_AccountTransactionsList", Model.Transactions)

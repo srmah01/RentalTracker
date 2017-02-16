@@ -12,6 +12,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -75,6 +77,45 @@ namespace RentalTracker.Tests.Controllers
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Reference, model.Transactions.ElementAt(i).Reference);
                 Assert.AreEqual(mockedData.Transactions.ElementAt(i).Memo, model.Transactions.ElementAt(i).Memo);
             }
+        }
+
+        [TestMethod]
+        public void CanReturnATransactionIndexViewWithSearchFilterModel()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedTransactions = mockedData.Transactions.ToList();
+            var account = "Account";
+            var payee = "Payee";
+            var category = "Category";
+            var filter = DateFilterSelector.CustomDate;
+            var date = DateTime.Today;
+            var sortOrder = SortDirection.Descending;
+            mockService.Setup(s => s.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                //account, payee, category, date, date, false
+                ))
+                .Returns(
+                    mockedTransactions
+                );
+            TransactionsController controller = new TransactionsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Index(account, payee, category,
+                DateFilterSelector.CustomDate, date.ToShortDateString(),
+                date.ToShortDateString(), sortOrder) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as EntityDetailsViewModel<Transaction>;
+            Assert.IsNotNull(model.Filter);
+            var filterVM = model.Filter as SearchFilterViewModel;
+            Assert.AreEqual(account, filterVM.Account);
+            Assert.AreEqual(payee, filterVM.Payee);
+            Assert.AreEqual(category, filterVM.Category);
+            Assert.AreEqual(filter, filterVM.DateFilter);
+            Assert.AreEqual(date, filterVM.FromDate);
+            Assert.AreEqual(date, filterVM.ToDate);
+            Assert.AreEqual(sortOrder, filterVM.SortOrder);
         }
 
         [TestMethod]

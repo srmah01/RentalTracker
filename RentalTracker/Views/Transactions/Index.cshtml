@@ -2,22 +2,40 @@
 
 @{
     ViewBag.Title = "Transactions";
+
+    var filter = Model.Filter as SearchFilterViewModel;
+    ViewBag.DateFilter = filter.DateFilter;
+    ViewBag.FromDate = filter.FromDate;
+    ViewBag.ToDate = filter.ToDate;
+    ViewBag.SortOrder = filter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")
 
 <div class="container">
-    @Html.Partial("_TransactionsList", Model.Transactions)
-</div>
+    <div class="col-md-4">
+        @Html.Partial("_SearchFilter", filter)
+    </div>
 
-<div class="center-block">
-    <a class="btn btn-default" href="@Url.Action(  "Create" )"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Add</a>
-    <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit" )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
-    <a id="details" class="btn btn-default disabled hidden" href="@Url.Action( "Details" )"><i class="glyphicon glyphicon-list"></i>&nbsp;Details</a>
-    <a id="delete" class="btn btn-default disabled" href="@Url.Action( "Delete" )"><i class="glyphicon glyphicon-remove"></i>&nbsp;Delete</a>
+    <div class="col-md-8">
+        @Html.Partial("_TransactionsList", Model.Transactions)
+
+        <div class="form-group">
+            <div class="center-block">
+                <a class="btn btn-default" href="@Url.Action(  "Create" )"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;Add</a>
+                <a id="edit" class="btn btn-default disabled" href="@Url.Action( "Edit" )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+                <a id="details" class="btn btn-default disabled hidden" href="@Url.Action( "Details" )"><i class="glyphicon glyphicon-list"></i>&nbsp;Details</a>
+                <a id="delete" class="btn btn-default disabled" href="@Url.Action( "Delete" )"><i class="glyphicon glyphicon-remove"></i>&nbsp;Delete</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 @section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/date-filter")
+
     <script src="~/Scripts/items-table.js"></script>
 }

@@ -56,7 +56,7 @@ namespace RentalTracker.Controllers
             var categoryViewModel = new EntityDetailsViewModel<Category>()
             {
                 Entity = category,
-                DateFilter = dateFilterViewModel
+                Filter = dateFilterViewModel
             };
 
             foreach (var item in category.Transactions)

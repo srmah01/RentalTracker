@@ -144,10 +144,12 @@ namespace RentalTracker.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
             var model = result.Model as EntityDetailsViewModel<Payee>;
-            Assert.AreEqual(filter, model.DateFilter.DateFilter);
-            Assert.AreEqual(date, model.DateFilter.FromDate);
-            Assert.AreEqual(date, model.DateFilter.ToDate);
-            Assert.AreEqual(sortOrder, model.DateFilter.SortOrder);
+            Assert.IsNotNull(model.Filter);
+            var filterVM = model.Filter as DateFilterViewModel;
+            Assert.AreEqual(filter, filterVM.DateFilter);
+            Assert.AreEqual(date, filterVM.FromDate);
+            Assert.AreEqual(date, filterVM.ToDate);
+            Assert.AreEqual(sortOrder, filterVM.SortOrder);
         }
 
         [TestMethod]

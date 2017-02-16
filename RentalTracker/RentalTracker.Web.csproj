@@ -179,6 +179,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Models\IFilterViewModel.cs" />
+    <Compile Include="Models\SearchFilterViewModel.cs" />
     <Compile Include="Models\DateFilterViewModel.cs" />
     <Compile Include="Enums\DateFilterSelector.cs" />
     <Compile Include="Utilities\HandleValidationErrors.cs" />
@@ -297,7 +299,7 @@
     <Content Include="Views\Transactions\_TransactionsList.cshtml" />
     <Content Include="Views\Transactions\_Transaction.cshtml" />
     <Content Include="Views\Shared\_DateFilter.cshtml" />
-    <Content Include="Views\Shared\_DateFilter1.cshtml" />
+    <Content Include="Views\Shared\_SearchFilter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -54,7 +54,7 @@ namespace RentalTracker.Controllers
             var payeeViewModel = new EntityDetailsViewModel<Payee>()
             {
                 Entity = payee,
-                DateFilter = dateFilterViewModel
+                Filter = dateFilterViewModel
             };
 
             foreach (var item in payee.Transactions)

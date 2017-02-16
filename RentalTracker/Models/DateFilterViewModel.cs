@@ -5,21 +5,21 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Models
 {
-    public class DateFilterViewModel
+    public class DateFilterViewModel : IFilterViewModel
     {
         [Display(Name = "Date")]
-        public DateFilterSelector DateFilter { get; set; }
+        public DateFilterSelector DateFilter { get; protected set; }
 
         [Required]
         [Display(Name = "From")]
-        public DateTime? FromDate { get; private set; }
+        public DateTime? FromDate { get; protected set; }
 
         [Required]
         [Display(Name = "To")]
-        public DateTime? ToDate { get; private set; }
+        public DateTime? ToDate { get; protected set; }
 
         [Required]
-        public SortDirection SortOrder { get; private set; }
+        public SortDirection SortOrder { get; protected set; }
 
         public DateFilterViewModel()
         {
@@ -30,10 +30,10 @@ namespace RentalTracker.Models
         }
 
         public void SetDateFilter(DateFilterSelector selector, string from = null, string to = null,
-            SortDirection sortOder = SortDirection.Ascending)
+            SortDirection sortOrder = SortDirection.Ascending)
         {
             DateFilter = selector;
-            SortOrder = sortOder;
+            SortOrder = sortOrder;
 
             switch (DateFilter)
             {

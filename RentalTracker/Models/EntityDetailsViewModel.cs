@@ -15,7 +15,7 @@ namespace RentalTracker.Models
 
         public T Entity { get; set; }
 
-        public DateFilterViewModel DateFilter { get; set; }
+        public IFilterViewModel Filter { get; set; }
 
         public ICollection<TransactionsListViewModel> Transactions { get; set; }
     }
