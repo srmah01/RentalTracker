@@ -1006,6 +1006,43 @@ namespace RentalTracker.DAL.Tests
         }
 
         [TestMethod, TestCategory("Integration")]
+        public void GetAllTransactionsWhenSearchedOnAccountAndPayeeAndCategoryReturnsSortedTransactionCollection()
+        {
+            DataHelper.NewDb();
+            var account = "sort";
+            var accountId = DataHelper.Accounts.Where(a => a.Name.ToLower().Contains(account)).SingleOrDefault().Id;
+            var payee = "gas";
+            var payeeId = DataHelper.Payees.Where(a => a.Name.ToLower().Contains(payee)).SingleOrDefault().Id;
+            var category = "charges";
+            var categoryId = DataHelper.Categories.Where(a => a.Name.ToLower().Contains(category)).SingleOrDefault().Id;
+
+            var service = new RentalTrackerService();
+
+            var expectedAccountMatches = DataHelper.Transactions
+                                     .Where(t => t.AccountId == accountId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today).Count();
+            var expectedPayeeMatches = DataHelper.Transactions
+                                     .Where(t => t.PayeeId == payeeId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today).Count();
+            var expectedCategoryMatches = DataHelper.Transactions
+                                     .Where(t => t.CategoryId == categoryId &&
+                                                 t.Date >= DateTime.Today.AddMonths(-6) &&
+                                                 t.Date <= DateTime.Today).Count();
+            var actual = service.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, payee, category,
+                DateTime.Today.AddMonths(-6), DateTime.Today, true);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expectedAccountMatches, actual.Count(t => t.AccountId == accountId));
+            Assert.AreEqual(expectedPayeeMatches, actual.Count(t => t.PayeeId == payeeId));
+            Assert.AreEqual(expectedCategoryMatches, actual.Count(t => t.CategoryId == categoryId));
+
+        }
+
+
+        [TestMethod, TestCategory("Integration")]
         public void CanInsertNewTransactionWithAllMandatoryDataPresent()
         {
             DataHelper.NewDb();

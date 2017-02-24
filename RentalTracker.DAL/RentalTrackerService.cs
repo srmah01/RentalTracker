@@ -404,31 +404,26 @@ namespace RentalTracker.DAL
                     to = DateTime.MaxValue;
                 }
 
-                if (!String.IsNullOrEmpty(account))
+                if (!String.IsNullOrEmpty(account) || !String.IsNullOrEmpty(payee) || !String.IsNullOrEmpty(category))
                 {
-                    transactions = transactions.Where(t => t.Account.Name.ToLower().Contains(account.ToLower()));
-                }
-
-                if (!String.IsNullOrEmpty(payee))
-                {
-                    transactions = transactions.Where(t => t.Payee.Name.ToLower().Contains(payee.ToLower()));
-                }
-
-                if (!String.IsNullOrEmpty(category))
-                {
-                    transactions = transactions.Where(t => t.Category.Name.ToLower().Contains(category.ToLower()));
+                    // Make search an OR operation - any of the matching search terms is included in the results
+                    transactions = transactions.Where(t =>
+                        (!String.IsNullOrEmpty(account) && t.Account.Name.ToLower().Contains(account.ToLower())) ||
+                        (!String.IsNullOrEmpty(payee) && t.Payee.Name.ToLower().Contains(payee.ToLower())) ||
+                        (!String.IsNullOrEmpty(category) && t.Category.Name.ToLower().Contains(category.ToLower()))
+                        );
                 }
 
                 if (ascending)
                 {
-                    transactions = transactions
+                    transactions = transactions.AsQueryable()
                                     .Where(t => t.Date >= from && t.Date <= to)
                                     .OrderBy(t => t.Date)
                                     .ThenBy(t => t.Id);
                 }
                 else
                 {
-                    transactions = transactions
+                    transactions = transactions.AsQueryable()
                                     .Where(t => t.Date >= from && t.Date <= to)
                                     .OrderByDescending(t => t.Date)
                                     .ThenByDescending(t => t.Id);
