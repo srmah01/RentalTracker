@@ -97,6 +97,7 @@
     <Compile Include="Controllers\CategoriesControllerTest.cs" />
     <Compile Include="Controllers\AccountsControllerTest.cs" />
     <Compile Include="MockedData.cs" />
+    <Compile Include="Models\SearchFilterViewModelTests.cs" />
     <Compile Include="Models\DateFilterViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
