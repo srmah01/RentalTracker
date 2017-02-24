@@ -12,6 +12,8 @@ using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -68,14 +70,17 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>())).Returns(
-                mockedAccount
-            );
+            var mockedAccount = mockedData.Accounts.Where(c => c.Name == "AccountWithNoTransactions").Single();
+            var id = 1;
+            mockService.Setup(s => s.FindAccountWithTransactions(
+                id, null, null, true))
+                .Returns(
+                    mockedAccount
+                );
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -92,12 +97,16 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedAccount = mockedData.Accounts.First();
-            mockService.Setup(s => s.FindAccountWithTransactions(It.IsAny<int>(), It.IsAny<bool>()))
-                       .Returns(mockedAccount);
+            var id = 1;
+            mockService.Setup(s => s.FindAccountWithTransactions(
+                id, null, null, true))
+                .Returns(
+                    mockedAccount
+                );
             AccountsController controller = new AccountsController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -127,6 +136,39 @@ namespace RentalTracker.Tests.Controllers
                 Assert.AreEqual(expected.Reference, actual.Reference);
                 Assert.AreEqual(expected.Memo, actual.Memo);
             }
+        }
+
+        [TestMethod]
+        public void CanReturnAnAccountDetailsViewWithDateFilterModel()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedAccount = mockedData.Accounts.First();
+            var id = 1;
+            var filter = DateFilterSelector.CustomDate;
+            var date = DateTime.Today;
+            var sortOrder = SortDirection.Descending;
+            mockService.Setup(s => s.FindAccountWithTransactions(
+                id, date, date, false))
+                .Returns(
+                    mockedAccount
+                );
+            AccountsController controller = new AccountsController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Details(id, 
+                DateFilterSelector.CustomDate, date.ToShortDateString(),
+                date.ToShortDateString(), sortOrder ) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as EntityDetailsViewModel<Account>;
+            Assert.IsNotNull(model.Filter);
+            var filterVM = model.Filter as DateFilterViewModel;
+            Assert.AreEqual(filter, filterVM.DateFilter);
+            Assert.AreEqual(date, filterVM.FromDate);
+            Assert.AreEqual(date, filterVM.ToDate);
+            Assert.AreEqual(sortOrder, filterVM.SortOrder);
         }
 
         [TestMethod]

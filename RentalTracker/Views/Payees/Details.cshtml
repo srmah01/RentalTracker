@@ -3,6 +3,12 @@
 @{
     ViewBag.Title = "Payees";
     ViewBag.Category = Model.Entity.DefaultCategory != null ? Model.Entity.DefaultCategory.Type.ToString().ToLower() : "none";
+
+    var filter = Model.Filter as DateFilterViewModel;
+    ViewBag.DateFilter = filter.DateFilter;
+    ViewBag.FromDate =filter.FromDate;
+    ViewBag.ToDate = filter.ToDate;
+    ViewBag.SortOrder = filter.SortOrder;
 }
 
 @Html.Partial("_JumboHeader")
@@ -38,7 +44,7 @@
 
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
-                            <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i cla><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
+                            <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
                         </div>
                     </div>
                 </div>
@@ -56,9 +62,18 @@
     </div>
 
     <div class="col-md-8">
-        <p>
-            @Html.Partial("_PayeeTransactionsList", Model.Transactions)
-        </p>
+        @Html.Partial("_DateFilter", filter)
+
+        @Html.Partial("_PayeeTransactionsList", Model.Transactions)
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/date-filter")
+}
+
+
+
 

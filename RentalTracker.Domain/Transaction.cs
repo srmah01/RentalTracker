@@ -54,13 +54,13 @@ namespace RentalTracker.Domain
             if (Date <= DateTime.MinValue)
             {
                 yield return new ValidationResult
-                  ("Date must be specified.", new[] { "Date" }); ;
+                  ("Date must be specified.", new[] { "Date" });
             }
 
             if (Amount == 0.00m)
             {
                 yield return new ValidationResult(
-                  "Amount must be non-zero", new[] { "Amount" }); ;
+                  "Amount must be non-zero", new[] { "Amount" });
             }
         }
     }

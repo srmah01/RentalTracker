@@ -30,7 +30,7 @@ namespace RentalTracker.DAL
 
         Account FindAccount(int? id);
 
-        Account FindAccountWithTransactions(int? id, bool ascending = true);
+        Account FindAccountWithTransactions(int? id, DateTime? from = null, DateTime? to =null, bool ascending = true);
 
         void SaveNewAccount(Account account);
 
@@ -44,7 +44,7 @@ namespace RentalTracker.DAL
 
         Category FindCategory(int? id);
 
-        Category FindCategoryWithTransactions(int? id);
+        Category FindCategoryWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         void SaveNewCategory(Category category);
 
@@ -58,7 +58,7 @@ namespace RentalTracker.DAL
 
         Payee FindPayee(int? id);
 
-        Payee FindPayeeWithTransactions(int? id);
+        Payee FindPayeeWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         void SaveNewPayee(Payee payee);
 
@@ -68,7 +68,9 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory();
+        ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory(
+            String account = null, String payee = null, String category = null,
+            DateTime? from = null, DateTime? to = null, bool ascending = true);
 
         Transaction FindTransaction(int? id);
 

@@ -12,6 +12,8 @@ using RentalTracker.Models;
 using System.Data.Entity.Validation;
 using RentalTracker.Utilities;
 using RentalTracker.DAL.Exceptions;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Controllers
 {
@@ -31,13 +33,22 @@ namespace RentalTracker.Controllers
         }
 
         // GET: Accounts/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id,
+            DateFilterSelector dateFilter = DateFilterSelector.AllDates,
+            string fromDate = null, string toDate = null, 
+            SortDirection sortOrder = SortDirection.Ascending)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Account account = rentalTrackerService.FindAccountWithTransactions(id);
+
+            var dateFilterViewModel = new DateFilterViewModel();
+            dateFilterViewModel.SetDateFilter(dateFilter, fromDate, toDate, sortOrder);
+
+            Account account = rentalTrackerService.FindAccountWithTransactions(id, dateFilterViewModel.FromDate,
+                 dateFilterViewModel.ToDate, (sortOrder == SortDirection.Ascending));
+
             if (account == null)
             {
                 return HttpNotFound();
@@ -45,7 +56,8 @@ namespace RentalTracker.Controllers
 
             var accountViewModel = new EntityDetailsViewModel<Account>()
             {
-                Entity = account
+                Entity = account,
+                Filter = dateFilterViewModel
             };
 
             foreach (var item in account.Transactions)

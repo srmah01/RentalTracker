@@ -12,6 +12,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -69,13 +71,14 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             var mockedPayee = mockedData.Payees.Where(c => c.Name == "PayeeWithNoTransactions").Single();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns(
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns(
                 mockedPayee
             );
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,12 +93,13 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns(
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns(
                 mockedData.Payees.First());
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -116,16 +120,50 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
+        public void CanReturnAPayeeDetailsViewWithDateFilterModel()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedPayee = mockedData.Payees.First();
+            var id = 1;
+            var filter = DateFilterSelector.CustomDate;
+            var date = DateTime.Today;
+            var sortOrder = SortDirection.Descending;
+            mockService.Setup(s => s.FindPayeeWithTransactions(
+                id, date, date, false))
+                .Returns(
+                    mockedPayee
+                );
+            PayeesController controller = new PayeesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Details(id,
+                DateFilterSelector.CustomDate, date.ToShortDateString(),
+                date.ToShortDateString(), sortOrder) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as EntityDetailsViewModel<Payee>;
+            Assert.IsNotNull(model.Filter);
+            var filterVM = model.Filter as DateFilterViewModel;
+            Assert.AreEqual(filter, filterVM.DateFilter);
+            Assert.AreEqual(date, filterVM.FromDate);
+            Assert.AreEqual(date, filterVM.ToDate);
+            Assert.AreEqual(sortOrder, filterVM.SortOrder);
+        }
+
+        [TestMethod]
         public void DisplayingDetailsOfANonExistentPayeeReturnsHttpNotFound()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindPayeeWithTransactions(It.IsAny<int>())).Returns((Payee)null);
+            var id = 1;
+            mockService.Setup(s => s.FindPayeeWithTransactions(id, null, null, true)).Returns((Payee)null);
 
             PayeesController controller = new PayeesController(mockService.Object);
 
             // Act
-            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+            HttpNotFoundResult result = controller.Details(id) as HttpNotFoundResult;
 
             // Assert
             Assert.IsNotNull(result);

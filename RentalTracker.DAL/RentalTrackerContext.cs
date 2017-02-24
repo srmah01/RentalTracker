@@ -17,6 +17,7 @@ namespace RentalTracker.DAL
     {
         public RentalTrackerContext() : base("RentalTracker")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<Account> Accounts { get; set; }

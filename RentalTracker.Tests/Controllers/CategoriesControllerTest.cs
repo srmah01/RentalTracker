@@ -12,6 +12,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using RentalTracker.Enums;
+using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -67,14 +69,15 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            var mockedCategory = mockedData.Categories.Where(c => c.Name == "CategoryWithNoTransactions").Single(); ;
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns(
+            var mockedCategory = mockedData.Categories.Where(c => c.Name == "CategoryWithNoTransactions").Single();
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(id, null, null, true)).Returns(
                 mockedCategory
             );
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,11 +93,13 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns(mockedData.Categories.First());
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(id, null, null, true)).Returns(
+                mockedData.Categories.First());
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Details(1) as ViewResult;
+            ViewResult result = controller.Details(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -115,16 +120,51 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
+        public void CanReturnACategoryDetailsViewWithDateFilterModel()
+        {
+            // Arrange
+            var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategory = mockedData.Categories.First();
+            var id = 1;
+            var filter = DateFilterSelector.CustomDate;
+            var date = DateTime.Today;
+            var sortOrder = SortDirection.Descending;
+            mockService.Setup(s => s.FindCategoryWithTransactions(
+                id, date, date, false))
+                .Returns(
+                    mockedCategory
+                );
+            CategoriesController controller = new CategoriesController(mockService.Object);
+
+            // Act
+            ViewResult result = controller.Details(id,
+                DateFilterSelector.CustomDate, date.ToShortDateString(),
+                date.ToShortDateString(), sortOrder) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            var model = result.Model as EntityDetailsViewModel<Category>;
+            Assert.IsNotNull(model.Filter);
+            var filterVM = model.Filter as DateFilterViewModel;
+            Assert.AreEqual(filter, filterVM.DateFilter);
+            Assert.AreEqual(date, filterVM.FromDate);
+            Assert.AreEqual(date, filterVM.ToDate);
+            Assert.AreEqual(sortOrder, filterVM.SortOrder);
+        }
+
+        [TestMethod]
         public void DisplayingDetailsOfANonExistentCategoryReturnsHttpNotFound()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
-            mockService.Setup(s => s.FindCategoryWithTransactions(It.IsAny<int>())).Returns((Category)null);
+            var id = 1;
+            mockService.Setup(s => s.FindCategoryWithTransactions(
+                id, null, null, true)).Returns((Category)null);
 
             CategoriesController controller = new CategoriesController(mockService.Object);
 
             // Act
-            HttpNotFoundResult result = controller.Details(1) as HttpNotFoundResult;
+            HttpNotFoundResult result = controller.Details(id) as HttpNotFoundResult;
 
             // Assert
             Assert.IsNotNull(result);

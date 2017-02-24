@@ -91,7 +91,7 @@ namespace RentalTracker.DAL
             }
         }
 
-        public Account FindAccountWithTransactions(int? id, bool ascending = true)
+        public Account FindAccountWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
@@ -100,37 +100,57 @@ namespace RentalTracker.DAL
 
                 if (account != null)
                 {
+                    context.Accounts.Attach(account);
+                    var transactions = context.Entry(account)
+                                    .Collection(a => a.Transactions)
+                                    .Query()
+                                    .Include(t => t.Payee)
+                                    .Include(t => t.Category)
+                                    .OrderBy(t => t.Date)
+                                    .ThenBy(t => t.Id);
+
+                    CalculateTransactionBalances(transactions, account.OpeningBalance);
+
+                    if (from == null)
+                    {
+                        from = DateTime.MinValue;
+                    }
+
+                    if (to == null)
+                    {
+                        to = DateTime.MaxValue;
+                    }
+
                     if (ascending)
                     {
-                        context.Entry(account).Collection(a => a.Transactions).Query()
-                               .OrderBy(t => t.Date)
-                               .ThenBy(t => t.Id)
-                               .Load();
+                        account.Transactions = transactions
+                                               .Where(t => t.Date >= from && t.Date <= to)
+                                               .ToList();
                     }
                     else
                     {
-                        context.Entry(account).Collection(a => a.Transactions).Query()
-                               .OrderByDescending(t => t.Date)
-                               .ThenBy(t => t.Id)
-                               .Load();
+                        account.Transactions = transactions
+                                               .Where(t => t.Date >= from && t.Date <= to)
+                                               .OrderByDescending(t => t.Date)
+                                               .ThenByDescending(t => t.Id)
+                                               .ToList();
                     }
 
                     account.Balance = GetAccountBalance(id);
-
-                    var balance = account.OpeningBalance;
-
-                    foreach (var transaction in ascending ? account.Transactions : account.Transactions.Reverse())
-                    {
-                        // Explicitly load the Payee & Category references
-                        context.Entry(transaction).Reference(t => t.Payee).Load();
-                        context.Entry(transaction).Reference(t => t.Category).Load();
-
-                        balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
-                        transaction.Balance = balance;
-                    }
                 }
 
                 return account;
+            }
+        }
+
+        private void CalculateTransactionBalances(IQueryable<Transaction> transactions, Decimal openingBalance)
+        {
+            var balance = openingBalance;
+
+            foreach (var transaction in transactions)
+            {
+                balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
+                transaction.Balance = balance;
             }
         }
 
@@ -193,21 +213,50 @@ namespace RentalTracker.DAL
             }
         }
 
-        public Category FindCategoryWithTransactions(int? id)
+        public Category FindCategoryWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var category = context.Categories
-                                        .Include(x => x.Transactions)
-                                        .SingleOrDefault(c => c.Id == id);
+                                     .SingleOrDefault(a => a.Id == id);
 
                 if (category != null)
                 {
-                    foreach (var transaction in category.Transactions)
+                    context.Categories.Attach(category);
+
+                    if (from == null)
                     {
-                        // Explicitly load the Account & Payee references
-                        context.Entry(transaction).Reference(t => t.Account).Load();
-                        context.Entry(transaction).Reference(t => t.Payee).Load();
+                        from = DateTime.MinValue;
+                    }
+
+                    if (to == null)
+                    {
+                        to = DateTime.MaxValue;
+                    }
+
+                    if (ascending)
+                    {
+                        context.Entry(category)
+                               .Collection(c => c.Transactions)
+                               .Query()
+                               .Include(t => t.Account)
+                               .Include(t => t.Payee)
+                               .Where(t => t.Date >= from && t.Date <= to)
+                               .OrderBy(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+                    else
+                    {
+                        context.Entry(category)
+                               .Collection(c => c.Transactions)
+                               .Query()
+                               .Include(t => t.Account)
+                               .Include(t => t.Payee)
+                               .Where(t => t.Date >= from && t.Date <= to)
+                               .OrderByDescending(t => t.Date)
+                               .ThenByDescending(t => t.Id)
+                               .Load();
                     }
                 }
 
@@ -259,22 +308,51 @@ namespace RentalTracker.DAL
             }
         }
 
-        public Payee FindPayeeWithTransactions(int? id)
+        public Payee FindPayeeWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var payee = context.Payees
-                                     .Include(p => p.DefaultCategory)
-                                     .Include(p => p.Transactions)
-                                     .SingleOrDefault(p => p.Id == id);
+                                   .Include(p => p.DefaultCategory)
+                                   .SingleOrDefault(a => a.Id == id);
 
                 if (payee != null)
                 {
-                    foreach (var transaction in payee.Transactions)
+                    context.Payees.Attach(payee);
+
+                    if (from == null)
                     {
-                        // Explicitly load the Account & Category references
-                        context.Entry(transaction).Reference(t => t.Account).Load();
-                        context.Entry(transaction).Reference(t => t.Category).Load();
+                        from = DateTime.MinValue;
+                    }
+
+                    if (to == null)
+                    {
+                        to = DateTime.MaxValue;
+                    }
+
+                    if (ascending)
+                    {
+                        context.Entry(payee)
+                               .Collection(c => c.Transactions)
+                               .Query()
+                               .Include(t => t.Account)
+                               .Include(t => t.Category)
+                               .Where(t => t.Date >= from && t.Date <= to)
+                               .OrderBy(t => t.Date)
+                               .ThenBy(t => t.Id)
+                               .Load();
+                    }
+                    else
+                    {
+                        context.Entry(payee)
+                               .Collection(c => c.Transactions)
+                               .Query()
+                               .Include(t => t.Account)
+                               .Include(t => t.Category)
+                               .Where(t => t.Date >= from && t.Date <= to)
+                               .OrderByDescending(t => t.Date)
+                               .ThenByDescending(t => t.Id)
+                               .Load();
                     }
                 }
 
@@ -304,14 +382,54 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
-        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory()
+        public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory(
+            String account = null, String payee = null, String category = null,
+            DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
             {
                 var transactions = context.Transactions.AsNoTracking()
                                                        .Include(t => t.Account)
                                                        .Include(t => t.Payee)
-                                                       .Include(t => t.Category);
+                                                       .Include(t => t.Category)
+                                                       .AsQueryable();
+
+                if (from == null)
+                {
+                    from = DateTime.MinValue;
+                }
+
+                if (to == null)
+                {
+                    to = DateTime.MaxValue;
+                }
+
+                if (!String.IsNullOrEmpty(account) || !String.IsNullOrEmpty(payee) || !String.IsNullOrEmpty(category))
+                {
+                    // Make search an OR operation - any of the matching search terms is included in the results
+                    transactions = transactions.Where(t =>
+                        (!String.IsNullOrEmpty(account) && t.Account.Name.ToLower().Contains(account.ToLower())) ||
+                        (!String.IsNullOrEmpty(payee) && t.Payee.Name.ToLower().Contains(payee.ToLower())) ||
+                        (!String.IsNullOrEmpty(category) && t.Category.Name.ToLower().Contains(category.ToLower()))
+                        );
+                }
+
+                if (ascending)
+                {
+                    transactions = transactions.AsQueryable()
+                                    .Where(t => t.Date >= from && t.Date <= to)
+                                    .OrderBy(t => t.Date)
+                                    .ThenBy(t => t.Id);
+                }
+                else
+                {
+                    transactions = transactions.AsQueryable()
+                                    .Where(t => t.Date >= from && t.Date <= to)
+                                    .OrderByDescending(t => t.Date)
+                                    .ThenByDescending(t => t.Id);
+                }
+
+
                 return transactions.ToList();
             }
         }

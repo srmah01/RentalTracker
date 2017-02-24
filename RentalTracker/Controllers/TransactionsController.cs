@@ -11,6 +11,8 @@ using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
 using RentalTracker.Utilities;
+using System.Web.Helpers;
+using RentalTracker.Enums;
 
 namespace RentalTracker.Controllers
 {
@@ -24,11 +26,28 @@ namespace RentalTracker.Controllers
         }
 
         // GET: Transactions
-        public ActionResult Index()
+        public ActionResult Index(string account = null, string payee = null, string category = null,
+            DateFilterSelector dateFilter = DateFilterSelector.AllDates,
+            string fromDate = null, string toDate = null,
+            SortDirection sortOrder = SortDirection.Ascending)
         {
-            var transactions = rentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory();
-            var indexViewModel = new EntityDetailsViewModel<Transaction>();
+            var searchFilterViewModel = new SearchFilterViewModel();
+            searchFilterViewModel.SetSearchFilter(account, payee, category, dateFilter, fromDate, toDate, sortOrder);
 
+            var transactions = rentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory(
+                account, payee, category,
+                searchFilterViewModel.FromDate, searchFilterViewModel.ToDate, sortOrder == SortDirection.Ascending);
+            var indexViewModel = new EntityDetailsViewModel<Transaction>()
+            {
+                Filter = searchFilterViewModel
+            };
+
+            // Add last search terms to the ViewBag so they can be passed through
+            // again if a sort order change is requested
+            ViewBag.Account = account;
+            ViewBag.Payee = payee;
+            ViewBag.Category = category;
+            
             foreach (var item in transactions)
             {
                 var transactionViewModel = new TransactionsListViewModel();

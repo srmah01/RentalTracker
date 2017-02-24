@@ -1,10 +1,28 @@
 ﻿@model IEnumerable<TransactionsListViewModel>
 
+@{
+    var ascending = (ViewBag.SortOrder == SortDirection.Ascending);
+}
+
 <table id="items-table-transaction" class="table table-responsive">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.ActionLink("Date", "Index", "Transactions",
+                    new
+                    {
+                        account = ViewBag.Account,
+                        payee = ViewBag.Payee,
+                        category = ViewBag.Category,
+                        dateFilter = ViewBag.DateFilter,
+                        fromDate = ViewBag.FromDate,
+                        toDate = ViewBag.ToDate,
+                        // Inverse of current display to request toggle
+                        sortOrder = ascending ? SortDirection.Descending : SortDirection.Ascending
+                    },
+                    htmlAttributes: ascending ? new { @class = "date-sort-toggle" } :
+                                                new { @class = "date-sort-toggle descending" }
+                )
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Payee)
