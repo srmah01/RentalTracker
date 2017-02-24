@@ -41,6 +41,12 @@ namespace RentalTracker.Controllers
             {
                 Filter = searchFilterViewModel
             };
+
+            // Add last search terms to the ViewBag so they can be passed through
+            // again if a sort order change is requested
+            ViewBag.Account = account;
+            ViewBag.Payee = payee;
+            ViewBag.Category = category;
             
             foreach (var item in transactions)
             {

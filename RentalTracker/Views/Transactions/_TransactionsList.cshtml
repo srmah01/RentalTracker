@@ -11,6 +11,9 @@
                 @Html.ActionLink("Date", "Index", "Transactions",
                     new
                     {
+                        account = ViewBag.Account,
+                        payee = ViewBag.Payee,
+                        category = ViewBag.Category,
                         dateFilter = ViewBag.DateFilter,
                         fromDate = ViewBag.FromDate,
                         toDate = ViewBag.ToDate,
