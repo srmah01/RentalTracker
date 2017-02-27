@@ -1,6 +1,5 @@
 ﻿using RentalTracker.Enums;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Web.Helpers;
 
 namespace RentalTracker.Models

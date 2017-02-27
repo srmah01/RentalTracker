@@ -1,4 +1,5 @@
 using StructureMap;
+
 namespace RentalTracker {
     public static class IoC {
         public static IContainer Initialize() {
