@@ -11,21 +11,44 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Controllers
 {
+    /// <summary>
+    /// Represents the controller for the Payee entity related pages.
+    /// </summary>
     public class PayeesController : Controller
     {
+        /// <summary>
+        /// The Rental Tracker DAL service.
+        /// </summary>
         private IRentalTrackerService rentalTrackerService;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="rentalTrackerService">The instance of the RentalTrackerService.</param>
         public PayeesController(IRentalTrackerService rentalTrackerService)
         {
             this.rentalTrackerService = rentalTrackerService;
         }
 
+        /// <summary>
+        /// Gets the Index view.
+        /// </summary>
+        /// <returns>The Index view with all Payees listed.</returns>
         // GET: Payees
         public ActionResult Index()
         {
             return View(rentalTrackerService.GetAllPayees());
         }
 
+        /// <summary>
+        /// Get the details view of a given Payee with a list of it's Transactions.
+        /// </summary>
+        /// <param name="id">The id of the Payee.</param>
+        /// <param name="dateFilter">The value of the DateFilter selector.</param>
+        /// <param name="fromDate">The from date of the Transactions.</param>
+        /// <param name="toDate">The to date of the Transactions.</param>
+        /// <param name="sortOrder">The order inn which to display the Transactions.</param>
+        /// <returns>The Details view of a Payee.</returns>
         // GET: Payees/Details/5
         public ActionResult Details(int? id,
             DateFilterSelector dateFilter = DateFilterSelector.AllDates,
@@ -78,12 +101,21 @@ namespace RentalTracker.Controllers
             return View(payeeViewModel);
         }
 
+        /// <summary>
+        /// Gets the Create view for a new Payee.
+        /// </summary>
+        /// <returns></returns>
         // GET: Payees/Create
         public ActionResult Create()
         {
             return View();
         }
 
+        /// <summary>
+        /// Handles the submit of a new Payee entity.
+        /// </summary>
+        /// <param name="payee">The new Payee.</param>
+        /// <returns>The Index view if successful, otherwise the Create view with errors displayed.</returns>
         // POST: Payees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -111,6 +143,11 @@ namespace RentalTracker.Controllers
             return View(payee);
         }
 
+        /// <summary>
+        /// Get the Edit view of the specified Payee entity.
+        /// </summary>
+        /// <param name="id">The specified id.</param>
+        /// <returns>The Edit view with the entities fields filled in.</returns>
         // GET: Payees/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -126,6 +163,11 @@ namespace RentalTracker.Controllers
             return View(payee);
         }
 
+        /// <summary>
+        /// Handles the submit of an edited Payee entity.
+        /// </summary>
+        /// <param name="payee">The updated Payee.</param>
+        /// <returns>The Index view if successful, otherwise the Edit view with errors displayed.</returns>
         // POST: Payees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
