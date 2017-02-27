@@ -5,5 +5,5 @@ It contains an app.config with the connection string configuration for where the
 
 To create or update a database, set this project as the startup project, 
 then in the Package Manager Console select the RentalTracker.DAL as the Default Project,
-the use add-migration command to create a migration, if the model has changed and
+then use the add-migration command to create a migration, if the model has changed and
 use update-database to run the migrations and modify/create the database.

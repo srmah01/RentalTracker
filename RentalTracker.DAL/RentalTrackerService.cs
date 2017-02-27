@@ -8,9 +8,16 @@ using System.Data.Entity;
 
 namespace RentalTracker.DAL
 {
+    /// <summary>
+    /// The implemention of the Rental Tracker Service
+    /// </summary>
     public class RentalTrackerService : IRentalTrackerService
     {
         #region Dashboard
+
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetNumberOfAccounts"/>
+        /// </summary>
         public int GetNumberOfAccounts()
         {
             using (var context = new RentalTrackerContext())
@@ -19,6 +26,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetNumberOfCategories()"/>
+        /// </summary>
         public int GetNumberOfCategories()
         {
             using (var context = new RentalTrackerContext())
@@ -27,6 +37,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetNumberOfPayees()"/>
+        /// </summary>
         public int GetNumberOfPayees()
         {
             using (var context = new RentalTrackerContext())
@@ -35,6 +48,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetNumberOfTransactions()"/>
+        /// </summary>
         public int GetNumberOfTransactions()
         {
             using (var context = new RentalTrackerContext())
@@ -43,6 +59,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetTotalOfAccountBalances()"/>
+        /// </summary>
         public Decimal GetTotalOfAccountBalances()
         {
             using (var context = new RentalTrackerContext())
@@ -62,6 +81,9 @@ namespace RentalTracker.DAL
 
         #region Accounts
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetAllAccounts()"/>
+        /// </summary>
         public ICollection<Account> GetAllAccounts()
         {
             using (var context = new RentalTrackerContext())
@@ -76,6 +98,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindAccount(int?)"/>
+        /// </summary>
         public Account FindAccount(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -91,6 +116,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindAccountWithTransactions(int?, DateTime?, DateTime?, bool)"/>
+        /// </summary>
         public Account FindAccountWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
@@ -143,17 +171,9 @@ namespace RentalTracker.DAL
             }
         }
 
-        private void CalculateTransactionBalances(IQueryable<Transaction> transactions, Decimal openingBalance)
-        {
-            var balance = openingBalance;
-
-            foreach (var transaction in transactions)
-            {
-                balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
-                transaction.Balance = balance;
-            }
-        }
-
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveNewAccount(Account)"/>
+        /// </summary>
         public void SaveNewAccount(Account account)
         {
             using (var context = new RentalTrackerContext())
@@ -163,6 +183,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveUpdatedAccount(Account)"/>
+        /// </summary>
         public void SaveUpdatedAccount(Account account)
         {
             using (var context = new RentalTrackerContext())
@@ -172,6 +195,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetAccountBalance(int?)"/>
+        /// </summary>
         public Decimal GetAccountBalance(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -193,9 +219,29 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// Calculate the balance for each Transaction in a given collection of transactions.
+        /// </summary>
+        /// <param name="transactions">The given collection of Transactions.</param>
+        /// <param name="openingBalance">The Opening Balance of the Account.</param>
+        private void CalculateTransactionBalances(IQueryable<Transaction> transactions, Decimal openingBalance)
+        {
+            var balance = openingBalance;
+
+            foreach (var transaction in transactions)
+            {
+                balance += (transaction.Amount * (transaction.Category.Type == CategoryType.Income ? 1 : -1));
+                transaction.Balance = balance;
+            }
+        }
+
         #endregion
 
         #region Categories
+
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetAllCategories()"/>
+        /// </summary>
         public ICollection<Category> GetAllCategories()
         {
             using (var context = new RentalTrackerContext())
@@ -204,6 +250,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindCategory(int?)"/>
+        /// </summary>
         public Category FindCategory(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -213,6 +262,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindCategory(int?, DateTime?, DateTime?, bool)"/>
+        /// </summary>
         public Category FindCategoryWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
@@ -264,6 +316,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveNewCategory(Category)"/>
+        /// </summary>
         public void SaveNewCategory(Category category)
         {
             using (var context = new RentalTrackerContext())
@@ -273,6 +328,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveUpdatedCategory(Category)"/>
+        /// </summary>
         public void SaveUpdatedCategory(Category category)
         {
             using (var context = new RentalTrackerContext())
@@ -286,6 +344,9 @@ namespace RentalTracker.DAL
 
         #region Payees
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetAllPayees()"/>
+        /// </summary>
         public ICollection<Payee> GetAllPayees()
         {
             using (var context = new RentalTrackerContext())
@@ -298,6 +359,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindPayee(int?)"/>
+        /// </summary>
         public Payee FindPayee(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -308,6 +372,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindPayeeWithTransactions(int?, DateTime?, DateTime?, bool)"/>
+        /// </summary>
         public Payee FindPayeeWithTransactions(int? id, DateTime? from = null, DateTime? to = null, bool ascending = true)
         {
             using (var context = new RentalTrackerContext())
@@ -360,6 +427,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveNewPayee(Payee)"/>
+        /// </summary>
         public void SaveNewPayee(Payee payee)
         {
             using (var context = new RentalTrackerContext())
@@ -369,6 +439,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveUpdatedPayee(Payee)"/>
+        /// </summary>
         public void SaveUpdatedPayee(Payee payee)
         {
             using (var context = new RentalTrackerContext())
@@ -382,6 +455,9 @@ namespace RentalTracker.DAL
 
         #region Transactions
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.GetAllTransactionsWithAccountAndPayeeAndCategory(String, String, String, DateTime?, DateTime?, bool)"/>
+        /// </summary>
         public ICollection<Transaction> GetAllTransactionsWithAccountAndPayeeAndCategory(
             String account = null, String payee = null, String category = null,
             DateTime? from = null, DateTime? to = null, bool ascending = true)
@@ -434,6 +510,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindTransaction(int?)"/>
+        /// </summary>
         public Transaction FindTransaction(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -443,6 +522,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.FindTransactionWithAccountAndPayeeAndCategory(int?)"/>
+        /// </summary>
         public Transaction FindTransactionWithAccountAndPayeeAndCategory(int? id)
         {
             using (var context = new RentalTrackerContext())
@@ -455,6 +537,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveNewTransaction(Transaction)"/>
+        /// </summary>
         public void SaveNewTransaction(Transaction transaction)
         {
             using (var context = new RentalTrackerContext())
@@ -464,6 +549,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.SaveUpdatedTransaction(Transaction)"/>
+        /// </summary>
         public void SaveUpdatedTransaction(Transaction transaction)
         {
             using (var context = new RentalTrackerContext())
@@ -473,6 +561,9 @@ namespace RentalTracker.DAL
             }
         }
 
+        /// <summary>
+        /// <see cref="IRentalTrackerService.RemoveTransaction(Transaction)"/>
+        /// </summary>
         public void RemoveTransaction(int id)
         {
             using (var context = new RentalTrackerContext())

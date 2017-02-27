@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentalTracker.DAL.Tests
 {
+    /// <summary>
+    /// Reperesents the Factory to create the Effort DB Provider.
+    /// </summary>
     public class EffortProviderFactory : IDbConnectionFactory
     {
         private static DbConnection _connection;
         private readonly static object _lock = new object();
 
+        /// <summary>
+        /// Resets the database connection.
+        /// </summary>
         public static void ResetDb()
         {
             lock (_lock)
@@ -21,6 +22,11 @@ namespace RentalTracker.DAL.Tests
             }
         }
 
+        /// <summary>
+        /// Create a new connection to the named database.
+        /// </summary>
+        /// <param name="nameOrConnectionString"></param>
+        /// <returns>A new DbConnection object.</returns>
         public DbConnection CreateConnection(string nameOrConnectionString)
         {
             lock (_lock)
