@@ -1,5 +1,8 @@
 ﻿namespace RentalTracker.Domain
 {
+    /// <summary>
+    /// Category types
+    /// </summary>
     public enum CategoryType
     {
         Income = 1,
