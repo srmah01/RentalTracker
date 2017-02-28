@@ -2,22 +2,41 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentalTracker.Tests
 {
+    /// <summary>
+    /// A class representing mocked data to be used by the controller tests.
+    /// </summary>
     public class MockedData
     {
+        /// <summary>
+        /// A collection of Account entities.
+        /// </summary>
         private ICollection<Account> accounts;
-        private ICollection<Category> categories;
-        private ICollection<Payee> payees;
-        private ICollection<Transaction> transactions;
-        private DateTime defaultTransactionDate;
 
+        /// <summary>
+        /// A collection of Category entities.
+        /// </summary>
+        private ICollection<Category> categories;
+
+        /// <summary>
+        /// A collection of Payee entities.
+        /// </summary>
+        private ICollection<Payee> payees;
+
+        /// <summary>
+        /// A collection of Transaction entities.
+        /// </summary>
+        private ICollection<Transaction> transactions;
+
+        /// <summary>
+        /// Constructor.
+        /// Creates collections of entities and links between them.
+        /// </summary>
         public MockedData()
         {
-            defaultTransactionDate = new DateTime(2017, 1, 1);
+            var defaultTransactionDate = new DateTime(2017, 1, 1);
             accounts = new List<Account>() {
                 new Account() { Id = 1, Name = "BankAccount1", OpeningBalance = 100.99m },
                 new Account() { Id = 2, Name = "BankAccount2" },
@@ -111,45 +130,71 @@ namespace RentalTracker.Tests
             }
         }
 
+        /// <summary>
+        /// Gets or Sets the collection of Accounts.
+        /// </summary>
         public ICollection<Account> Accounts
         {
             get { return accounts; }
-            set { accounts = value; }
+            private set { accounts = value; }
         }
 
 
+        /// <summary>
+        /// Gets or Sets the collection of Categories.
+        /// </summary>
         public ICollection<Category> Categories
         {
             get { return categories; }
-            set { categories = value; }
+            private set { categories = value; }
         }
 
+        /// <summary>
+        /// Gets or Sets the collection of Payees.
+        /// </summary>
         public ICollection<Payee> Payees
         {
             get { return payees; }
-            set { payees = value; }
+            private set { payees = value; }
         }
 
+        /// <summary>
+        /// Gets or Sets the collection of Transactions.
+        /// </summary>
         public ICollection<Transaction> Transactions
         {
             get { return transactions; }
-            set { transactions = value; }
+            private set { transactions = value; }
         }
 
+        /// <summary>
+        /// Gets the collection of Transactions associated with a specified account.
+        /// </summary>
+        /// <param name="accountId">The ID of the specified account.</param>
+        /// <returns></returns>
         public ICollection<Transaction> GetAccountTransactions(int accountId)
         {
             return transactions.Where(t => t.AccountId == accountId).ToList();
         }
 
+        /// <summary>
+        /// Gets the collection of Transactions associated with a specified Category.
+        /// </summary>
+        /// <param name="categoryId">The ID of the specified category.</param>
+        /// <returns></returns>
         public ICollection<Transaction> GetCategoryTransactions(int categoryId)
         {
-            return transactions.Where(t => t.AccountId == categoryId).ToList();
+            return transactions.Where(t => t.CategoryId == categoryId).ToList();
         }
 
+        /// <summary>
+        /// Gets the collection of Transactions associated with a specified payee.
+        /// </summary>
+        /// <param name="payeeId">The ID of the specified payee.</param>
+        /// <returns></returns>
         public ICollection<Transaction> GetPayeeTransactions(int payeeId)
         {
-            return transactions.Where(t => t.AccountId == payeeId).ToList();
+            return transactions.Where(t => t.PayeeId == payeeId).ToList();
         }
-
     }
 }

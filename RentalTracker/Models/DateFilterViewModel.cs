@@ -5,22 +5,40 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Models
 {
+    /// <summary>
+    /// Class representing the View Model for the Date Filter form.
+    /// </summary>
     public class DateFilterViewModel : IFilterViewModel
     {
+        /// <summary>
+        /// Gets or sets the Date Filter selection
+        /// </summary>
         [Display(Name = "Date")]
         public DateFilterSelector DateFilter { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets the Date to match for the earliest transaction. 
+        /// </summary>
         [Required]
         [Display(Name = "From")]
         public DateTime? FromDate { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets the Date to match for the latest transaction. 
+        /// </summary>
         [Required]
         [Display(Name = "To")]
         public DateTime? ToDate { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets the date order to display the list of transactions. 
+        /// </summary>
         [Required]
         public SortDirection SortOrder { get; protected set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public DateFilterViewModel()
         {
             DateFilter = DateFilterSelector.AllDates;
@@ -29,6 +47,13 @@ namespace RentalTracker.Models
             ToDate = DateTime.MaxValue;
         }
 
+        /// <summary>
+        /// Sets the Date Filter with the given parameters.
+        /// </summary>
+        /// <param name="selector">The value of the Date Filter selection.</param>
+        /// <param name="from">The value of the From date.</param>
+        /// <param name="to">The value of the To date.</param>
+        /// <param name="sortOrder">The order to sort the list.</param>
         public void SetDateFilter(DateFilterSelector selector, string from = null, string to = null,
             SortDirection sortOrder = SortDirection.Ascending)
         {

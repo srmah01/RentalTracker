@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RentalTracker.DAL.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
@@ -7,6 +6,9 @@ using System.Linq;
 
 namespace RentalTracker.DAL.Tests
 {
+    /// <summary>
+    /// Test class for the RentalTrackerServiceValidationException
+    /// </summary>
     [TestClass]
     public class RentalTrackerServiceValidationExceptionTest
     {
@@ -17,7 +19,6 @@ namespace RentalTracker.DAL.Tests
 
             Assert.IsNotNull(exception);
         }
-
 
         [TestMethod]
         public void CanCreateExceptionWithMessage()

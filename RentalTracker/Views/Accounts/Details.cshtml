@@ -39,17 +39,6 @@
                     </div>
 
                     <div class="form-group">
-                        @*@Html.LabelFor(model => model.Entity.Balance, htmlAttributes: new { @class = "control-label col-md-4" })
-                            <div class="col-md-8">
-                                <p class="form-control-static">@Html.DisplayFor(model => model.Entity.Balance)</p>
-                            </div>*@
-                        <label class="control-label col-md-4">Active</label>
-                        <div class="col-md-8">
-                            <p class="form-control-static">Yes</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <div class="col-md-offset-4 col-md-8">
                             <a id="edit" class="btn btn-default" href="@Url.Action( "Edit", new { id = Model.Entity.Id } )"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
 

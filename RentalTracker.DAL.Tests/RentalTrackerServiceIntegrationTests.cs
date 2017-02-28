@@ -3,12 +3,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using RentalTracker.Domain;
 using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
 using RentalTracker.DAL.Exceptions;
 using System.Linq;
 
 namespace RentalTracker.DAL.Tests
 {
+    /// <summary>
+    /// Test class for the Rental Tracke rService Integration Tests.
+    /// Uses the Effort Provider to create an in-memory database that allows the DbContext to tested unchanged.
+    /// </summary>
     [TestClass]
     public class RentalTrackerServiceIntegrationTests
     {

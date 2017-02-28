@@ -6,6 +6,9 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Models
 {
+    /// <summary>
+    /// A class representing the tests of the Date Filter View Model.
+    /// </summary>
     [TestClass]
     public class DateFilterViewModelTests
     {

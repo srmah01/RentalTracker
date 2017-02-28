@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RentalTracker;
 using RentalTracker.Controllers;
 using RentalTracker.DAL;
 using Moq;
@@ -17,6 +15,9 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
+    /// <summary>
+    /// A class representing the tests of the Categories Controller.
+    /// </summary>
     [TestClass]
     public class CategoriesControllerTest
     {

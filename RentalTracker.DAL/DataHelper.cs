@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentalTracker.DAL
 {
@@ -37,9 +35,9 @@ namespace RentalTracker.DAL
         }
 
         /// <summary>
-        /// Seed the context with some representative dummy data
+        /// Seed the context with some representative dummy data.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">The Context to seeded with data.</param>
         public static void PrepareData(RentalTrackerContext context)
         {
             var accountsToAdd = new List<Account>()
