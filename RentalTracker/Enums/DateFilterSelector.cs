@@ -2,6 +2,9 @@
 
 namespace RentalTracker.Enums
 {
+    /// <summary>
+    /// An enumeration of possible Date Filters
+    /// </summary>
     public enum DateFilterSelector
     {
         [Display(Name="All Dates")]
