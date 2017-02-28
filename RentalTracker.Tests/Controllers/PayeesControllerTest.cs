@@ -175,6 +175,8 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategories = mockedData.Categories.ToList();
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedCategories);
 
             PayeesController controller = new PayeesController(mockService.Object);
 
@@ -190,6 +192,8 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategories = mockedData.Categories.ToList();
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedCategories);
             mockService.Setup(s => s.SaveNewPayee(It.IsAny<Payee>())).Throws(new RentalTrackerServiceValidationException("Error",
                      new List<ValidationResult>()
                      {
@@ -214,6 +218,8 @@ namespace RentalTracker.Tests.Controllers
             var mockService = new Mock<IRentalTrackerService>();
             var mockedPayee = mockedData.Payees.First();
             mockService.Setup(s => s.FindPayee(It.IsAny<int>())).Returns(mockedPayee);
+            var mockedCategories = mockedData.Categories.ToList();
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedCategories);
 
             PayeesController controller = new PayeesController(mockService.Object);
 
@@ -250,6 +256,8 @@ namespace RentalTracker.Tests.Controllers
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
             mockService.Setup(s => s.SaveUpdatedPayee(It.IsAny<Payee>()));
+            var mockedCategories = mockedData.Categories.ToList();
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedCategories);
 
             PayeesController controller = new PayeesController(mockService.Object);
 
@@ -266,6 +274,8 @@ namespace RentalTracker.Tests.Controllers
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
+            var mockedCategories = mockedData.Categories.ToList();
+            mockService.Setup(s => s.GetAllCategories()).Returns(mockedCategories);
             mockService.Setup(s => s.SaveUpdatedPayee(It.IsAny<Payee>())).Throws(new RentalTrackerServiceValidationException("Error",
                     new List<ValidationResult>()
                     {

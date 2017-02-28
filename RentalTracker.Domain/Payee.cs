@@ -33,7 +33,7 @@ namespace RentalTracker.Domain
         /// Gets and Sets the Default Category for this Payee
         /// This is a Foreign Key in to to Category table
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Default Category field is required.")]
         public int DefaultCategoryId { get; set; }
 
         /// <summary>
