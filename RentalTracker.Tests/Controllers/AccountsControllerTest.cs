@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RentalTracker.Controllers;
@@ -10,13 +9,15 @@ using Moq;
 using RentalTracker.Domain;
 using RentalTracker.Models;
 using RentalTracker.DAL.Exceptions;
-using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using RentalTracker.Enums;
 using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
+    /// <summary>
+    /// A class representing the tests of the Accounts Controller.
+    /// </summary>
     [TestClass]
     public class AccountsControllerTest
     {

@@ -17,6 +17,9 @@ using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Controllers
 {
+    /// <summary>
+    /// A class representing the tests of the Transactions Controller.
+    /// </summary>
     [TestClass]
     public class TransactionsControllerTest
     {

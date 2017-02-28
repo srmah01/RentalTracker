@@ -1,11 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RentalTracker.Models;
 using RentalTracker.Enums;
 using System.Web.Helpers;
 
 namespace RentalTracker.Tests.Models
 {
+    /// <summary>
+    /// A class representing the tests of the Search Filter View Model.
+    /// </summary>
     [TestClass]
     public class SearchFilterViewModelTests
     {
