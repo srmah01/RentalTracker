@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using RentalTracker.DAL;
@@ -242,7 +243,12 @@ namespace RentalTracker.Controllers
         {
             ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
             ViewBag.CategoryId = new SelectList(rentalTrackerService.GetAllCategories(), "Id", "Name");
-            ViewBag.PayeeId = new SelectList(rentalTrackerService.GetAllPayees(), "Id", "Name");
+            var allPayees = rentalTrackerService.GetAllPayees();
+            ViewBag.PayeeId = new SelectList(allPayees, "Id", "Name");
+            ViewBag.PayeeCategoryMap = allPayees.AsEnumerable()
+                                                .Select(p => new { PayeeId = p.Id,
+                                                    DefaultCategoryId = p.DefaultCategoryId
+                                                }).ToList();
         }
     }
 }

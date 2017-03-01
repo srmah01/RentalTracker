@@ -20,7 +20,7 @@ namespace RentalTracker.Domain
         /// Gets and Sets the Account ID for this Transaction
         /// This is a Foreign Key in to to Account table
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "The Account field is required.")]
         public int AccountId { get; set; }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace RentalTracker.Domain
         /// Gets and Sets the Payee ID for this Transaction
         /// This is a Foreign Key in to to Payee table
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "The Payee field is required.")]
         public int PayeeId { get; set; }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace RentalTracker.Domain
         /// Gets and Sets the Category ID for this Transaction
         /// This is a Foreign Key in to to Category table
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "The Category field is required.")]
         public int CategoryId { get; set; }
 
         /// <summary>

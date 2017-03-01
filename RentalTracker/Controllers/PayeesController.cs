@@ -108,6 +108,7 @@ namespace RentalTracker.Controllers
         // GET: Payees/Create
         public ActionResult Create()
         {
+            GetReferenceData();
             return View();
         }
 
@@ -121,7 +122,7 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Memo")] Payee payee)
+        public ActionResult Create([Bind(Include = "Id,Name,DefaultCategoryId,Memo")] Payee payee)
         {
             if (ModelState.IsValid)
             {
@@ -140,6 +141,7 @@ namespace RentalTracker.Controllers
                 }
             }
 
+            GetReferenceData();
             return View(payee);
         }
 
@@ -160,6 +162,8 @@ namespace RentalTracker.Controllers
             {
                 return HttpNotFound();
             }
+
+            GetReferenceData();
             return View(payee);
         }
 
@@ -173,7 +177,7 @@ namespace RentalTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Memo")] Payee payee)
+        public ActionResult Edit([Bind(Include = "Id,Name,DefaultCategoryId,Memo")] Payee payee)
         {
             if (ModelState.IsValid)
             {
@@ -191,7 +195,18 @@ namespace RentalTracker.Controllers
                     HandleValidationErrors.AddExceptionError(this, ex);
                 }
             }
+
+            GetReferenceData();
             return View(payee);
         }
+
+        /// <summary>
+        /// Returns the reference data for the selection lists in the ViewBag.
+        /// </summary>
+        private void GetReferenceData()
+        {
+            ViewBag.DefaultCategoryId = new SelectList(rentalTrackerService.GetAllCategories(), "Id", "Name");
+        }
+
     }
 }
