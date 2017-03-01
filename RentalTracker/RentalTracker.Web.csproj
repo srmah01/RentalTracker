@@ -137,6 +137,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\TaxReportController.cs" />
     <Compile Include="Models\IFilterViewModel.cs" />
     <Compile Include="Models\SearchFilterViewModel.cs" />
     <Compile Include="Models\DateFilterViewModel.cs" />
@@ -234,6 +235,7 @@
     <Content Include="Views\Transactions\_Transaction.cshtml" />
     <Content Include="Views\Shared\_DateFilter.cshtml" />
     <Content Include="Views\Shared\_SearchFilter.cshtml" />
+    <Content Include="Views\TaxReport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

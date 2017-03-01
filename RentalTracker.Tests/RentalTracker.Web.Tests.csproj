@@ -96,6 +96,7 @@
     <Compile Include="Controllers\PayeesControllerTest.cs" />
     <Compile Include="Controllers\CategoriesControllerTest.cs" />
     <Compile Include="Controllers\AccountsControllerTest.cs" />
+    <Compile Include="Controllers\TaxControllerTest.cs" />
     <Compile Include="MockedData.cs" />
     <Compile Include="Models\SearchFilterViewModelTests.cs" />
     <Compile Include="Models\DateFilterViewModelTests.cs" />
