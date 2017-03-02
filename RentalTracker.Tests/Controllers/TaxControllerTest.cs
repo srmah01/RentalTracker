@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using RentalTracker.DAL;
 using RentalTracker.Controllers;
 using Moq;
+using System.Linq;
 
 namespace RentalTracker.Tests.Controllers
 {
@@ -22,15 +23,17 @@ namespace RentalTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void CanReturnATaxReportIndexView()
+        public void CanReturnATaxReportGenerateView()
         {
             // Arrange
             var mockService = new Mock<IRentalTrackerService>();
+            var mockedAccounts = mockedData.Accounts.ToList();
+            mockService.Setup(s => s.GetAllAccounts()).Returns(mockedAccounts);
 
             TaxReportController controller = new TaxReportController(mockService.Object);
 
             // Act
-            ViewResult result = controller.Index() as ViewResult;
+            ViewResult result = controller.Generate() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);

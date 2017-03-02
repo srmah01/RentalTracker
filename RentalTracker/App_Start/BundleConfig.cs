@@ -41,6 +41,8 @@ namespace RentalTracker
             bundles.Add(new ScriptBundle("~/bundles/items-table").Include(
                 "~/Scripts/items-table.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/generate-report").Include(
+                "~/Scripts/generate-report.js"));
         }
     }
 }

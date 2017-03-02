@@ -142,6 +142,7 @@
     <Compile Include="Models\SearchFilterViewModel.cs" />
     <Compile Include="Models\DateFilterViewModel.cs" />
     <Compile Include="Enums\DateFilterSelector.cs" />
+    <Compile Include="Models\TaxReportViewModel.cs" />
     <Compile Include="Utilities\HandleValidationErrors.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PayeesController.cs" />
@@ -181,6 +182,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\date-filter.js" />
+    <Content Include="Scripts\generate-report.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -235,7 +237,8 @@
     <Content Include="Views\Transactions\_Transaction.cshtml" />
     <Content Include="Views\Shared\_DateFilter.cshtml" />
     <Content Include="Views\Shared\_SearchFilter.cshtml" />
-    <Content Include="Views\TaxReport\Index.cshtml" />
+    <Content Include="Views\TaxReport\Generate.cshtml" />
+    <Content Include="Views\TaxReport\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
