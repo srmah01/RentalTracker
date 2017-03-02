@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Transaction>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payee)
+                <br />
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reference)
+                <br />
+                @Html.DisplayNameFor(model => model.Memo)
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td>No transactions.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Payee.Name)
+                        <br />
+                        @Html.DisplayFor(model => item.Category.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Amount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Reference)
+                        <br />
+                        @Html.DisplayFor(model => item.Memo)
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td></td>
+                <td>
+                    <b>Total</b>
+                </td>
+                <td>
+                    <b> &pound;@ViewData["Total"] </b>
+                </td>
+                <td></td>
+            </tr>
+        }
+
+    </tbody>
+</table>

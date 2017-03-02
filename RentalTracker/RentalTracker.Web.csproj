@@ -239,6 +239,7 @@
     <Content Include="Views\Shared\_SearchFilter.cshtml" />
     <Content Include="Views\TaxReport\Generate.cshtml" />
     <Content Include="Views\TaxReport\Report.cshtml" />
+    <Content Include="Views\TaxReport\_ReportTransactionsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
