@@ -1,7 +1,7 @@
 # RentalTracker
 MVC project to provide a House Rental Account tracker.
 
-Uses NET 4.5 / MVC 5 / Entity Framework 6 / SQL Server 2013.
+Uses NET 4.5 / MVC 5 / Bootstrap 3 / Entity Framework 6 / SQL Server 2013.
 
 Developed in Visual Studio 2015, using Code First Migrations.
 
