@@ -96,11 +96,13 @@
     <Compile Include="Controllers\PayeesControllerTest.cs" />
     <Compile Include="Controllers\CategoriesControllerTest.cs" />
     <Compile Include="Controllers\AccountsControllerTest.cs" />
+    <Compile Include="Controllers\TaxControllerTest.cs" />
     <Compile Include="MockedData.cs" />
     <Compile Include="Models\SearchFilterViewModelTests.cs" />
     <Compile Include="Models\DateFilterViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
+    <Compile Include="Service\TaxReportServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">
