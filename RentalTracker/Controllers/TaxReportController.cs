@@ -1,32 +1,29 @@
 ﻿using RentalTracker.DAL;
 using RentalTracker.DAL.Exceptions;
-using RentalTracker.Domain;
-using RentalTracker.Models;
+using RentalTracker.Service;
 using RentalTracker.Utilities;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace RentalTracker.Controllers
 {
+    /// <summary>
+    /// Represents the controller for the TaxReport related pages.
+    /// </summary>
     public class TaxReportController : Controller
     {
         /// <summary>
-        /// The Rental Tracker DAL service.
+        /// The Tax Report service.
         /// </summary>
-        private IRentalTrackerService rentalTrackerService;
+        private ITaxReportService taxReportService;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="rentalTrackerService">The instance of the RentalTrackerService.</param>
-        public TaxReportController(IRentalTrackerService rentalTrackerService)
+        /// <param name="taxReportService">The instance of the TaxReportService.</param>
+        public TaxReportController(ITaxReportService taxReportService)
         {
-            this.rentalTrackerService = rentalTrackerService;
+            this.taxReportService = taxReportService;
         }
 
         /// <summary>
@@ -42,26 +39,20 @@ namespace RentalTracker.Controllers
         /// <summary>
         ///  Handles the request to generate a new Tax Report.
         /// </summary>
+        /// <param name="accountId">The Id of the account to report on.</param>
+        /// <param name="year">The year for the report.</param>
         // POST: Transactions/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Generate([Bind(Include = "AccountId,Year")] TaxReportViewModel taxReport)
+        public ActionResult Generate([Bind(Include = "AccountId,Year")] int? accountId, int? year)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var account = rentalTrackerService.FindAccount(taxReport.AccountId);
-
-                    if (account == null)
-                    {
-                        return HttpNotFound();
-                    }
-
-                    return RedirectToAction("Report", new { AccountId = taxReport.AccountId, AccountName = account.Name,
-                        Year = taxReport.Year });
+                    return RedirectToAction("Report", new { accountId = accountId, year = year });
                 }
                 catch (RentalTrackerServiceValidationException ex)
                 {
@@ -80,33 +71,26 @@ namespace RentalTracker.Controllers
         /// <summary>
         /// Gets the Report view.
         /// </summary>
+        /// <param name="accountId">The Id of the account to report on.</param>
+        /// <param name="year">The year for the report.</param>
+        /// <returns></returns>
         // GET: TaxReport/Report
-        public ActionResult Report(TaxReportViewModel taxReport)
+        public ActionResult Report(int? accountId, int? year)
         {
-            var account = rentalTrackerService.FindAccountWithTransactions(taxReport.AccountId);
-            if (account != null)
+            if (!accountId.HasValue || !year.HasValue)
             {
-                var yearStart = DateTime.ParseExact("06/04/" + (taxReport.Year - 1), "dd/MM/yyyy", new CultureInfo("en-GB"));
-                var yearEnd = DateTime.ParseExact("05/04/" + taxReport.Year, "dd/MM/yyyy", new CultureInfo("en-GB"));
+                return HttpNotFound();
+            }
 
-                taxReport.Income = account.Transactions.AsQueryable()
-                                                       .Where(t => t.Date >= yearStart && t.Date <= yearEnd)
-                                                       .Where(t => t.Category.Type == CategoryType.Income && t.Taxable)
-                                                       .ToList();
+            var taxReportViewModel = taxReportService.GenerateReport(accountId.Value, year.Value);
 
-                taxReport.Expenses = account.Transactions.AsQueryable()
-                                                         .Where(t => t.Date >= yearStart && t.Date <= yearEnd)
-                                                         .Where(t => t.Category.Type == CategoryType.Expense && t.Taxable)
-                                                         .ToList();
-
-                taxReport.TotalIncome = taxReport.Income.Sum(t => t.Amount);
-                taxReport.TotalExpense = taxReport.Expenses.Sum(t => t.Amount);
-                taxReport.Profit = taxReport.TotalIncome - taxReport.TotalExpense;
-                taxReport.TaxLiability = taxReport.Profit * 0.20m;  // 20%
+            if (taxReportViewModel == null)
+            {
+                return HttpNotFound();
             }
 
             GetReferenceData();
-            return View(taxReport);
+            return View(taxReportViewModel);
         }
 
 
@@ -115,13 +99,8 @@ namespace RentalTracker.Controllers
         /// </summary>
         private void GetReferenceData()
         {
+            IRentalTrackerService rentalTrackerService = taxReportService.RentalTrackerService;
             ViewBag.AccountId = new SelectList(rentalTrackerService.GetAllAccounts(), "Id", "Name");
-            //ViewBag.Years = allPayees.AsEnumerable()
-            //                                    .Select(p => new {
-            //                                        PayeeId = p.Id,
-            //                                        DefaultCategoryId = p.DefaultCategoryId
-            //                                    }).ToList();
-
         }
     }
 }

@@ -143,6 +143,8 @@
     <Compile Include="Models\DateFilterViewModel.cs" />
     <Compile Include="Enums\DateFilterSelector.cs" />
     <Compile Include="Models\TaxReportViewModel.cs" />
+    <Compile Include="Service\ITaxReportService.cs" />
+    <Compile Include="Service\TaxReportService.cs" />
     <Compile Include="Utilities\HandleValidationErrors.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PayeesController.cs" />
